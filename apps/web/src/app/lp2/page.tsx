@@ -171,7 +171,7 @@ export default function LP2() {
         {/* Main */}
         <main className="mx-auto flex w-full max-w-[600px] flex-col items-center px-4 pt-3 pb-8">
           <h1
-            className="text-center text-3xl leading-tight font-normal text-gray-900"
+            className="text-center text-3xl leading-tight font-normal tracking-tight text-gray-900"
           >
             Médicos Prescritores de Cannabis Medicinal
           </h1>
@@ -192,7 +192,7 @@ export default function LP2() {
                   className="flex cursor-pointer items-center gap-2 rounded-xl border-2 px-3 py-[9px] text-left font-medium transition-all duration-150 select-none"
                   style={{
                     borderColor: isSelected ? "#3a7a4f" : "#e5e7eb",
-                    backgroundColor: isSelected ? "#f0f7f1" : "white",
+                    backgroundColor: isSelected ? "#d4edda" : "white",
                     color: isSelected ? "#1a5c30" : "#374151",
                     boxShadow: isSelected
                       ? "0 1px 2px rgba(0,0,0,0.05)"
