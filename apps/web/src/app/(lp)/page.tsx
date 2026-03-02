@@ -34,6 +34,8 @@ export default function LandingPage() {
   const [showError, setShowError] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [scrolledTop, setScrolledTop] = useState(false);
   const inactivityTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasSubmitted = useRef(false);
 
@@ -182,10 +184,10 @@ export default function LandingPage() {
         }
       `}</style>
 
-      <main className="min-h-svh bg-white">
-        <div className="mx-auto max-w-xl px-5 py-10 sm:py-16">
+      <main className="flex h-svh flex-col bg-white">
+        <div className="mx-auto flex w-full max-w-xl flex-1 flex-col overflow-hidden px-5 pt-6 pb-4 sm:py-16">
           {/* Header */}
-          <header className="mb-8 text-center">
+          <header className="mb-4 shrink-0 text-center sm:mb-8">
             <img
               src="/logo.svg"
               alt="Click Cannabis"
@@ -206,7 +208,10 @@ export default function LandingPage() {
           </header>
 
           {/* Pathology Grid */}
-          <div className="grid grid-cols-2 gap-3" role="group" aria-label="Patologias">
+          <div className="relative min-h-0 flex-1">
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-12 bg-gradient-to-b from-white to-transparent transition-opacity duration-200 ease-out" style={{ opacity: scrolledTop ? 1 : 0 }} />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-gradient-to-t from-white to-transparent" />
+          <div ref={gridRef} onScroll={() => { if (gridRef.current) setScrolledTop(gridRef.current.scrollTop > 4); }} className="grid h-full grid-cols-2 content-start gap-2 overflow-y-auto pt-2 pb-14 [scrollbar-width:none] sm:gap-3 sm:pb-2 [&::-webkit-scrollbar]:hidden" role="group" aria-label="Patologias">
             {PATOLOGIAS.map((p, i) => {
               const isSelected = selected.has(p);
               return (
@@ -250,13 +255,14 @@ export default function LandingPage() {
               );
             })}
           </div>
+          </div>
 
           {/* CTA Button */}
           <button
             type="button"
             onClick={openModal}
             disabled={selected.size === 0}
-            className="anim-btn mt-6 w-full rounded-xl py-4 text-base font-bold text-white transition-all duration-150 ease-out sm:text-lg"
+            className="anim-btn mt-3 w-full shrink-0 rounded-xl py-4 text-base font-bold text-white transition-all duration-150 ease-out sm:mt-6 sm:text-lg"
             style={{
               backgroundColor: selected.size > 0 ? "#3D8F4A" : "#c5d4c9",
               cursor: selected.size > 0 ? "pointer" : "not-allowed",
@@ -266,7 +272,7 @@ export default function LandingPage() {
           </button>
 
           {/* Badges de segurança */}
-          <div className="anim-btn mt-6 flex items-center justify-center gap-4" style={{ animationDelay: "1150ms" }}>
+          <div className="anim-btn mt-3 flex shrink-0 items-center justify-center gap-4 sm:mt-6" style={{ animationDelay: "1150ms" }}>
             <img src="/1.webp" alt="Ótimo - Reclame Aqui" width={120} height={60} className="h-12 w-auto object-contain" />
             <img src="/2.webp" alt="Certificado RA1000 - Reclame Aqui" width={120} height={60} className="h-12 w-auto object-contain" />
             <img src="/3.webp" alt="4.9 Google - Avaliação de pacientes" width={120} height={60} className="h-12 w-auto object-contain" />
