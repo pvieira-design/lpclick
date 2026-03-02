@@ -7,20 +7,8 @@
   ],
   "type": "module",
   "scripts": {
-    "dev": "npm run dev --workspaces",
-    "build": "npm run db:generate && npm run build --workspace web",
-    "check-types": "npm run check-types --workspaces",
-    "dev:native": "npm run dev --workspace native",
-    "dev:web": "npm run dev --workspace web",
-    "db:push": "npm run db:push --workspace @lpclick/db",
-    "db:studio": "npm run db:studio --workspace @lpclick/db",
-    "db:generate": "npm run db:generate --workspace @lpclick/db",
-    "db:migrate": "npm run db:migrate --workspace @lpclick/db"
-  },
-  "dependencies": {
-    "@lpclick/env": "*",
-    "dotenv": "^17.2.2",
-    "zod": "^4.1.13"
+    "dev": "npm run dev --workspace web",
+    "build": "npm run build --workspace web"
   },
   "devDependencies": {
     "@lpclick/config": "*",

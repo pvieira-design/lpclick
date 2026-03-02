@@ -13,8 +13,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "lpclick",
-  description: "lpclick",
+  title: "Click Cannabis — Encontre seu Médico Prescritor",
+  description:
+    "Consulte médicos especializados em cannabis medicinal. Selecione suas patologias e inicie seu tratamento com acompanhamento profissional.",
+  metadataBase: new URL("https://lpclick.com"),
+  openGraph: {
+    title: "Click Cannabis — Encontre seu Médico Prescritor",
+    description:
+      "Ansiedade, insônia, dores crônicas? Conectamos você a médicos prescritores de cannabis medicinal em poucos cliques.",
+    siteName: "Click Cannabis",
+    locale: "pt_BR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Click Cannabis — Encontre seu Médico Prescritor",
+    description:
+      "Ansiedade, insônia, dores crônicas? Conectamos você a médicos prescritores de cannabis medicinal em poucos cliques.",
+  },
 };
 
 export default function RootLayout({
