@@ -171,7 +171,7 @@ export default function LP2() {
         {/* Main */}
         <main className="mx-auto flex w-full max-w-[600px] flex-col items-center px-4 pt-3 pb-8">
           <h1
-            className="text-center text-3xl leading-tight font-light text-gray-900"
+            className="text-center text-3xl leading-tight font-normal text-gray-900"
           >
             Médicos Prescritores de Cannabis Medicinal
           </h1>
