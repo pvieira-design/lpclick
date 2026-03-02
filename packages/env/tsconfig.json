@@ -1,0 +1,3 @@
+{
+  "extends": "@lpclick/config/tsconfig.base.json"
+}

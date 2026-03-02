@@ -1,0 +1,24 @@
+{
+  "name": "@lpclick/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@lpclick/db": "*",
+    "@lpclick/env": "*",
+    "better-auth": "^1.4.18",
+    "dotenv": "^17.2.2",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@lpclick/config": "*",
+    "typescript": "^5"
+  }
+}
