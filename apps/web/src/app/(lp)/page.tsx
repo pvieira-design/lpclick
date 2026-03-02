@@ -22,6 +22,8 @@ const PATOLOGIAS = [
 
 const PHONE = "5521993686082";
 
+const NOTIFICATION_DURATION = 6000;
+
 function buildWhatsAppUrl(name: string, patologias: string[]) {
   const list = patologias.map((p, i) => `${i + 1}. ${p}`).join("\n");
   const text = `Olá, me chamo ${name}.\n\nPatologias selecionadas:\n${list}`;
@@ -33,51 +35,36 @@ export default function LP2() {
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState("");
 
-  // Notification state
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
-  const [progress, setProgress] = useState(100);
-  const progressInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+  const notificationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const autoOpenedRef = useRef(false);
 
-  const clearProgressInterval = useCallback(() => {
-    if (progressInterval.current) {
-      clearInterval(progressInterval.current);
-      progressInterval.current = null;
+  const clearNotificationTimer = useCallback(() => {
+    if (notificationTimer.current) {
+      clearTimeout(notificationTimer.current);
+      notificationTimer.current = null;
     }
   }, []);
 
   const triggerNotification = useCallback(
     (message: string) => {
-      clearProgressInterval();
+      clearNotificationTimer();
       setShowNotification(true);
       setNotificationMessage(message);
-      setProgress(100);
 
-      const totalDuration = 6000;
-      const intervalMs = 50;
-      const decrement = 100 / (totalDuration / intervalMs);
-
-      progressInterval.current = setInterval(() => {
-        setProgress((prev) => {
-          const next = prev - decrement;
-          if (next <= 0) {
-            clearProgressInterval();
-            setShowNotification(false);
-            return 0;
-          }
-          return next;
-        });
-      }, intervalMs);
+      notificationTimer.current = setTimeout(() => {
+        setShowNotification(false);
+      }, NOTIFICATION_DURATION);
     },
-    [clearProgressInterval],
+    [clearNotificationTimer],
   );
 
   // Notification: "Selecione uma patologia" after 5s inactivity (no selection, no modal)
   useEffect(() => {
     if (showModal || selected.size > 0) {
-      clearProgressInterval();
+      clearNotificationTimer();
       setShowNotification(false);
       return;
     }
@@ -87,15 +74,15 @@ export default function LP2() {
     );
     return () => {
       clearTimeout(timer);
-      clearProgressInterval();
+      clearNotificationTimer();
       setShowNotification(false);
     };
-  }, [showModal, selected.size, triggerNotification, clearProgressInterval]);
+  }, [showModal, selected.size, triggerNotification, clearNotificationTimer]);
 
   // Notification: "Escreva o seu nome" after 5s in modal without name
   useEffect(() => {
     if (!showModal || name.trim().length > 0) {
-      clearProgressInterval();
+      clearNotificationTimer();
       setShowNotification(false);
       return;
     }
@@ -104,7 +91,7 @@ export default function LP2() {
       5000,
     );
     return () => clearTimeout(timer);
-  }, [showModal, name, triggerNotification, clearProgressInterval]);
+  }, [showModal, name, triggerNotification, clearNotificationTimer]);
 
   const openModal = useCallback(() => {
     setShowModal(true);
@@ -188,11 +175,27 @@ export default function LP2() {
           from { opacity: 0; transform: translateY(8px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes shrinkWidth {
+          from { width: 100%; }
+          to { width: 0%; }
+        }
         .animate-fade-in {
           animation: fadeIn 200ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
+        .progress-bar {
+          animation: shrinkWidth ${NOTIFICATION_DURATION}ms linear forwards;
+        }
+        .path-btn { border-color: #e5e7eb; background: white; color: #374151; }
+        .path-btn[data-selected="true"] {
+          border-color: #3a7a4f; background: #f0f7f1; color: #1a5c30;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .path-check { border-color: #d1d5db; background: transparent; }
+        .path-btn[data-selected="true"] .path-check { border-color: #3a7a4f; background: #3a7a4f; }
         @media (prefers-reduced-motion: reduce) {
-          .animate-fade-in { animation: none; opacity: 1; }
+          .animate-fade-in, .progress-bar { animation: none; }
+          .animate-fade-in { opacity: 1; }
+          .progress-bar { width: 0%; }
         }
       `}</style>
 
@@ -203,6 +206,10 @@ export default function LP2() {
             <img
               src="/logo.svg"
               alt="Click Cannabis"
+              width={236}
+              height={34}
+              fetchPriority="high"
+              decoding="async"
               className="h-[34px]"
             />
           </div>
@@ -229,23 +236,11 @@ export default function LP2() {
                   key={p}
                   type="button"
                   onClick={() => toggle(p)}
-                  className="flex cursor-pointer items-center gap-2 rounded-xl border-2 px-3 py-[9px] text-left font-medium transition-all duration-150 select-none"
-                  style={{
-                    borderColor: isSelected ? "#3a7a4f" : "#e5e7eb",
-                    backgroundColor: isSelected ? "#f0f7f1" : "white",
-                    color: isSelected ? "#1a5c30" : "#374151",
-                    boxShadow: isSelected
-                      ? "0 1px 2px rgba(0,0,0,0.05)"
-                      : "none",
-                  }}
+                  data-selected={isSelected}
+                  className="path-btn flex cursor-pointer items-center gap-2 rounded-xl border-2 px-3 py-[9px] text-left font-medium transition-colors duration-150 select-none"
                 >
-                  {/* Checkbox */}
                   <span
-                    className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150"
-                    style={{
-                      borderColor: isSelected ? "#3a7a4f" : "#d1d5db",
-                      backgroundColor: isSelected ? "#3a7a4f" : "transparent",
-                    }}
+                    className="path-check flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors duration-150"
                   >
                     {isSelected && (
                       <svg
@@ -277,7 +272,7 @@ export default function LP2() {
             type="button"
             disabled={selected.size === 0}
             onClick={openModal}
-            className="mt-[18px] h-14 w-full rounded-xl text-base font-semibold text-white shadow-md transition-all duration-150"
+            className="mt-[18px] h-14 w-full rounded-xl text-base font-semibold text-white shadow-md transition-colors duration-150"
             style={{
               backgroundColor: selected.size > 0 ? "#3D8F4A" : "#c5d4c9",
               cursor: selected.size > 0 ? "pointer" : "not-allowed",
@@ -302,16 +297,28 @@ export default function LP2() {
               <img
                 src="/1.webp"
                 alt="Ótimo - Reclame Aqui"
+                width={123}
+                height={48}
+                loading="lazy"
+                decoding="async"
                 className="h-12"
               />
               <img
                 src="/2.webp"
                 alt="Certificado RA1000 - Reclame Aqui"
+                width={82}
+                height={40}
+                loading="lazy"
+                decoding="async"
                 className="h-10"
               />
               <img
                 src="/3.webp"
                 alt="4.9 Google - Avaliação de pacientes"
+                width={99}
+                height={48}
+                loading="lazy"
+                decoding="async"
                 className="h-12"
               />
             </div>
@@ -337,10 +344,7 @@ export default function LP2() {
                     {notificationMessage}
                   </div>
                   <div className="h-1 w-full bg-white/30">
-                    <div
-                      className="h-full bg-white transition-all duration-50 ease-linear"
-                      style={{ width: `${progress}%` }}
-                    />
+                    <div className="progress-bar h-full bg-white" />
                   </div>
                 </div>
               )}
@@ -420,7 +424,7 @@ export default function LP2() {
                   type="button"
                   disabled={name.trim().length === 0}
                   onClick={handleSubmit}
-                  className="mt-5 flex h-14 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white shadow-md transition-all duration-150"
+                  className="mt-5 flex h-14 w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white shadow-md transition-colors duration-150"
                   style={{
                     backgroundColor:
                       name.trim().length > 0 ? "#1a5c30" : "#c5d4c9",
@@ -448,10 +452,7 @@ export default function LP2() {
               {notificationMessage}
             </div>
             <div className="h-1 w-full bg-white/30">
-              <div
-                className="h-full bg-white transition-all duration-50 ease-linear"
-                style={{ width: `${progress}%` }}
-              />
+              <div className="progress-bar h-full bg-white" />
             </div>
           </div>
         )}

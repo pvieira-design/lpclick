@@ -30,7 +30,6 @@ function buildWhatsAppUrl(name: string, patologias: string[]) {
 
 export default function LandingPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [modalOpen, setModalOpen] = useState(false);
   const [name, setName] = useState("");
   const [showError, setShowError] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -64,7 +63,7 @@ export default function LandingPage() {
     inactivityTimer.current = setTimeout(() => {
       if (hasSubmitted.current) return;
       if (!dialogRef.current?.open && currentSelected.size > 0) {
-        setModalOpen(true);
+    
         dialogRef.current?.showModal();
         setTimeout(() => inputRef.current?.focus(), 100);
         sendGTMEvent({
@@ -96,7 +95,7 @@ export default function LandingPage() {
   const openModal = useCallback(() => {
     if (selected.size === 0) return;
     resetInactivityTimer();
-    setModalOpen(true);
+
     dialogRef.current?.showModal();
     setTimeout(() => inputRef.current?.focus(), 100);
     sendGTMEvent({
@@ -109,7 +108,6 @@ export default function LandingPage() {
   }, [selected, resetInactivityTimer]);
 
   const closeModal = useCallback(() => {
-    setModalOpen(false);
     dialogRef.current?.close();
     setShowError(false);
   }, []);
@@ -260,6 +258,8 @@ export default function LandingPage() {
               alt="Click Cannabis"
               width={200}
               height={29}
+              fetchPriority="high"
+              decoding="async"
               className="anim-logo mx-auto mb-6"
             />
             <h1
@@ -349,9 +349,9 @@ export default function LandingPage() {
 
           {/* Badges de segurança */}
           <div className="anim-btn mt-3 flex shrink-0 items-center justify-center gap-4 sm:mt-6" style={{ animationDelay: "1150ms" }}>
-            <img src="/1.webp" alt="Ótimo - Reclame Aqui" width={120} height={60} className="h-12 w-auto object-contain" />
-            <img src="/2.webp" alt="Certificado RA1000 - Reclame Aqui" width={120} height={60} className="h-12 w-auto object-contain" />
-            <img src="/3.webp" alt="4.9 Google - Avaliação de pacientes" width={120} height={60} className="h-12 w-auto object-contain" />
+            <img src="/1.webp" alt="Ótimo - Reclame Aqui" width={120} height={60} loading="lazy" decoding="async" className="h-12 w-auto object-contain" />
+            <img src="/2.webp" alt="Certificado RA1000 - Reclame Aqui" width={120} height={60} loading="lazy" decoding="async" className="h-12 w-auto object-contain" />
+            <img src="/3.webp" alt="4.9 Google - Avaliação de pacientes" width={120} height={60} loading="lazy" decoding="async" className="h-12 w-auto object-contain" />
           </div>
         </div>
 
