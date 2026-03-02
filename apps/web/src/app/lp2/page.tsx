@@ -202,7 +202,7 @@ export default function LP2() {
                 >
                   {/* Checkbox */}
                   <span
-                    className="flex size-5 shrink-0 items-center justify-center rounded-md border-2 transition-all duration-150"
+                    className="flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150"
                     style={{
                       borderColor: isSelected ? "#3a7a4f" : "#d1d5db",
                       backgroundColor: isSelected ? "#3a7a4f" : "transparent",
