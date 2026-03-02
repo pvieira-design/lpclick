@@ -172,7 +172,6 @@ export default function LP2() {
         <main className="mx-auto flex w-full max-w-[600px] flex-col items-center px-4 pt-3 pb-8">
           <h1
             className="text-center text-3xl leading-tight font-light text-gray-900"
-            style={{ fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}
           >
             Médicos Prescritores de Cannabis Medicinal
           </h1>
@@ -190,7 +189,7 @@ export default function LP2() {
                   key={p}
                   type="button"
                   onClick={() => toggle(p)}
-                  className="flex cursor-pointer items-center gap-2 rounded-xl border-2 px-3 py-[13px] text-left font-medium transition-all duration-150 select-none"
+                  className="flex cursor-pointer items-center gap-2 rounded-xl border-2 px-3 py-[9px] text-left font-medium transition-all duration-150 select-none"
                   style={{
                     borderColor: isSelected ? "#3a7a4f" : "#e5e7eb",
                     backgroundColor: isSelected ? "#f0f7f1" : "white",
