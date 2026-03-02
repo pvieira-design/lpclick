@@ -36,8 +36,22 @@ export default function LandingPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const [scrolledTop, setScrolledTop] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const inactivityTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasSubmitted = useRef(false);
+  const hasInteracted = useRef(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!hasInteracted.current) setShowTooltip(true);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const dismissTooltip = useCallback(() => {
+    hasInteracted.current = true;
+    setShowTooltip(false);
+  }, []);
 
   const resetInactivityTimer = useCallback(() => {
     if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
@@ -61,6 +75,7 @@ export default function LandingPage() {
   }, [resetInactivityTimer]);
 
   const toggle = useCallback((patologia: string) => {
+    dismissTooltip();
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(patologia)) next.delete(patologia);
@@ -68,7 +83,7 @@ export default function LandingPage() {
       startInactivityTimer(next);
       return next;
     });
-  }, [startInactivityTimer]);
+  }, [startInactivityTimer, dismissTooltip]);
 
   const openModal = useCallback(() => {
     if (selected.size === 0) return;
@@ -173,7 +188,15 @@ export default function LandingPage() {
             background: rgba(0,0,0,0);
           }
         }
+        @keyframes tooltipIn {
+          from { opacity: 0; transform: translateY(-4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .tooltip-enter {
+          animation: tooltipIn 300ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
         @media (prefers-reduced-motion: reduce) {
+          .tooltip-enter { animation: none; opacity: 1; }
           .anim-logo, .anim-title, .anim-subtitle, .anim-card, .anim-btn {
             animation: none;
             opacity: 1;
@@ -206,6 +229,16 @@ export default function LandingPage() {
               Selecione uma ou mais patologias para ser atendido
             </p>
           </header>
+
+          {/* Tooltip */}
+          {showTooltip && (
+            <div className="tooltip-enter mb-2 flex shrink-0 items-center justify-center">
+              <div className="relative rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white shadow-lg">
+                Selecione uma das patologias para iniciar
+                <div className="absolute -bottom-1.5 left-1/2 size-3 -translate-x-1/2 rotate-45 bg-gray-800" />
+              </div>
+            </div>
+          )}
 
           {/* Pathology Grid */}
           <div className="relative min-h-0 flex-1">
