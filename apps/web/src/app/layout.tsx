@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { GoogleTagManager } from "@next/third-parties/google";
+import Script from "next/script";
 import "../index.css";
 
 const geistSans = Geist({
@@ -40,8 +42,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      {process.env.NODE_ENV === "production" && (
+        <GoogleTagManager gtmId="GTM-NHB2NDHK" />
+      )}
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
+        <Script
+          id="fbclid"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var p=new URL(window.location.href).searchParams;var f=p.get('fbclid');if(f){document.cookie='fbclid='+f+';path=/;max-age='+60*60*24*30;}})();`,
+          }}
+        />
       </body>
     </html>
   );

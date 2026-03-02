@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const PATOLOGIAS = [
   "Alcoolismo",
@@ -127,7 +128,35 @@ export default function LP2() {
   const handleSubmit = useCallback(() => {
     const trimmed = name.trim();
     if (!trimmed) return;
-    const url = buildWhatsAppUrl(trimmed, Array.from(selected));
+
+    const patologias = Array.from(selected);
+    const params = new URLSearchParams(window.location.search);
+    const fbclid = document.cookie.match(/(?:^|;\s*)fbclid=([^;]*)/)?.[1] || "";
+
+    sendGTMEvent({
+      event: "buttonWhatsappClicked",
+      category: "Lead",
+      action: "Click",
+      label: "Falar com o médico - LP2",
+      value: patologias.join(", "),
+      leadData: {
+        name: trimmed,
+        patologies: patologias,
+        referrer: document.referrer,
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        platform: navigator.platform,
+        src: params.get("src") || "",
+        utm_source: params.get("utm_source") || "",
+        utm_medium: params.get("utm_medium") || "",
+        utm_content: params.get("utm_content") || "",
+        utm_campaign: params.get("utm_campaign") || "",
+        utm_term: params.get("utm_term") || "",
+        fbclid,
+      },
+    });
+
+    const url = buildWhatsAppUrl(trimmed, patologias);
     window.open(url, "_blank", "noopener,noreferrer");
   }, [name, selected]);
 
