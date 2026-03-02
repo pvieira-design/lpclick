@@ -5,7 +5,7 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-export default function LP2Layout({
+export default function LPLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
