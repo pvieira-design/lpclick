@@ -106,15 +106,26 @@ export default function LP2() {
     return () => clearTimeout(timer);
   }, [showModal, name, triggerNotification, clearProgressInterval]);
 
+  const openModal = useCallback(() => {
+    setShowModal(true);
+    sendGTMEvent({
+      event: "formStart",
+      category: "Lead",
+      action: "FormOpen",
+      label: "Modal aberto - LP2",
+      value: Array.from(selected).join(", "),
+    });
+  }, [selected]);
+
   // Auto-open modal 3s after first pathology selection
   useEffect(() => {
     if (selected.size === 0 || showModal || autoOpenedRef.current) return;
     const timer = setTimeout(() => {
       autoOpenedRef.current = true;
-      setShowModal(true);
+      openModal();
     }, 3000);
     return () => clearTimeout(timer);
-  }, [selected, showModal]);
+  }, [selected, showModal, openModal]);
 
   const toggle = useCallback((patologia: string) => {
     setSelected((prev) => {
@@ -265,7 +276,7 @@ export default function LP2() {
           <button
             type="button"
             disabled={selected.size === 0}
-            onClick={() => setShowModal(true)}
+            onClick={openModal}
             className="mt-[18px] h-14 w-full rounded-xl text-base font-semibold text-white shadow-md transition-all duration-150"
             style={{
               backgroundColor: selected.size > 0 ? "#3D8F4A" : "#c5d4c9",

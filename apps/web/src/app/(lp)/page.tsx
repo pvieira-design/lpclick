@@ -67,6 +67,13 @@ export default function LandingPage() {
         setModalOpen(true);
         dialogRef.current?.showModal();
         setTimeout(() => inputRef.current?.focus(), 100);
+        sendGTMEvent({
+          event: "formStart",
+          category: "Lead",
+          action: "FormOpen",
+          label: "Modal aberto (inatividade) - LP",
+          value: Array.from(currentSelected).join(", "),
+        });
       }
     }, 3000);
   }, [resetInactivityTimer]);
@@ -92,6 +99,13 @@ export default function LandingPage() {
     setModalOpen(true);
     dialogRef.current?.showModal();
     setTimeout(() => inputRef.current?.focus(), 100);
+    sendGTMEvent({
+      event: "formStart",
+      category: "Lead",
+      action: "FormOpen",
+      label: "Modal aberto - LP",
+      value: Array.from(selected).join(", "),
+    });
   }, [selected, resetInactivityTimer]);
 
   const closeModal = useCallback(() => {
