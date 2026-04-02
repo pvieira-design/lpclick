@@ -326,12 +326,11 @@ export default function PrivacidadePage() {
 
             <h2>5. Dados técnicos — Notificações push</h2>
             <p>
-              Para o envio de notificações push, o aplicativo utiliza o serviço{" "}
-              <strong>Firebase Cloud Messaging (FCM)</strong> do Google (em dispositivos
-              Android) e o <strong>Apple Push Notification Service (APNs)</strong> (em
-              dispositivos iOS). Ao aceitar receber notificações, um{" "}
-              <strong>token de registro do dispositivo</strong> é gerado
-              automaticamente pelo serviço correspondente.
+              Para o envio de notificações push (lembretes de doses e
+              comunicações), o aplicativo utiliza os serviços nativos de
+              notificação de cada plataforma. Ao aceitar receber notificações,
+              um <strong>token de registro do dispositivo</strong> é gerado
+              automaticamente pelo sistema operacional.
             </p>
             <p>
               Este token é um identificador técnico anônimo, utilizado
@@ -343,19 +342,12 @@ export default function PrivacidadePage() {
                 <tr>
                   <th>Informação técnica</th>
                   <th>Finalidade</th>
-                  <th>Processado por</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Token FCM (Android)</td>
-                  <td>Envio de notificações ao dispositivo</td>
-                  <td>Google (Firebase)</td>
-                </tr>
-                <tr>
-                  <td>Token APNs (iOS)</td>
-                  <td>Envio de notificações ao dispositivo</td>
-                  <td>Apple</td>
+                  <td>Token de push notification</td>
+                  <td>Envio de lembretes e comunicações ao dispositivo</td>
                 </tr>
               </tbody>
             </table>
@@ -410,32 +402,11 @@ export default function PrivacidadePage() {
               anunciantes, parceiros comerciais ou quaisquer outras entidades.
             </p>
             <p>
-              As únicas interações técnicas com serviços externos são:
+              A única interação técnica com serviços externos ocorre para o
+              envio de notificações push, por meio dos serviços nativos de
+              cada plataforma. Nessa interação, apenas um{" "}
+              <strong>token anônimo do dispositivo</strong> é utilizado.
             </p>
-            <table>
-              <thead>
-                <tr>
-                  <th>Serviço</th>
-                  <th>Provedor</th>
-                  <th>Finalidade</th>
-                  <th>Dados envolvidos</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Firebase Cloud Messaging</td>
-                  <td>Google LLC</td>
-                  <td>Notificações push (Android)</td>
-                  <td>Token anônimo do dispositivo</td>
-                </tr>
-                <tr>
-                  <td>Apple Push Notification Service</td>
-                  <td>Apple Inc.</td>
-                  <td>Notificações push (iOS)</td>
-                  <td>Token anônimo do dispositivo</td>
-                </tr>
-              </tbody>
-            </table>
             <p>
               Nenhum dado pessoal, dado de saúde ou informação identificável
               é transmitido a esses ou quaisquer outros serviços.
@@ -443,28 +414,15 @@ export default function PrivacidadePage() {
 
             <h2>8. Transferência internacional de dados</h2>
             <p>
-              Os tokens de notificação push podem ser processados em servidores do
-              Google (Firebase) e da Apple localizados fora do Brasil, incluindo os
-              Estados Unidos da América.
+              Os tokens de notificação push podem ser processados em servidores
+              localizados fora do Brasil, incluindo os Estados Unidos da América,
+              por meio dos serviços nativos de notificação de cada plataforma.
             </p>
             <p>
               Esses provedores operam em conformidade com padrões internacionais de
               proteção de dados e possuem cláusulas contratuais adequadas para
               transferências internacionais, em conformidade com o Art. 33 da LGPD.
-              Para mais informações, consulte:
             </p>
-            <ul>
-              <li>
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
-                  Política de Privacidade do Google
-                </a>
-              </li>
-              <li>
-                <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener noreferrer">
-                  Política de Privacidade da Apple
-                </a>
-              </li>
-            </ul>
 
             <h2>9. Armazenamento, retenção e exclusão de dados</h2>
             <p>
@@ -480,10 +438,9 @@ export default function PrivacidadePage() {
               dados do app.
             </p>
             <p>
-              <strong>Tokens de notificação:</strong> Gerenciados diretamente pelo
-              Google (FCM) e pela Apple (APNs), estão sujeitos às políticas de
-              retenção dos respectivos provedores. São automaticamente invalidados
-              quando o usuário desinstala o aplicativo ou desativa as notificações.
+              <strong>Tokens de notificação:</strong> Gerenciados pelos serviços
+              nativos de cada plataforma, são automaticamente invalidados quando
+              o usuário desinstala o aplicativo ou desativa as notificações.
             </p>
 
             <h2>10. Direitos do titular dos dados</h2>
