@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-export const alt = "Click Cannabis — Médicos Prescritores de Cannabis Medicinal";
+export const alt = "ClickCannabis — App de Controle de Tratamento";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -64,7 +64,7 @@ export default function Image() {
               color: "rgba(255,255,255,0.85)",
             }}
           >
-            Médicos Prescritores de Cannabis Medicinal
+            App de Controle de Tratamento
           </span>
         </div>
       </div>
