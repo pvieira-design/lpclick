@@ -125,8 +125,6 @@ export default function AppLandingPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
         :root {
           --green-deep: #0B3D1E;
           --green-mid: #1B6B3A;
@@ -138,10 +136,10 @@ export default function AppLandingPage() {
           --text-secondary: #4A6B56;
           --text-muted: #7A9A88;
           --border: rgba(11, 61, 30, 0.08);
-          --font: 'Inter', var(--font-geist-sans), system-ui, sans-serif;
+          --font-inter: var(--font-inter-loaded), system-ui, sans-serif;
         }
 
-        * { font-family: var(--font) !important; }
+        * { font-family: var(--font-inter) !important; }
 
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(32px); }
