@@ -141,7 +141,7 @@ export default function AppLandingPage() {
           --font: 'Inter', var(--font-geist-sans), system-ui, sans-serif;
         }
 
-        * { font-family: var(--font); }
+        * { font-family: var(--font) !important; }
 
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(32px); }
