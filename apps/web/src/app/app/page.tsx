@@ -125,7 +125,7 @@ export default function AppLandingPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
         :root {
           --green-deep: #0B3D1E;
@@ -138,7 +138,7 @@ export default function AppLandingPage() {
           --text-secondary: #4A6B56;
           --text-muted: #7A9A88;
           --border: rgba(11, 61, 30, 0.08);
-          --font: 'Plus Jakarta Sans', var(--font-geist-sans), system-ui, sans-serif;
+          --font: 'Inter', var(--font-geist-sans), system-ui, sans-serif;
         }
 
         * { font-family: var(--font); }
