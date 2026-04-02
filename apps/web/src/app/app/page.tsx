@@ -559,6 +559,7 @@ export default function AppLandingPage() {
             <div className="text-center sm:text-right">
               <p className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>HEALTH MEDIA LTDA</p>
               <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)", opacity: 0.6 }}>CNPJ 41.247.190/0001-23</p>
+              <a href="/app/privacidade" className="text-xs mt-1 inline-block underline" style={{ color: "var(--text-muted)", opacity: 0.6, textUnderlineOffset: 2 }}>Política de Privacidade</a>
             </div>
           </div>
         </footer>
