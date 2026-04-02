@@ -17,5 +17,7 @@ export default function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className={inter.variable}>{children}</div>;
+  return (
+    <div className={`${inter.variable} ${inter.className}`}>{children}</div>
+  );
 }
