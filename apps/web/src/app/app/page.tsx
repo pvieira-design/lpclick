@@ -366,21 +366,7 @@ export default function AppLandingPage() {
           </div>
         </section>
 
-        {/* ─── STATS BAR ─── */}
-        <section className="relative -mt-8 z-10 px-6" id="stats" data-animate>
-          <div className={`reveal mx-auto max-w-4xl grid grid-cols-3 gap-px rounded-2xl overflow-hidden shadow-xl shadow-green-900/5 ${isVisible("stats") ? "visible" : ""}`} style={{ background: "var(--border)" }}>
-            {[
-              { value: "50K+", label: "Consultas Realizadas" },
-              { value: "4.9", label: "Avaliação no Google" },
-              { value: "RA1000", label: "Reclame Aqui" },
-            ].map((stat, i) => (
-              <div key={stat.label} className="bg-white py-6 sm:py-8 text-center" style={{ transitionDelay: `${i * 100}ms` }}>
-                <div className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--green-deep)" }}>{stat.value}</div>
-                <div className="mt-1 text-xs sm:text-sm" style={{ color: "var(--text-muted)" }}>{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </section>
+
 
         {/* ─── FEATURES ─── */}
         <section className="mesh-bg py-24 sm:py-32 px-6" id="features" data-animate>
@@ -458,26 +444,7 @@ export default function AppLandingPage() {
           </div>
         </section>
 
-        {/* ─── TRUST SECTION ─── */}
-        <section className="py-24 sm:py-32 px-6" style={{ background: "var(--surface)" }} id="trust" data-animate>
-          <div className="mx-auto max-w-4xl">
-            <div className={`reveal stat-card grain text-center ${isVisible("trust") ? "visible" : ""}`}>
-              <h2 className="relative text-2xl sm:text-3xl font-bold tracking-tight mb-4">
-                A confiança de quem já transformou
-                <br />
-                sua vida com cannabis medicinal
-              </h2>
-              <p className="relative text-base opacity-70 mb-10 max-w-lg mx-auto">
-                A Click Cannabis é a maior plataforma de telemedicina canábica do Brasil. Nota máxima no Reclame Aqui, avaliação 4.9 no Google.
-              </p>
-              <div className={`relative reveal flex items-center justify-center gap-8 sm:gap-12 ${isVisible("trust") ? "visible" : ""}`} style={{ transitionDelay: "200ms" }}>
-                <img src="/1.webp" alt="Ótimo - Reclame Aqui" width={120} height={60} loading="lazy" decoding="async" className="h-12 sm:h-14 w-auto object-contain brightness-0 invert opacity-80" />
-                <img src="/2.webp" alt="Certificado RA1000 - Reclame Aqui" width={120} height={60} loading="lazy" decoding="async" className="h-10 sm:h-12 w-auto object-contain brightness-0 invert opacity-80" />
-                <img src="/3.webp" alt="4.9 Google - Avaliação de pacientes" width={120} height={60} loading="lazy" decoding="async" className="h-12 sm:h-14 w-auto object-contain brightness-0 invert opacity-80" />
-              </div>
-            </div>
-          </div>
-        </section>
+
 
         {/* ─── FINAL CTA ─── */}
         <section className="py-24 sm:py-32 px-6" style={{ background: "white" }} id="cta" data-animate>
