@@ -557,8 +557,8 @@ export default function AppLandingPage() {
           <div className="mx-auto max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4">
             <img src="/logo.svg" alt="Click Cannabis" width={120} height={17} loading="lazy" decoding="async" className="opacity-30" />
             <div className="text-center sm:text-right">
-              <p className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>HEALTH MEDIA LTDA</p>
-              <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)", opacity: 0.6 }}>CNPJ n⁰ 41.247.190/0001-23</p>
+              <p className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Clickcannabis S.A.</p>
+              <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)", opacity: 0.6 }}>CNPJ n⁰ 58.090.406/0001-92</p>
               <a href="/app/privacidade" className="text-xs mt-1 inline-block underline" style={{ color: "var(--text-muted)", opacity: 0.6, textUnderlineOffset: 2 }}>Política de Privacidade</a>
             </div>
           </div>

@@ -171,7 +171,7 @@ export default function PrivacidadePage() {
           <div className="privacy">
             <h2>1. Introdução</h2>
             <p>
-              A <strong>HEALTH MEDIA LTDA</strong> (&ldquo;nós&rdquo;,
+              A <strong>Clickcannabis S.A.</strong> (&ldquo;nós&rdquo;,
               &ldquo;nosso&rdquo; ou &ldquo;Empresa&rdquo;), pessoa jurídica
               responsável pelo aplicativo <strong>ClickCannabis</strong>, tem o
               compromisso de proteger a privacidade e os dados dos seus
@@ -382,7 +382,7 @@ export default function PrivacidadePage() {
 
             <h2>10. Alterações nesta Política</h2>
             <p>
-              A HEALTH MEDIA LTDA reserva-se o direito de atualizar esta
+              A Clickcannabis S.A. reserva-se o direito de atualizar esta
               Política de Privacidade a qualquer momento. Quaisquer alterações
               serão publicadas nesta página, com a data de atualização revisada
               no topo do documento. Recomendamos que os usuários consultem esta
@@ -392,10 +392,10 @@ export default function PrivacidadePage() {
             <h2>11. Contato</h2>
             <ul>
               <li>
-                <strong>Empresa:</strong> HEALTH MEDIA LTDA
+                <strong>Empresa:</strong> Clickcannabis S.A.
               </li>
               <li>
-                <strong>CNPJ n⁰:</strong> 41.247.190/0001-23
+                <strong>CNPJ n⁰:</strong> 58.090.406/0001-92
               </li>
               <li>
                 <strong>Aplicativo:</strong> ClickCannabis
@@ -422,7 +422,7 @@ export default function PrivacidadePage() {
             <hr />
 
             <p style={{ fontSize: 13, color: "#7A9A88", textAlign: "center" }}>
-              © 2026 HEALTH MEDIA LTDA. Todos os direitos reservados.
+              © 2026 Clickcannabis S.A.. Todos os direitos reservados.
             </p>
           </div>
         </article>

@@ -287,10 +287,10 @@ export default function LP2() {
           <div className="mx-auto flex max-w-[600px] flex-col items-center gap-5 px-4">
             <div className="text-center">
               <p className="text-sm font-medium text-gray-900">
-                HEALTH MEDIA LTDA
+                Clickcannabis S.A.
               </p>
               <p className="mt-0.5 text-xs text-gray-500">
-                CNPJ 41.247.190/0001-23
+                CNPJ n⁰ 58.090.406/0001-92
               </p>
             </div>
             <div className="flex w-full items-center justify-between">
