@@ -131,7 +131,7 @@ export default function AppLandingPage() {
           --green-accent: #2ECC71;
           --green-pale: #E8F5EC;
           --green-glass: rgba(46, 204, 113, 0.08);
-          --surface: #FAFCFB;
+          --surface: #FFFFFF;
           --text-primary: #0A1F12;
           --text-secondary: #4A6B56;
           --text-muted: #7A9A88;
@@ -558,7 +558,7 @@ export default function AppLandingPage() {
             <img src="/logo.svg" alt="Click Cannabis" width={120} height={17} loading="lazy" decoding="async" className="opacity-30" />
             <div className="text-center sm:text-right">
               <p className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>HEALTH MEDIA LTDA</p>
-              <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)", opacity: 0.6 }}>CNPJ 41.247.190/0001-23</p>
+              <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)", opacity: 0.6 }}>CNPJ n⁰ 41.247.190/0001-23</p>
               <a href="/app/privacidade" className="text-xs mt-1 inline-block underline" style={{ color: "var(--text-muted)", opacity: 0.6, textUnderlineOffset: 2 }}>Política de Privacidade</a>
             </div>
           </div>

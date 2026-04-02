@@ -395,6 +395,9 @@ export default function PrivacidadePage() {
                 <strong>Empresa:</strong> HEALTH MEDIA LTDA
               </li>
               <li>
+                <strong>CNPJ n⁰:</strong> 41.247.190/0001-23
+              </li>
+              <li>
                 <strong>Aplicativo:</strong> ClickCannabis
               </li>
               <li>
