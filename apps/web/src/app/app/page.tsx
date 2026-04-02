@@ -136,10 +136,8 @@ export default function AppLandingPage() {
           --text-secondary: #4A6B56;
           --text-muted: #7A9A88;
           --border: rgba(11, 61, 30, 0.08);
-          --font-inter: var(--font-inter-loaded), system-ui, sans-serif;
+          --font-inter: var(--font-inter-loaded), 'Inter', system-ui, sans-serif;
         }
-
-        * { font-family: inherit !important; }
 
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(32px); }
@@ -312,7 +310,7 @@ export default function AppLandingPage() {
         }
       `}</style>
 
-      <div className="min-h-svh" style={{ background: "var(--surface)", color: "var(--text-primary)" }}>
+      <div className="min-h-svh" style={{ background: "var(--surface)", color: "var(--text-primary)", fontFamily: "var(--font-inter)" }}>
 
         {/* ─── NAV ─── */}
         <nav className="anim-up fixed top-0 inset-x-0 z-50" style={{ backdropFilter: "blur(16px) saturate(180%)", WebkitBackdropFilter: "blur(16px) saturate(180%)", background: "rgba(250, 252, 251, 0.8)" }}>
