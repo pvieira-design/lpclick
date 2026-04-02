@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const FEATURES = [
   {
@@ -87,9 +87,6 @@ const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.clickc
 
 export default function AppLandingPage() {
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const heroRef = useRef<HTMLElement>(null);
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -105,19 +102,6 @@ export default function AppLandingPage() {
     const sections = document.querySelectorAll("[data-animate]");
     for (const section of sections) observer.observe(section);
     return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const handleMouse = (e: MouseEvent) => {
-      if (!heroRef.current) return;
-      const rect = heroRef.current.getBoundingClientRect();
-      setMousePos({
-        x: ((e.clientX - rect.left) / rect.width) * 100,
-        y: ((e.clientY - rect.top) / rect.height) * 100,
-      });
-    };
-    window.addEventListener("mousemove", handleMouse);
-    return () => window.removeEventListener("mousemove", handleMouse);
   }, []);
 
   const isVisible = (id: string) => visibleSections.has(id);
@@ -174,21 +158,11 @@ export default function AppLandingPage() {
         }
 
         .hero-gradient {
-          background:
-            radial-gradient(ellipse 80% 60% at 50% 0%, rgba(46, 204, 113, 0.12) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 40% at 80% 20%, rgba(27, 107, 58, 0.06) 0%, transparent 50%),
-            radial-gradient(ellipse 50% 50% at 20% 80%, rgba(46, 204, 113, 0.04) 0%, transparent 50%),
-            var(--surface);
+          background: white;
         }
 
         .grain::after {
-          content: '';
-          position: absolute;
-          inset: -50%;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-          animation: grain 8s steps(10) infinite;
-          pointer-events: none;
-          opacity: 0.5;
+          display: none;
         }
 
         .anim-up {
@@ -297,10 +271,7 @@ export default function AppLandingPage() {
         }
 
         .mesh-bg {
-          background:
-            radial-gradient(at 30% 20%, rgba(46, 204, 113, 0.06) 0%, transparent 50%),
-            radial-gradient(at 70% 80%, rgba(11, 61, 30, 0.04) 0%, transparent 50%),
-            linear-gradient(180deg, var(--surface) 0%, white 100%);
+          background: white;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -313,7 +284,7 @@ export default function AppLandingPage() {
       <div className="min-h-svh" style={{ background: "var(--surface)", color: "var(--text-primary)", fontFamily: "var(--font-inter)" }}>
 
         {/* ─── NAV ─── */}
-        <nav className="anim-up fixed top-0 inset-x-0 z-50" style={{ backdropFilter: "blur(16px) saturate(180%)", WebkitBackdropFilter: "blur(16px) saturate(180%)", background: "rgba(250, 252, 251, 0.8)" }}>
+        <nav className="anim-up fixed top-0 inset-x-0 z-50" style={{ backdropFilter: "blur(16px) saturate(180%)", WebkitBackdropFilter: "blur(16px) saturate(180%)", background: "rgba(255, 255, 255, 0.8)" }}>
           <div className="mx-auto max-w-5xl flex items-center justify-between px-6 py-4">
             <img src="/logo.svg" alt="Click Cannabis" width={140} height={20} fetchPriority="high" decoding="async" />
             <a
@@ -330,19 +301,9 @@ export default function AppLandingPage() {
 
         {/* ─── HERO ─── */}
         <section
-          ref={heroRef}
-          className="hero-gradient grain relative overflow-hidden pt-28 pb-20 sm:pt-36 sm:pb-28"
+          className="hero-gradient relative overflow-hidden pt-28 pb-20 sm:pt-36 sm:pb-28"
         >
           {/* Animated mesh orb */}
-          <div
-            className="pointer-events-none absolute w-[600px] h-[600px] rounded-full opacity-30 blur-3xl transition-all duration-[2000ms] ease-out"
-            style={{
-              background: "radial-gradient(circle, rgba(46, 204, 113, 0.25) 0%, transparent 70%)",
-              left: `${mousePos.x * 0.6}%`,
-              top: `${mousePos.y * 0.6}%`,
-              transform: "translate(-50%, -50%)",
-            }}
-          />
 
           <div className="relative mx-auto max-w-3xl px-6 text-center">
             {/* Status pill */}
