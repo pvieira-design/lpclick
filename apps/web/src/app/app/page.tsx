@@ -487,7 +487,10 @@ export default function AppLandingPage() {
             <div className="text-center sm:text-right">
               <p className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Clickcannabis S.A.</p>
               <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)", opacity: 0.6 }}>CNPJ n⁰ 58.090.406/0001-92</p>
-              <a href="/app/privacidade" className="text-xs mt-1 inline-block underline" style={{ color: "var(--text-muted)", opacity: 0.6, textUnderlineOffset: 2 }}>Política de Privacidade</a>
+              <div className="mt-1 flex items-center justify-center sm:justify-end gap-3">
+                <a href="/app/suporte" className="text-xs underline" style={{ color: "var(--text-muted)", opacity: 0.6, textUnderlineOffset: 2 }}>Suporte</a>
+                <a href="/app/privacidade" className="text-xs underline" style={{ color: "var(--text-muted)", opacity: 0.6, textUnderlineOffset: 2 }}>Política de Privacidade</a>
+              </div>
             </div>
           </div>
         </footer>
