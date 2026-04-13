@@ -521,30 +521,25 @@ function FormPageInner({ formName, userId }: { formName: string; userId: string 
     [animPhase, currentStep, form]
   );
 
-  const submitForm = useCallback(async () => {
-    setSubmitting(true);
-    try {
-      const payload = {
-        formData,
-        url: { formName, userId },
-        meta: {
-          submittedAt: new Date().toISOString(),
-          userAgent: navigator.userAgent,
-          referrer: document.referrer || null,
-          url: window.location.href,
-        },
-      };
-      await fetch("/api/forms/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ formType: formName, payload }),
-      });
-    } catch {
-      // silently fail — form still shows completion
-    } finally {
-      setSubmitting(false);
-      setCompleted(true);
-    }
+  const submitForm = useCallback(() => {
+    setCompleted(true);
+
+    // Fire-and-forget — save in background, don't block UI
+    const payload = {
+      formData,
+      url: { formName, userId },
+      meta: {
+        submittedAt: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        referrer: document.referrer || null,
+        url: window.location.href,
+      },
+    };
+    fetch("/api/forms/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ formType: formName, payload }),
+    }).catch(() => {});
   }, [formData, formName, userId]);
 
   const handleNext = useCallback(() => {
