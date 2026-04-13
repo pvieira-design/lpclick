@@ -223,7 +223,7 @@ const HISTORIA_FORM: FormConfig = {
           required: true,
           termsUrl: "/forms/termos-uso-imagem",
           options: [
-            { value: "autorizado", label: "Autorizo a Click Cannabis a utilizar minha imagem e vídeo em materiais de comunicação e publicidade, conforme os termos de uso de imagem." },
+            { value: "autorizado", label: "Autorizo a Click Cannabis a utilizar minha imagem, voz e depoimento em materiais de comunicação, publicidade, anúncios e redes sociais, conforme os termos de uso de imagem e cessão de direitos." },
           ],
         },
       ],
