@@ -125,25 +125,8 @@ const HISTORIA_FORM: FormConfig = {
       fields: [],
       content: [
         { type: "highlight", text: "Grave um vídeo de 1 a 3 minutos contando sua experiência com o tratamento e como ele mudou sua vida." },
+        { type: "highlight", text: "Os 50 primeiros participantes que enviarem seu vídeo irão ganhar frete gratuito no próximo pedido." },
         { type: "deadline", text: "Prazo: até 01/05/2026" },
-      ],
-    },
-    /* ── Step 2: Prizes ── */
-    {
-      title: "Premiação",
-      subtitle: "Confira o que você pode ganhar participando:",
-      fields: [],
-      content: [
-        {
-          type: "prizes",
-          items: [
-            { rank: "1", title: "1º lugar", desc: "12 meses de tratamento grátis (até 4 produtos + consultas) ou valor equivalente em dinheiro" },
-            { rank: "2", title: "2º e 3º lugar", desc: "6 meses de tratamento grátis (até 2 produtos + consultas) ou valor equivalente em dinheiro" },
-            { rank: "3", title: "4º e 5º lugar", desc: "3 meses de tratamento grátis (1 produto + consulta de retorno) ou valor equivalente em dinheiro" },
-          ],
-        },
-        { type: "highlight", text: "50 primeiros participantes: Frete grátis no próximo pedido" },
-        { type: "highlight", text: "Todos os participantes: Consulta de retorno gratuita" },
       ],
     },
     /* ── Step 3: Video script ── */
