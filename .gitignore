@@ -12,6 +12,9 @@ build
 .env
 .env*.local
 
+# Uploads
+.uploads
+
 # IDEs and editors
 .vscode/*
 !.vscode/settings.json
@@ -49,3 +52,4 @@ coverage
 tmp
 temp
 .vercel
+.gstack/
