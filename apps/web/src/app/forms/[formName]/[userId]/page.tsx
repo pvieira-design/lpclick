@@ -159,7 +159,6 @@ const HISTORIA_FORM: FormConfig = {
       fields: [],
       content: [
         { type: "highlight", text: "Os 50 primeiros pacientes a enviarem o vídeo ganham FRETE GRÁTIS no próximo pedido." },
-        { type: "deadline", text: "Válido até 01/05/2026" },
       ],
     },
     /* ── Step 3: Recording Tips ── */
