@@ -3,6 +3,12 @@ import { NextResponse } from "next/server";
 
 const sql = neon(process.env.NEON_DATABASE_URL!);
 
+function clientIp(request: Request): string | null {
+  const xff = request.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0]?.trim() || null;
+  return request.headers.get("x-real-ip") || null;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -19,9 +25,19 @@ export async function POST(request: Request) {
       );
     }
 
+    const auditedPayload = {
+      ...payload,
+      serverAudit: {
+        ip: clientIp(request),
+        userAgent: request.headers.get("user-agent"),
+        acceptLanguage: request.headers.get("accept-language"),
+        receivedAt: new Date().toISOString(),
+      },
+    };
+
     const result = await sql`
       INSERT INTO form_submissions (form_type, payload)
-      VALUES (${formType}, ${JSON.stringify(payload)}::jsonb)
+      VALUES (${formType}, ${JSON.stringify(auditedPayload)}::jsonb)
       RETURNING id, created_at
     `;
 

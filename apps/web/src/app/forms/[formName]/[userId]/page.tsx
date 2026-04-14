@@ -114,6 +114,8 @@ const DEMO_FORM: FormConfig = {
    Historia Form Config — Campanha de vídeo
    ───────────────────────────────────────────── */
 
+const TERMS_VERSION_HISTORIA = "2026-04";
+
 const HISTORIA_FORM: FormConfig = {
   name: "Conte Sua História",
   completionTitle: "Sua história foi enviada!",
@@ -552,10 +554,23 @@ function FormPageInner({ formName, userId }: { formName: string; userId: string 
   const submitForm = useCallback(() => {
     setCompleted(true);
 
+    const termsAccepted = formData.autorizacao === "autorizado";
+    const termsVersion = formName === "historia" ? TERMS_VERSION_HISTORIA : null;
+
     // Fire-and-forget — save in background, don't block UI
     const payload = {
       formData,
       url: { formName, userId },
+      videoUrl: typeof formData.video === "string" ? formData.video : null,
+      consent: termsAccepted
+        ? {
+            termsVersion,
+            termsUrl: "/forms/termos-uso-imagem",
+            acceptedAt: new Date().toISOString(),
+            field: "autorizacao",
+            value: formData.autorizacao,
+          }
+        : null,
       meta: {
         submittedAt: new Date().toISOString(),
         userAgent: navigator.userAgent,
