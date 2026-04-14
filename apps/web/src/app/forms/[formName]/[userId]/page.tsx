@@ -174,7 +174,7 @@ const HISTORIA_FORM: FormConfig = {
             "Grave em um local bem iluminado (de preferência de frente para uma janela)",
             "Procure um ambiente silencioso",
             "Mantenha o celular na vertical, na altura dos seus olhos",
-            "O vídeo deve ter entre 1 e 3 minutos",
+            "O vídeo tem que ter no mínimo 1 minuto",
           ],
         },
       ],
