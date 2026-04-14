@@ -33,7 +33,8 @@ type ContentBlock =
   | { type: "prizes"; items: { rank: string; title: string; desc: string }[] }
   | { type: "list"; title?: string; items: string[]; ordered?: boolean }
   | { type: "tips"; items: string[] }
-  | { type: "deadline"; text: string };
+  | { type: "deadline"; text: string }
+  | { type: "message-bubbles"; messages: { text: string; sender: "user" | "other" }[] };
 
 interface FormStep {
   title: string;
@@ -118,86 +119,78 @@ const HISTORIA_FORM: FormConfig = {
   completionTitle: "Sua história foi enviada!",
   completionSubtitle: "Obrigado por compartilhar. Sua história pode inspirar milhares de pessoas. Entraremos em contato pelo telefone informado.",
   steps: [
-    /* ── Step 1: Welcome ── */
+    /* ── Step 1: Hook ── */
     {
-      title: "Conte Sua História, Ela Pode Mudar Vidas",
-      subtitle: "Queremos ouvir a sua história! Conte como a cannabis medicinal transformou sua vida e concorra a prêmios.",
-      fields: [],
-      content: [
-        { type: "highlight", text: "Grave um vídeo de 1 a 3 minutos contando sua experiência com o tratamento e como ele mudou sua vida." },
-        { type: "highlight", text: "Os 50 primeiros participantes que enviarem seu vídeo irão ganhar frete gratuito no próximo pedido." },
-        { type: "deadline", text: "Prazo: até 01/05/2026" },
-      ],
-    },
-    /* ── Step 3: Video script ── */
-    {
-      title: "Roteiro sugerido",
-      subtitle: "Siga esse roteiro para gravar seu vídeo (1 a 3 minutos):",
+      title: "Sua história vale mais do que você imagina",
+      subtitle: "Diariamente recebemos mensagens de pacientes relatando uma melhor qualidade de vida. Agora, queremos ouvir a sua.",
       fields: [],
       content: [
         {
-          type: "list",
-          ordered: true,
-          items: [
-            "Se apresente: nome, idade, de onde você é",
-            "O que te levou a buscar o tratamento com cannabis medicinal?",
-            "Você tentou outros tratamentos antes? Como foi?",
-            "Como era seu dia a dia antes? O que você não conseguia fazer?",
-            "Em que momento você percebeu que o tratamento estava funcionando?",
-            "Como está sua vida agora? O que mudou na prática?",
-            "Como foi sua experiência com a Click? (atendimento, consulta, suporte)",
-            "O que você diria para alguém que tem dúvida se deve começar?",
-          ],
+          type: "message-bubbles",
+          messages: [
+            { text: "Voltei a caminhar no parque! 🌿", sender: "other" },
+            { text: "Minhas noites de sono são outras.", sender: "user" },
+            { text: "Meu filho está bem mais calmo...", sender: "other" },
+            { text: "As crises de enxaqueca quase sumiram 🙌", sender: "user" },
+            { text: "Finalmente consigo brincar com meus netos sem dor.", sender: "other" },
+            { text: "Reduzi os remédios tarja preta 🙏", sender: "user" },
+            { text: "Minha ansiedade está muito mais controlada.", sender: "other" },
+            { text: "Adeus, insônia! Consigo dormir a noite toda.", sender: "user" },
+            { text: "A dor crônica diminuiu 80%.", sender: "other" },
+            { text: "Consigo focar no trabalho novamente 🧠", sender: "user" },
+            { text: "Minha avó voltou a sorrir.", sender: "other" },
+            { text: "Não sinto mais aquele peso constante nos ombros.", sender: "user" },
+            { text: "As convulsões reduziram drasticamente. Um milagre!", sender: "other" },
+            { text: "Voltei a ter apetite, me sinto mais vivo.", sender: "user" },
+            { text: "Acordar sem dor é a melhor sensação do mundo.", sender: "other" },
+            { text: "Estou retomando minha rotina aos poucos ✨", sender: "user" },
+            { text: "Foi a melhor decisão que já tomei.", sender: "other" },
+            { text: "O óleo de CBD me devolveu a qualidade de vida.", sender: "user" },
+            { text: "Sinto que voltei a ser eu mesmo.", sender: "other" },
+            { text: "Obrigado, Click Cannabis! Mudou nossa vida.", sender: "user" },
+          ]
         },
+      ],
+    },
+    /* ── Step 2: Reward (High Emphasis) ── */
+    {
+      title: "Participe e ganhe",
+      subtitle: "Valorizamos cada relato. Por isso, preparamos um incentivo especial para você.",
+      fields: [],
+      content: [
+        { type: "highlight", text: "Os 50 primeiros pacientes a enviarem o vídeo ganham FRETE GRÁTIS no próximo pedido." },
+        { type: "deadline", text: "Válido até 01/05/2026" },
+      ],
+    },
+    /* ── Step 3: Recording Tips ── */
+    {
+      title: "Dicas para uma boa gravação",
+      subtitle: "Coisas simples que fazem toda a diferença no resultado final.",
+      fields: [],
+      content: [
         {
           type: "tips",
           items: [
-            "Grave de dia, perto de uma janela (boa iluminação)",
-            "Ambiente silencioso",
-            "Celular na vertical, na altura dos olhos",
-            "Duração: 1 a 3 minutos",
+            "Grave em um local bem iluminado (de preferência de frente para uma janela)",
+            "Procure um ambiente silencioso",
+            "Mantenha o celular na vertical, na altura dos seus olhos",
+            "O vídeo deve ter entre 1 e 3 minutos",
           ],
         },
       ],
     },
-    /* ── Step 4: Personal data ── */
+    /* ── Step 4: Video upload ── */
     {
-      title: "Seus dados",
-      subtitle: "Precisamos de algumas informações para contato.",
+      title: "Agora, envie seu vídeo",
+      subtitle: "Selecione o arquivo que você gravou. Pode levar alguns segundos dependendo da sua internet.",
       fields: [
-        { id: "nome", type: "text", label: "Nome completo", placeholder: "Seu nome completo", required: true },
-        { id: "telefone", type: "tel", label: "Telefone", placeholder: "(21) 99999-9999", required: true },
-        { id: "instagram", type: "text", label: "Instagram (não obrigatório)", placeholder: "@seuusuario" },
+        { id: "video", type: "video", label: "Seu vídeo", required: true, minDurationSec: 45, maxSizeMb: 500 },
       ],
     },
-    /* ── Step 5: Treatment info ── */
+    /* ── Step 8: Authorization ── */
     {
-      title: "Sobre seu tratamento",
-      fields: [
-        {
-          id: "tempo_paciente", type: "select", label: "Há quanto tempo é paciente Click?", required: true,
-          options: [
-            { value: "3-6-meses", label: "3 a 6 meses" },
-            { value: "6-12-meses", label: "6 a 12 meses" },
-            { value: "mais-1-ano", label: "Mais de 1 ano" },
-            { value: "mais-2-anos", label: "Mais de 2 anos" },
-          ],
-        },
-        { id: "condicao", type: "text", label: "Qual condição você trata com cannabis medicinal?", placeholder: "Ex: insônia, ansiedade, dor crônica, epilepsia, etc.", required: true },
-      ],
-    },
-    /* ── Step 6: Video upload ── */
-    {
-      title: "Envie seu vídeo",
-      subtitle: "Grave um vídeo de 1 a 3 minutos contando sua história.",
-      fields: [
-        { id: "video", type: "video", label: "Seu vídeo", required: true, minDurationSec: 60, maxSizeMb: 500 },
-      ],
-    },
-    /* ── Step 7: Authorization ── */
-    {
-      title: "Autorização de uso de imagem",
-      subtitle: "Para participar, precisamos da sua autorização para usar o vídeo.",
+      title: "Quase pronto!",
+      subtitle: "Para finalizar, precisamos do seu aceite nos termos e condições.",
       fields: [
         {
           id: "autorizacao",
@@ -206,7 +199,7 @@ const HISTORIA_FORM: FormConfig = {
           required: true,
           termsUrl: "/forms/termos-uso-imagem",
           options: [
-            { value: "autorizado", label: "Autorizo a Click Cannabis a utilizar minha imagem, voz e depoimento em materiais de comunicação, publicidade, anúncios e redes sociais, conforme os termos de uso de imagem e cessão de direitos." },
+            { value: "autorizado", label: "Autorizo o uso da minha imagem e depoimento para fins de comunicação da Click Cannabis." },
           ],
         },
       ],
@@ -225,6 +218,50 @@ const FORM_REGISTRY: Record<string, FormConfig> = {
 };
 
 /* ─────────────────────────────────────────────
+   Message Bubbles Component
+   ───────────────────────────────────────────── */
+
+function MessageBubbles({ messages }: { messages: { text: string; sender: "user" | "other" }[] }) {
+  const [activeItems, setActiveItems] = useState([messages[0]]);
+  const countRef = useRef(1);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const nextIndex = countRef.current % messages.length;
+      countRef.current += 1;
+      setActiveItems((prev) => {
+         const next = [...prev, messages[nextIndex]];
+         if (next.length > 50) return next.slice(next.length - 50);
+         return next;
+      });
+    }, 2500);
+    return () => clearInterval(timer);
+  }, [messages]);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: "smooth"
+      });
+    }
+  }, [activeItems]);
+
+  return (
+    <div className="cb-message-bubbles-container" ref={containerRef}>
+      <div className="cb-message-bubbles-track">
+        {activeItems.map((msg, j) => (
+          <div key={countRef.current - activeItems.length + j} className={`cb-bubble cb-bubble-${msg.sender}`}>
+            {msg.text}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    Content Block Renderer
    ───────────────────────────────────────────── */
 
@@ -233,13 +270,16 @@ function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
     <div className="content-blocks">
       {blocks.map((block, i) => {
         switch (block.type) {
+          case "message-bubbles":
+            return <MessageBubbles key={i} messages={block.messages as any} />;
+
           case "paragraph":
             return <p key={i} className="cb-paragraph">{block.text}</p>;
 
           case "highlight":
             return (
               <div key={i} className="cb-highlight">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 3v5l3 2" /><circle cx="8" cy="8" r="6" /></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4" /><path d="M4 6v12c0 1.1.9 2 2 2h14v-4" /><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z" /></svg>
                 <span>{block.text}</span>
               </div>
             );
@@ -247,7 +287,6 @@ function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
           case "deadline":
             return (
               <div key={i} className="cb-deadline">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="12" height="11" rx="2" /><path d="M5 1v3M11 1v3M2 7h12" /></svg>
                 <span>{block.text}</span>
               </div>
             );
@@ -284,17 +323,23 @@ function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
             );
 
           case "tips":
+            const ICONS = [
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>,
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M22 9l-6 6"/><path d="M16 9l6 6"/></svg>,
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>,
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+            ];
+
             return (
-              <div key={i} className="cb-tips">
-                <p className="cb-tips-title">Dicas para gravar</p>
-                <ul className="cb-tips-list">
-                  {block.items.map((item, j) => (
-                    <li key={j}>
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--green-mid)" strokeWidth="1.5" strokeLinecap="round"><path d="M3 7.5l3 3 5-6" /></svg>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+              <div key={i} className="cb-tips-grid">
+                {block.items.map((item, j) => (
+                  <div key={j} className="cb-tip-card" style={{ animationDelay: `${j * 0.15}s` }}>
+                    <div className="cb-tip-icon">
+                      {ICONS[j % ICONS.length]}
+                    </div>
+                    <span className="cb-tip-text">{item}</span>
+                  </div>
+                ))}
               </div>
             );
         }
@@ -302,6 +347,7 @@ function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
     </div>
   );
 }
+
 
 /* ─────────────────────────────────────────────
    Video Upload Component
@@ -649,6 +695,12 @@ function FormPageInner({ formName, userId }: { formName: string; userId: string 
   /* ── Main Form ── */
   const progress = ((currentStep + 1) / totalSteps) * 100;
   const isInfoStep = step.fields.length === 0;
+  const isStepValid = step.fields.every((f) => {
+    if (!f.required) return true;
+    const val = formData[f.id];
+    if (Array.isArray(val)) return val.length > 0;
+    return typeof val === "string" && val.trim().length > 0;
+  });
 
   return (
     <>
@@ -808,7 +860,7 @@ function FormPageInner({ formName, userId }: { formName: string; userId: string 
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4l-5 5 5 5" /></svg>
               Voltar
             </button>
-            <button type="button" className="btn-next" onClick={handleNext} disabled={submitting}>
+            <button type="button" className="btn-next" onClick={handleNext} disabled={submitting || !isStepValid}>
               {submitting ? "Enviando..." : currentStep === totalSteps - 1 ? "Enviar" : isInfoStep ? "Próximo" : "Continuar"}
               {!submitting && (
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M7 4l5 5-5 5" /></svg>
@@ -838,9 +890,9 @@ const STYLES = `
     --green-focus: rgba(27, 107, 58, 0.12);
     --fg: #0A1F12;
     --fg-secondary: #3D5A48;
-    --fg-muted: #7A9A88;
-    --border: #D0DDD6;
-    --border-hover: #A8C4B4;
+    --fg-muted: #6B8777;
+    --border: #D8E2DC;
+    --border-hover: #C5D4CC;
     --surface: #FAFCFB;
     --card: #FFFFFF;
     --error: #D64545;
@@ -855,348 +907,364 @@ const STYLES = `
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 48px 16px 24px;
+    padding: 64px 16px 24px;
     background: var(--surface);
     font-family: var(--font-display);
     position: relative;
+    color: var(--fg);
   }
   @media (max-width: 520px) {
-    .form-shell { padding: 40px 0 16px; justify-content: flex-start; }
+    .form-shell { padding: 48px 0 16px; justify-content: flex-start; }
   }
 
-  .form-shell::before, .form-shell::after { display: none; }
-
   .form-card {
-    position: relative; width: 100%; max-width: 520px;
-    overflow: hidden; display: flex; flex-direction: column;
+    position: relative; width: 100%; max-width: 480px;
+    display: flex; flex-direction: column;
   }
   @media (max-width: 520px) { .form-card { max-width: 100%; flex: 1; } }
 
   /* ── Progress ── */
   .progress-fixed { position: fixed; top: 0; left: 0; right: 0; z-index: 50; }
-  .progress-track { height: 3px; background: var(--green-tint); }
+  .progress-track { height: 4px; background: var(--green-tint); }
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--green-mid), var(--green-accent));
-    border-radius: 0 3px 3px 0;
-    transition: width 500ms cubic-bezier(0.16, 1, 0.3, 1);
+    background: var(--green-mid);
+    border-radius: 0 4px 4px 0;
+    transition: width 600ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* ── Header ── */
-  .form-header { padding: 24px 32px 0; }
-  @media (max-width: 520px) { .form-header { padding: 20px 20px 0; } }
-  .form-brand { margin-bottom: 20px; }
-  .step-counter {
-    font-size: 13px; font-weight: 600; color: var(--fg-muted);
-    letter-spacing: 0.02em; font-variant-numeric: tabular-nums;
-  }
+  .form-header { padding: 0 32px 32px; }
+  @media (max-width: 520px) { .form-header { padding: 0 24px 24px; } }
+  .form-brand { margin-bottom: 0; opacity: 0.9; }
 
   /* ── Step content ── */
-  .step-content { flex: 1; overflow-y: auto; padding-bottom: 120px; }
+  .step-content { flex: 1; overflow-y: auto; padding-bottom: 140px; }
   .step-inner { padding: 0 32px; }
-  @media (max-width: 520px) { .step-inner { padding: 0 20px; } }
+  @media (max-width: 520px) { .step-inner { padding: 0 24px; } }
 
   .step-title {
-    font-size: clamp(1.4rem, 4vw, 1.75rem); font-weight: 700;
-    color: var(--fg); letter-spacing: -0.025em; line-height: 1.2; margin-top: 12px;
+    font-size: clamp(1.5rem, 5vw, 1.875rem);
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 12px;
   }
-  .step-subtitle { font-size: 15px; color: var(--fg-secondary); line-height: 1.6; margin-top: 8px; }
+  .step-subtitle {
+    font-size: 16px;
+    color: var(--fg-secondary);
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
 
-  /* ── Info step — clean, minimal ── */
+  /* ── Info step ── */
   .step-inner-info .step-title {
-    font-size: clamp(1.6rem, 5.5vw, 2rem);
-    letter-spacing: -0.03em; line-height: 1.15;
+    font-size: clamp(1.75rem, 6vw, 2.25rem);
+    letter-spacing: -0.04em;
+    line-height: 1.1;
   }
   .step-inner-info .step-subtitle {
-    font-size: 15px; line-height: 1.7; margin-top: 14px;
-    color: var(--fg-muted);
+    font-size: 17px;
+    line-height: 1.6;
+    margin-top: 16px;
+    color: var(--fg-secondary);
   }
 
   /* ── Fields ── */
-  .fields-wrapper { margin-top: 28px; display: flex; flex-direction: column; gap: 22px; }
-  .fields-after-content { margin-top: 20px; }
-  .field-group { display: flex; flex-direction: column; gap: 8px; }
-  .field-label { font-size: 14px; font-weight: 600; color: var(--fg); display: flex; align-items: center; gap: 6px; }
-  .required-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green-accent); display: inline-block; }
+  .fields-wrapper { margin-top: 32px; display: flex; flex-direction: column; gap: 24px; }
+  .fields-after-content { margin-top: 32px; border-top: 1px solid var(--border); padding-top: 32px; }
+  .field-group { display: flex; flex-direction: column; gap: 10px; }
+  .field-label { font-size: 14px; font-weight: 600; color: var(--fg-secondary); display: flex; align-items: center; gap: 6px; }
+  .required-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--green-accent); display: inline-block; }
 
   /* ── Inputs ── */
   .field-input {
-    height: 52px; padding: 0 18px; border-radius: 14px;
+    height: 56px; padding: 0 20px; border-radius: 12px;
     border: 1.5px solid var(--border); background: var(--card);
     font-family: var(--font-display); font-size: 16px; color: var(--fg);
-    outline: none; transition: border-color 200ms ease, box-shadow 200ms ease; width: 100%;
+    outline: none; transition: all 200ms ease; width: 100%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
   }
-  .field-input::placeholder { color: var(--fg-muted); opacity: 0.6; }
-  .field-input:focus { border-color: var(--green-mid); box-shadow: 0 0 0 3px var(--green-focus); }
-  .field-input.field-invalid { border-color: var(--error); box-shadow: 0 0 0 3px rgba(214, 69, 69, 0.08); }
+  .field-input::placeholder { color: var(--fg-muted); opacity: 0.5; }
+  .field-input:focus { border-color: var(--green-mid); box-shadow: 0 0 0 4px var(--green-focus); }
+  .field-input.field-invalid { border-color: var(--error); background: var(--error-tint); }
 
   .field-textarea {
-    padding: 14px 18px; min-height: 140px; border-radius: 14px;
+    padding: 16px 20px; min-height: 120px; border-radius: 12px;
     border: 1.5px solid var(--border); background: var(--card);
     font-family: var(--font-display); font-size: 16px; color: var(--fg);
     outline: none; resize: vertical; line-height: 1.6;
-    transition: border-color 200ms ease, box-shadow 200ms ease; width: 100%;
+    transition: all 200ms ease; width: 100%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
   }
-  .field-textarea::placeholder { color: var(--fg-muted); opacity: 0.6; }
-  .field-textarea:focus { border-color: var(--green-mid); box-shadow: 0 0 0 3px var(--green-focus); }
-  .field-textarea.field-invalid { border-color: var(--error); box-shadow: 0 0 0 3px rgba(214, 69, 69, 0.08); }
+  .field-textarea::placeholder { color: var(--fg-muted); opacity: 0.5; }
+  .field-textarea:focus { border-color: var(--green-mid); box-shadow: 0 0 0 4px var(--green-focus); }
+  .field-textarea.field-invalid { border-color: var(--error); background: var(--error-tint); }
 
   /* ── Options ── */
-  .options-grid, .options-list { display: flex; flex-direction: column; gap: 10px; }
+  .options-grid, .options-list { display: flex; flex-direction: column; gap: 12px; }
 
   .option-chip {
-    display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px;
-    border-radius: 14px; border: 1.5px solid var(--border); background: var(--card);
+    display: flex; align-items: flex-start; gap: 14px; padding: 16px;
+    border-radius: 12px; border: 1.5px solid var(--border); background: var(--card);
     cursor: pointer; text-align: left; font-family: var(--font-display);
-    transition: border-color 180ms ease, background 180ms ease, transform 120ms ease;
+    transition: all 180ms ease;
     -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
   }
   @media (hover: hover) and (pointer: fine) {
     .option-chip:hover { border-color: var(--border-hover); background: var(--surface); }
   }
-  .option-chip:active { transform: scale(0.97); }
-  .option-chip.option-selected { border-color: var(--green-mid); background: var(--green-tint); }
+  .option-chip:active { transform: scale(0.98); }
+  .option-chip.option-selected { border-color: var(--green-mid); background: var(--green-tint); box-shadow: none; }
 
   .option-check {
-    width: 22px; height: 22px; min-width: 22px; border-radius: 7px;
+    width: 20px; height: 20px; min-width: 20px; border-radius: 6px;
     border: 1.5px solid var(--border); display: flex; align-items: center;
-    justify-content: center; margin-top: 1px;
-    transition: background 180ms ease, border-color 180ms ease; color: white;
+    justify-content: center; margin-top: 2px;
+    transition: all 180ms ease; color: white;
   }
   .option-selected .option-check { background: var(--green-mid); border-color: var(--green-mid); }
 
   .radio-dot {
-    width: 22px; height: 22px; min-width: 22px; border-radius: 50%;
+    width: 20px; height: 20px; min-width: 20px; border-radius: 50%;
     border: 1.5px solid var(--border); display: flex; align-items: center;
-    justify-content: center; margin-top: 1px; transition: border-color 180ms ease;
+    justify-content: center; margin-top: 2px; transition: all 180ms ease;
   }
   .option-selected .radio-dot { border-color: var(--green-mid); }
   .radio-inner {
     width: 10px; height: 10px; border-radius: 50%; background: var(--green-mid);
-    transform: scale(0); transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(0); transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .radio-inner.radio-active { transform: scale(1); }
 
   .option-content { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .option-label { font-size: 14px; font-weight: 600; color: var(--fg); line-height: 1.3; }
-  .option-desc { font-size: 12px; color: var(--fg-muted); line-height: 1.4; }
+  .option-label { font-size: 15px; font-weight: 600; color: var(--fg); line-height: 1.4; }
+  .option-desc { font-size: 13px; color: var(--fg-secondary); line-height: 1.4; opacity: 0.8; }
 
-  .field-error { font-size: 13px; color: var(--error); font-weight: 500; padding-left: 2px; }
+  .field-error { font-size: 13px; color: var(--error); font-weight: 600; margin-top: 4px; }
 
   /* ── Checkbox ── */
-  .checkbox-wrapper { display: flex; flex-direction: column; gap: 12px; }
+  .checkbox-wrapper { display: flex; flex-direction: column; gap: 16px; }
   .checkbox-item {
-    display: flex; align-items: flex-start; gap: 14px; padding: 16px;
-    border-radius: 14px; border: 1.5px solid var(--border); background: var(--card);
+    display: flex; align-items: flex-start; gap: 14px; padding: 18px;
+    border-radius: 12px; border: 1.5px solid var(--border); background: var(--card);
     cursor: pointer; text-align: left; font-family: var(--font-display);
-    transition: border-color 180ms ease, background 180ms ease;
+    transition: all 180ms ease;
     -webkit-tap-highlight-color: transparent;
   }
   .checkbox-item.checkbox-checked { border-color: var(--green-mid); background: var(--green-tint); }
-  .checkbox-item.checkbox-invalid { border-color: var(--error); }
   .checkbox-box {
-    width: 24px; height: 24px; min-width: 24px; border-radius: 7px;
+    width: 22px; height: 22px; min-width: 22px; border-radius: 6px;
     border: 1.5px solid var(--border); display: flex; align-items: center;
-    justify-content: center; margin-top: 1px;
-    transition: background 180ms ease, border-color 180ms ease;
+    justify-content: center; margin-top: 2px;
+    transition: all 180ms ease;
   }
   .checkbox-checked .checkbox-box { background: var(--green-mid); border-color: var(--green-mid); }
-  .checkbox-label { font-size: 14px; color: var(--fg); line-height: 1.5; }
+  .checkbox-label { font-size: 14px; color: var(--fg-secondary); line-height: 1.6; }
 
   .terms-link {
     display: inline-flex; align-items: center; gap: 4px;
-    font-size: 13px; color: var(--green-mid); font-weight: 600;
-    text-decoration: underline; text-underline-offset: 3px;
-    padding-left: 2px;
+    font-size: 13px; color: var(--green-mid); font-weight: 700;
+    text-decoration: none; padding-left: 2px;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .terms-link:hover { color: var(--green-deep); }
-  }
+  .terms-link:hover { text-decoration: underline; }
 
   /* ── Video upload ── */
-  .video-upload-wrapper { display: flex; flex-direction: column; gap: 10px; }
+  .video-upload-wrapper { display: flex; flex-direction: column; gap: 12px; }
   .video-dropzone {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 12px; padding: 40px 24px; border-radius: 16px;
-    border: 2px dashed var(--border); background: var(--surface);
-    cursor: pointer; transition: border-color 200ms ease, background 200ms ease;
+    gap: 16px; padding: 48px 24px; border-radius: 16px;
+    border: 2px dashed var(--border); background: var(--card);
+    cursor: pointer; transition: all 200ms ease;
     font-family: var(--font-display);
     -webkit-tap-highlight-color: transparent;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .video-dropzone:hover { border-color: var(--green-mid); background: var(--green-tint); }
-  }
-  .video-dropzone-invalid { border-color: var(--error); }
-  .video-dropzone-text { font-size: 15px; font-weight: 600; color: var(--fg); }
-  .video-dropzone-hint { font-size: 13px; color: var(--fg-muted); }
-
-  .video-uploading {
-    padding: 32px 24px; border-radius: 16px; border: 1.5px solid var(--border);
-    background: var(--surface); text-align: center;
-  }
-  .video-progress-bar {
-    height: 6px; border-radius: 3px; background: var(--green-tint); overflow: hidden;
-  }
-  .video-progress-fill {
-    height: 100%; background: linear-gradient(90deg, var(--green-mid), var(--green-accent));
-    border-radius: 3px; transition: width 200ms ease;
-  }
-  .video-uploading-text { font-size: 14px; color: var(--fg-secondary); margin-top: 12px; font-weight: 500; }
+  .video-dropzone:hover { border-color: var(--green-mid); background: var(--green-tint); }
+  .video-dropzone-text { font-size: 16px; font-weight: 600; color: var(--fg); }
+  .video-dropzone-hint { font-size: 14px; color: var(--fg-muted); }
 
   .video-uploaded {
-    display: flex; align-items: center; gap: 14px; padding: 16px 20px;
-    border-radius: 14px; border: 1.5px solid var(--green-mid); background: var(--green-tint);
+    display: flex; align-items: center; gap: 16px; padding: 20px;
+    border-radius: 12px; border: 1.5px solid var(--green-mid); background: var(--green-tint);
   }
-  .video-uploaded-icon { flex-shrink: 0; }
-  .video-uploaded-info { flex: 1; min-width: 0; }
-  .video-uploaded-name { font-size: 14px; font-weight: 600; color: var(--fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .video-uploaded-meta { font-size: 12px; color: var(--fg-muted); margin-top: 2px; }
+  .video-uploaded-name { font-size: 15px; font-weight: 700; color: var(--fg); }
   .video-replace-btn {
-    font-size: 13px; font-weight: 600; color: var(--green-mid);
-    background: none; border: none; cursor: pointer; font-family: var(--font-display);
-    text-decoration: underline; text-underline-offset: 3px;
-    -webkit-tap-highlight-color: transparent;
+    font-size: 13px; font-weight: 700; color: var(--green-mid);
+    background: white; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--green-mid);
+    cursor: pointer; font-family: var(--font-display);
+  }
+
+  .video-uploading {
+    display: flex; flex-direction: column; gap: 12px; padding: 24px;
+    border-radius: 12px; border: 1.5px solid var(--green-mid); background: var(--green-tint);
+  }
+  .video-progress-bar {
+    height: 8px; width: 100%; background: rgba(27, 107, 58, 0.15);
+    border-radius: 999px; overflow: hidden;
+  }
+  .video-progress-fill {
+    height: 100%; background: var(--green-mid); border-radius: 999px;
+    transition: width 200ms ease;
+  }
+  .video-uploading-text {
+    font-size: 14px; font-weight: 600; color: var(--green-deep); text-align: center;
   }
 
   /* ── Content blocks ── */
-  /* ── Content blocks — minimal ── */
-  .content-blocks { margin-top: 28px; display: flex; flex-direction: column; gap: 16px; }
+  .content-blocks { margin-top: 32px; display: flex; flex-direction: column; gap: 24px; }
 
-  .cb-paragraph { font-size: 15px; color: var(--fg-muted); line-height: 1.7; }
+  .cb-paragraph { font-size: 16px; color: var(--fg-secondary); line-height: 1.7; }
 
   .cb-highlight {
-    font-size: 15px; font-weight: 500; color: var(--fg-secondary); line-height: 1.6;
-    padding: 14px 0; display: flex; align-items: flex-start; gap: 10px;
+    font-size: 16px; font-weight: 600; color: var(--green-deep); line-height: 1.5;
+    padding: 20px; background: var(--green-tint); border-radius: 16px;
+    display: flex; align-items: flex-start; gap: 14px;
   }
-  .cb-highlight svg { flex-shrink: 0; margin-top: 5px; color: var(--green-accent); }
+  .cb-highlight svg { flex-shrink: 0; margin-top: 2px; color: var(--green-mid); }
 
   .cb-deadline {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 13px; font-weight: 600; color: var(--fg-muted);
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 700; color: var(--fg-muted);
+    padding: 8px 12px; background: rgba(0,0,0,0.04); border-radius: 8px; align-self: flex-start;
   }
-  .cb-deadline svg { flex-shrink: 0; color: var(--fg-muted); }
 
-  /* ── Prizes — minimal, typography-driven ── */
-  .cb-prizes { display: flex; flex-direction: column; gap: 0; }
+  /* ── Message Bubbles Animation ── */
+  .cb-message-bubbles-container {
+    height: 280px; overflow-y: hidden; position: relative;
+    padding: 16px 0;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  }
+  .cb-message-bubbles-track {
+    display: flex; flex-direction: column; gap: 14px;
+    padding-bottom: 24px;
+  }
+  .cb-bubble {
+    max-width: 85%; padding: 14px 18px; border-radius: 18px;
+    font-size: 15px; font-weight: 500; line-height: 1.4;
+    animation: bubbleEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .cb-bubble-other {
+    align-self: flex-start; background: var(--card); border: 1px solid var(--border);
+    color: var(--fg-secondary); border-bottom-left-radius: 4px;
+  }
+  .cb-bubble-user {
+    align-self: flex-end; background: var(--green-mid);
+    color: white; border-bottom-right-radius: 4px;
+  }
+
+  @keyframes bubbleEnter {
+    0% { opacity: 0; transform: translateY(16px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ── Prizes ── */
+  .cb-prizes { display: flex; flex-direction: column; gap: 12px; }
   .cb-prize-item {
-    display: flex; align-items: flex-start; gap: 16px;
-    padding: 18px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px; background: var(--card); border-radius: 12px;
+    border: 1.5px solid var(--border);
   }
-  .cb-prize-item:last-child { border-bottom: none; }
   .cb-prize-rank {
-    width: 32px; min-width: 32px;
-    font-size: 28px; font-weight: 800; line-height: 1;
-    color: #D0D5D2;
-    font-variant-numeric: tabular-nums;
+    width: 40px; height: 40px; min-width: 40px; border-radius: 50%;
+    background: var(--green-tint); color: var(--green-mid);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 800;
   }
-  .cb-prize-item:first-child .cb-prize-rank { color: #D4A440; }
-  .cb-prize-item:nth-child(2) .cb-prize-rank { color: #A0A8B0; }
-  .cb-prize-item:nth-child(3) .cb-prize-rank { color: #C09070; }
-  .cb-prize-info { display: flex; flex-direction: column; gap: 2px; padding-top: 4px; }
-  .cb-prize-title { font-size: 15px; font-weight: 700; color: var(--fg); }
-  .cb-prize-desc { font-size: 13px; color: var(--fg-muted); line-height: 1.5; }
+  .cb-prize-title { font-size: 15px; font-weight: 700; color: var(--fg); display: block; }
+  .cb-prize-desc { font-size: 13px; color: var(--fg-secondary); line-height: 1.4; }
 
-  /* ── Ordered list — clean flow ── */
-  .cb-list-wrapper { }
-  .cb-list-title { font-size: 14px; font-weight: 600; color: var(--fg); margin-bottom: 12px; }
-  .cb-list {
-    display: flex; flex-direction: column; gap: 0;
-    list-style: none; padding: 0;
-  }
+  /* ── Lists ── */
+  .cb-list-title { font-size: 16px; font-weight: 700; color: var(--fg); margin-bottom: 16px; }
+  .cb-list { display: flex; flex-direction: column; gap: 12px; list-style: none; padding: 0; }
   .cb-list li {
-    font-size: 14px; color: var(--fg-secondary); line-height: 1.6;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.04);
+    font-size: 15px; color: var(--fg-secondary); line-height: 1.6;
+    display: flex; gap: 12px;
   }
-  .cb-list li:last-child { border-bottom: none; }
-  .cb-list-ordered { counter-reset: step; }
-  .cb-list-ordered li {
-    counter-increment: step;
-    padding-left: 32px; position: relative;
-  }
+  .cb-list-ordered li { counter-increment: step; }
   .cb-list-ordered li::before {
     content: counter(step);
-    position: absolute; left: 0; top: 13px;
-    font-size: 12px; font-weight: 700; color: var(--fg-muted);
-    width: 20px; text-align: center;
+    width: 24px; height: 24px; min-width: 24px; border-radius: 50%;
+    background: var(--fg); color: white; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 700; margin-top: 1px;
   }
 
-  /* ── Tips — subtle ── */
-  .cb-tips {
-    padding: 18px 20px; border-radius: 14px;
-    background: rgba(0,0,0,0.02);
+  /* ── Tips ── */
+  .cb-tips-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 8px;
   }
-  .cb-tips-title {
-    font-size: 12px; font-weight: 700; color: var(--fg-muted);
-    margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+  @media (max-width: 480px) {
+    .cb-tips-grid { grid-template-columns: 1fr; }
   }
-  .cb-tips-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-  .cb-tips-list li {
-    display: flex; align-items: flex-start; gap: 8px;
-    font-size: 13px; color: var(--fg-muted); line-height: 1.5;
+  .cb-tip-card {
+    display: flex; flex-direction: column; gap: 14px;
+    padding: 20px; background: var(--card);
+    border: 1.5px solid var(--border); border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    animation: tipEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
-  .cb-tips-list li svg { flex-shrink: 0; margin-top: 2px; }
+  .cb-tip-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--green-tint); color: var(--green-mid);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cb-tip-text {
+    font-size: 15px; font-weight: 600; color: var(--fg); line-height: 1.5; letter-spacing: -0.01em;
+  }
 
-  /* ── Navigation — fixed bottom bar ── */
+  @keyframes tipEnter {
+    0% { opacity: 0; transform: translateY(12px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ── Navigation ── */
   .form-nav-fixed {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
-    background: linear-gradient(to top, rgba(250,252,251,1) 60%, rgba(250,252,251,0));
-    padding-top: 32px;
+    background: linear-gradient(to top, var(--surface) 80%, rgba(250,252,251,0));
+    padding: 24px 0 32px;
   }
   .form-nav {
     display: flex; align-items: center; justify-content: space-between;
-    max-width: 520px; margin: 0 auto;
-    padding: 0 32px 12px; gap: 12px;
+    max-width: 480px; margin: 0 auto; padding: 0 32px; gap: 16px;
   }
-  @media (max-width: 520px) { .form-nav { max-width: 100%; padding: 0 20px 12px; } }
+  @media (max-width: 520px) { .form-nav { padding: 0 24px; } }
 
   .btn-back {
-    display: flex; align-items: center; gap: 6px; padding: 10px 16px;
-    border-radius: 12px; border: none; background: transparent;
-    font-family: var(--font-display); font-size: 14px; font-weight: 600;
-    color: var(--fg-muted); cursor: pointer;
-    transition: color 150ms ease, background 150ms ease;
-    -webkit-tap-highlight-color: transparent;
+    display: flex; align-items: center; gap: 6px; padding: 12px 0;
+    background: transparent; border: none; font-family: var(--font-display);
+    font-size: 15px; font-weight: 700; color: var(--fg-muted); cursor: pointer;
+    transition: color 150ms ease;
   }
+  .btn-back:hover { color: var(--fg); }
   .btn-back:disabled { opacity: 0; pointer-events: none; }
-  @media (hover: hover) and (pointer: fine) {
-    .btn-back:not(:disabled):hover { color: var(--fg-secondary); background: var(--surface); }
-  }
 
   .btn-next {
-    display: flex; align-items: center; gap: 8px; padding: 14px 28px;
-    border-radius: 14px; border: none; background: var(--green-deep);
-    font-family: var(--font-display); font-size: 15px; font-weight: 600;
-    color: white; cursor: pointer;
-    transition: transform 120ms ease, box-shadow 200ms ease, background 200ms ease;
-    -webkit-tap-highlight-color: transparent; margin-left: auto;
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+    height: 56px; border-radius: 14px; border: none; background: var(--green-deep);
+    font-family: var(--font-display); font-size: 16px; font-weight: 700;
+    color: white; cursor: pointer; transition: all 200ms ease;
+    box-shadow: 0 4px 12px rgba(11, 61, 30, 0.15);
   }
-  .btn-next:disabled { opacity: 0.6; cursor: not-allowed; }
-  @media (hover: hover) and (pointer: fine) {
-    .btn-next:not(:disabled):hover { background: #0E4A25; box-shadow: 0 4px 20px rgba(11, 61, 30, 0.2); }
+  .btn-next:hover { background: #0E4A25; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(11, 61, 30, 0.2); }
+  .btn-next:active { transform: translateY(0) scale(0.98); }
+  .btn-next:disabled {
+    background: var(--border); color: var(--fg-muted); cursor: not-allowed;
+    box-shadow: none; transform: none;
   }
-  .btn-next:active { transform: scale(0.97); }
+  .btn-next:disabled:hover { background: var(--border); transform: none; box-shadow: none; }
 
-  /* ── Keyboard hint ── */
-  .keyboard-hint {
-    font-size: 12px; color: var(--fg-muted);
-    opacity: 0.5; text-align: center; padding-bottom: 16px;
-  }
-  .keyboard-hint kbd {
-    display: inline-flex; align-items: center; padding: 2px 7px;
-    border-radius: 5px; border: 1px solid var(--border); background: var(--card);
-    font-family: var(--font-display); font-size: 11px; font-weight: 600;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-  }
+  .keyboard-hint { font-size: 12px; color: var(--fg-muted); text-align: center; margin-top: 16px; font-weight: 500; }
   @media (pointer: coarse) { .keyboard-hint { display: none; } }
 
   /* ── Completion ── */
   .check-circle {
-    width: 64px; height: 64px; border-radius: 50%; background: var(--green-mid);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto; animation: scaleIn 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    width: 72px; height: 72px; border-radius: 50%; background: var(--green-mid);
+    display: flex; align-items: center; justify-content: center; margin: 0 auto;
   }
+
   .check-path { stroke-dasharray: 30; stroke-dashoffset: 30; animation: drawCheck 500ms cubic-bezier(0.65, 0, 0.35, 1) 250ms forwards; }
 
   @keyframes scaleIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
