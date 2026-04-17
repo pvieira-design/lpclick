@@ -89,7 +89,7 @@ export default async function DepoimentosPage() {
                     controls
                     preload="metadata"
                     playsInline
-                    className="aspect-[9/16] w-full bg-black object-cover"
+                    className="aspect-[9/16] w-full bg-white object-cover"
                   />
                   <div className="flex items-center justify-between px-4 py-3">
                     <div>
