@@ -99,18 +99,27 @@ export default function LandingClient() {
   }, []);
 
   const openModal = useCallback(() => {
+    const dialog = dialogRef.current;
+    if (!dialog || dialog.open) return;
+
+    // Abre o modal primeiro — resposta visual instantânea.
+    dialog.showModal();
+    lockScroll();
     resetInactivityTimer();
 
-    dialogRef.current?.showModal();
-    lockScroll();
-    setTimeout(() => inputRef.current?.focus(), 100);
-    sendGTMEvent({
-      event: "buttonClick",
-      category: "Lead",
-      action: "Click",
-      label: "Abrir modal - LP3",
-      value: Array.from(selected).join(", "),
-    });
+    // Focus no próximo frame para não competir com o paint do modal.
+    requestAnimationFrame(() => inputRef.current?.focus());
+
+    // Analytics fora do caminho crítico.
+    setTimeout(() => {
+      sendGTMEvent({
+        event: "buttonClick",
+        category: "Lead",
+        action: "Click",
+        label: "Abrir modal - LP3",
+        value: Array.from(selected).join(", "),
+      });
+    }, 0);
   }, [selected, resetInactivityTimer, lockScroll]);
 
   const closeModal = useCallback(() => {
