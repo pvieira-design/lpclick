@@ -73,35 +73,12 @@ export default async function LandingPage() {
           opacity: 0;
           animation: fadeInUp 500ms cubic-bezier(0.23, 1, 0.32, 1) 1050ms forwards;
         }
-        dialog::backdrop {
-          background: rgba(0,0,0,0);
-          transition: background 200ms ease;
-        }
-        dialog[open]::backdrop {
-          background: rgba(0,0,0,0.5);
-        }
         dialog {
           position: fixed;
           top: 50%;
           left: 50%;
           translate: -50% -50%;
           margin: 0;
-          opacity: 0;
-          transform: scale(0.95);
-          transition: opacity 200ms cubic-bezier(0.23,1,0.32,1), transform 200ms cubic-bezier(0.23,1,0.32,1), display 200ms allow-discrete, overlay 200ms allow-discrete;
-        }
-        dialog[open] {
-          opacity: 1;
-          transform: scale(1);
-        }
-        @starting-style {
-          dialog[open] {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          dialog[open]::backdrop {
-            background: rgba(0,0,0,0);
-          }
         }
         @keyframes tooltipIn {
           0% { opacity: 0; transform: translateY(8px) scale(0.96); }
