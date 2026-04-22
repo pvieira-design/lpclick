@@ -305,8 +305,9 @@ export default function LandingClient() {
         ref={dialogRef}
         onClose={closeModal}
         onClick={handleBackdropClick}
-        className="flex max-h-[calc(100dvh-2.5rem)] w-[calc(100%-2.5rem)] max-w-md flex-col overflow-hidden rounded-3xl border-0 bg-white p-0 shadow-2xl backdrop:bg-black/50"
+        className="max-h-[calc(100dvh-2.5rem)] w-[calc(100%-2.5rem)] max-w-md overflow-hidden rounded-3xl border-0 bg-white p-0 shadow-2xl backdrop:bg-black/50"
       >
+        <div className="flex max-h-[inherit] flex-col">
         <div className="flex-1 overflow-y-auto overscroll-contain px-6 pt-6 pb-4">
         {/* Header ilustrado */}
         <div className="overflow-hidden rounded-2xl bg-[#f5faf6]">
@@ -456,6 +457,7 @@ export default function LandingClient() {
           >
             Voltar a página inicial
           </button>
+        </div>
         </div>
       </dialog>
     </>
