@@ -38,6 +38,7 @@ export default function LandingClient() {
   const inactivityTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasSubmitted = useRef(false);
   const hasInteracted = useRef(false);
+  const hasDismissedModal = useRef(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -57,13 +58,12 @@ export default function LandingClient() {
 
   const startInactivityTimer = useCallback((currentSelected: Set<string>) => {
     resetInactivityTimer();
-    if (currentSelected.size === 0 || hasSubmitted.current) return;
+    if (currentSelected.size === 0 || hasSubmitted.current || hasDismissedModal.current) return;
     inactivityTimer.current = setTimeout(() => {
-      if (hasSubmitted.current) return;
+      if (hasSubmitted.current || hasDismissedModal.current) return;
       if (!dialogRef.current?.open && currentSelected.size > 0) {
-
         dialogRef.current?.showModal();
-        setTimeout(() => inputRef.current?.focus(), 100);
+        requestAnimationFrame(() => inputRef.current?.focus());
         sendGTMEvent({
           event: "buttonClick",
           category: "Lead",
@@ -123,10 +123,13 @@ export default function LandingClient() {
   }, [selected, resetInactivityTimer, lockScroll]);
 
   const closeModal = useCallback(() => {
-    dialogRef.current?.close();
+    hasDismissedModal.current = true;
+    resetInactivityTimer();
+    const dialog = dialogRef.current;
+    if (dialog?.open) dialog.close();
     setShowError(false);
     unlockScroll();
-  }, [unlockScroll]);
+  }, [unlockScroll, resetInactivityTimer]);
 
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent<HTMLDialogElement>) => {

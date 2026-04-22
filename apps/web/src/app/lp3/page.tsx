@@ -80,6 +80,9 @@ export default async function LandingPage() {
           translate: -50% -50%;
           margin: 0;
         }
+        dialog::backdrop {
+          background: rgba(0,0,0,0.5);
+        }
         @keyframes tooltipIn {
           0% { opacity: 0; transform: translateY(8px) scale(0.96); }
           60% { opacity: 1; transform: translateY(-3px) scale(1.01); }
