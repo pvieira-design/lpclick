@@ -41,10 +41,12 @@ const STEPS = [
   },
 ];
 
-const WHATSAPP_URL = "https://wa.me/5521993686082";
-
 export default function TreatmentSteps() {
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
+
+  const openTreatmentModal = () => {
+    window.dispatchEvent(new CustomEvent("treatment:open"));
+  };
 
   return (
     <section className="bg-white py-12 sm:py-16">
@@ -148,15 +150,14 @@ export default function TreatmentSteps() {
               >
                 Uma jornada de sucesso com quem entende!
               </p>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={openTreatmentModal}
                 className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white transition-transform hover:scale-[1.01] active:scale-[0.99]"
               >
                 <span className="text-base font-semibold text-[#285E31]">Iniciar jornada</span>
                 <IconWhatsapp />
-              </a>
+              </button>
             </div>
           </div>
         </div>
