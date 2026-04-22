@@ -354,6 +354,86 @@ function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
    Video Upload Component
    ───────────────────────────────────────────── */
 
+// Best-effort: extract a frame at ~1s from the selected video and encode as
+// WebP (or JPEG on browsers without canvas WebP support). Returns null on
+// any failure — the offline `generate-thumbnails.mjs` script picks up the
+// slack for submissions that ship without a thumb.
+async function generateVideoThumbnail(
+  file: File,
+): Promise<{ blob: Blob; ext: string } | null> {
+  return new Promise((resolve) => {
+    const video = document.createElement("video");
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = "metadata";
+    const objectUrl = URL.createObjectURL(file);
+    video.src = objectUrl;
+
+    const cleanup = () => URL.revokeObjectURL(objectUrl);
+    const timer = setTimeout(() => { cleanup(); resolve(null); }, 8000);
+    const done = (result: { blob: Blob; ext: string } | null) => {
+      clearTimeout(timer);
+      cleanup();
+      resolve(result);
+    };
+
+    video.onloadedmetadata = () => {
+      const dur = isFinite(video.duration) ? video.duration : 2;
+      try {
+        video.currentTime = Math.min(1, dur * 0.1);
+      } catch {
+        done(null);
+      }
+    };
+
+    video.onseeked = () => {
+      const vw = video.videoWidth;
+      const vh = video.videoHeight;
+      if (!vw || !vh) return done(null);
+      const targetW = Math.min(720, vw);
+      const w = targetW;
+      const h = Math.round((vh * targetW) / vw);
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return done(null);
+      ctx.drawImage(video, 0, 0, w, h);
+      canvas.toBlob(
+        (blob) => {
+          if (blob && blob.type === "image/webp") return done({ blob, ext: "webp" });
+          // Browser ignored the WebP request (Safari < 16.4) — fall back to JPEG.
+          canvas.toBlob(
+            (jpeg) => done(jpeg ? { blob: jpeg, ext: "jpg" } : null),
+            "image/jpeg",
+            0.82,
+          );
+        },
+        "image/webp",
+        0.8,
+      );
+    };
+
+    video.onerror = () => done(null);
+  });
+}
+
+async function uploadThumbnail(file: File): Promise<string | null> {
+  try {
+    const result = await generateVideoThumbnail(file);
+    if (!result) return null;
+    const name = `thumb-${crypto.randomUUID()}.${result.ext}`;
+    const thumbFile = new File([result.blob], name, { type: result.blob.type });
+    const blob = await upload(name, thumbFile, {
+      access: "public",
+      handleUploadUrl: "/api/forms/upload-thumbnail",
+    });
+    return blob.url;
+  } catch {
+    return null;
+  }
+}
+
 function VideoUpload({
   field,
   value,
@@ -362,7 +442,7 @@ function VideoUpload({
 }: {
   field: FormField;
   value: string;
-  onUpload: (uploadId: string) => void;
+  onUpload: (videoUrl: string, thumbnailUrl?: string | null) => void;
   invalid: boolean;
 }) {
   const [file, setFile] = useState<File | null>(null);
@@ -400,17 +480,23 @@ function VideoUpload({
       }
     }
 
-    // Upload to Vercel Blob
+    // Upload to Vercel Blob — video upload and thumbnail generation run in
+    // parallel; the small thumb (~50KB) typically finishes well before the
+    // video. Thumb is best-effort: a null result is fine, server-side script
+    // can backfill.
     setUploading(true);
     setProgress(0);
     try {
-      const blob = await upload(selectedFile.name, selectedFile, {
-        access: "public",
-        handleUploadUrl: "/api/forms/upload",
-        onUploadProgress: ({ percentage }) => setProgress(percentage),
-      });
+      const [blob, thumbnailUrl] = await Promise.all([
+        upload(selectedFile.name, selectedFile, {
+          access: "public",
+          handleUploadUrl: "/api/forms/upload",
+          onUploadProgress: ({ percentage }) => setProgress(percentage),
+        }),
+        uploadThumbnail(selectedFile),
+      ]);
 
-      onUpload(blob.url);
+      onUpload(blob.url, thumbnailUrl);
     } catch {
       setError("Erro ao enviar o vídeo. Tente novamente.");
     } finally {
@@ -451,7 +537,7 @@ function VideoUpload({
             {duration && <p className="video-uploaded-meta">{formatDuration(duration)}</p>}
           </div>
           <button type="button" className="video-replace-btn" onClick={() => {
-            onUpload("");
+            onUpload("", null);
             setFile(null);
             setDuration(null);
             inputRef.current?.click();
@@ -562,6 +648,10 @@ function FormPageInner({ formName, userId }: { formName: string; userId: string 
       formData,
       url: { formName, userId },
       videoUrl: typeof formData.video === "string" ? formData.video : null,
+      thumbnailUrl:
+        typeof formData.videoThumbnail === "string" && formData.videoThumbnail
+          ? formData.videoThumbnail
+          : null,
       consent: termsAccepted
         ? {
             termsVersion,
@@ -850,7 +940,10 @@ function FormPageInner({ formName, userId }: { formName: string; userId: string 
                         <VideoUpload
                           field={field}
                           value={(formData[field.id] as string) || ""}
-                          onUpload={(id) => setValue(field.id, id)}
+                          onUpload={(url, thumb) => {
+                            setValue(field.id, url);
+                            setValue(`${field.id}Thumbnail`, thumb ?? "");
+                          }}
                           invalid={isFieldInvalid(field)}
                         />
                       )}
