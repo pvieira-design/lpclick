@@ -22,6 +22,124 @@ const PATOLOGIAS = [
 
 const PHONE = "5521993686082";
 
+const LEADS_API_ENDPOINT = "https://clickcannabis.com/api/leads/";
+
+type StapeData = {
+  external_id: string;
+  client_id: string;
+  timestamp_micros: string;
+  session_id: string;
+  page_location: string;
+  session_number: string;
+  client_ip_address: string;
+  client_user_agent: string;
+  fbc_click: string | null;
+  fbp_click: string | null;
+  fn_click: string;
+  country: string;
+  st: string;
+  ct: string;
+};
+
+type LeadPayload = {
+  name: string;
+  patologies: string[];
+  data: {
+    userAgent: string;
+    language: string;
+    appVersion: string;
+    platform: string;
+    external_id: string;
+    data_stape: StapeData;
+  };
+};
+
+function readCookie(name: string): string {
+  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
+  return match?.[1] ?? "";
+}
+
+function readGAClientId(): string {
+  // Cookie _ga: "GA1.1.{clientId1}.{clientId2}" — client_id GA4 = "{clientId1}.{clientId2}".
+  const ga = readCookie("_ga");
+  const parts = ga.split(".");
+  return parts.length >= 4 ? `${parts[2]}.${parts[3]}` : "";
+}
+
+function readGASession(): { session_id: string; session_number: string } {
+  // Cookie _ga_<STREAM_ID>: "GS1.1.{session_id}.{session_number}.{engaged}.{hit_ts}..."
+  const raw = document.cookie.split(";").map((c) => c.trim());
+  const entry = raw.find((c) => /^_ga_[A-Z0-9]+=/.test(c));
+  if (!entry) return { session_id: "", session_number: "" };
+  const value = entry.split("=")[1] ?? "";
+  const parts = value.split(".");
+  return {
+    session_id: parts[2] ?? "",
+    session_number: parts[3] ?? "",
+  };
+}
+
+function readDeprecatedNav(): { appVersion: string; platform: string } {
+  // navigator.appVersion/platform estão deprecated, mas a API backend espera ambos.
+  const n = navigator as unknown as { appVersion: string; platform: string };
+  return { appVersion: n.appVersion, platform: n.platform };
+}
+
+function collectLeadData(name: string, patologies: string[], clientIp: string): LeadPayload {
+  const fbc = readCookie("_fbc");
+  const fbp = readCookie("_fbp");
+  const { session_id, session_number } = readGASession();
+  const { appVersion, platform } = readDeprecatedNav();
+  const firstName = name.split(/\s+/)[0] ?? "";
+
+  return {
+    name,
+    patologies,
+    data: {
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      appVersion,
+      platform,
+      external_id: "",
+      data_stape: {
+        external_id: "",
+        client_id: readGAClientId(),
+        timestamp_micros: String(Date.now() * 1000),
+        session_id,
+        page_location: window.location.href,
+        session_number,
+        client_ip_address: clientIp,
+        client_user_agent: navigator.userAgent,
+        fbc_click: fbc || null,
+        fbp_click: fbp || null,
+        fn_click: firstName,
+        country: "",
+        st: "",
+        ct: "",
+      },
+    },
+  };
+}
+
+function sendLeadToApi(payload: LeadPayload): void {
+  if (!LEADS_API_ENDPOINT) return;
+  const body = JSON.stringify(payload);
+
+  // sendBeacon sobrevive à navegação disparada por window.open — preferência nº 1.
+  if (typeof navigator.sendBeacon === "function") {
+    const blob = new Blob([body], { type: "application/json" });
+    if (navigator.sendBeacon(LEADS_API_ENDPOINT, blob)) return;
+  }
+
+  // Fallback: fetch com keepalive.
+  fetch(LEADS_API_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
+}
+
 function buildWhatsAppUrl(name: string, patologias: string[]) {
   const list = patologias.map((p, i) => `${i + 1}. ${p}`).join("\n");
   const text = `Olá, me chamo ${name}.\n\nPatologias selecionadas:\n${list}`;
@@ -39,12 +157,25 @@ export default function LandingClient() {
   const hasSubmitted = useRef(false);
   const hasInteracted = useRef(false);
   const hasDismissedModal = useRef(false);
+  const clientIpRef = useRef<string>("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!hasInteracted.current) setShowTooltip(true);
     }, 3000);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Pré-busca o IP no load pra não atrasar o clique em "Falar com médico".
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/ip", { signal: controller.signal })
+      .then((r) => r.json())
+      .then((d: { ip?: string }) => {
+        if (d.ip) clientIpRef.current = d.ip;
+      })
+      .catch(() => {});
+    return () => controller.abort();
   }, []);
 
   const dismissTooltip = useCallback(() => {
@@ -158,8 +289,9 @@ export default function LandingClient() {
     resetInactivityTimer();
 
     const patologias = Array.from(selected);
-    const params = new URLSearchParams(window.location.search);
-    const fbclid = document.cookie.match(/(?:^|;\s*)fbclid=([^;]*)/)?.[1] || "";
+    const leadData = collectLeadData(trimmed, patologias, clientIpRef.current);
+
+    sendLeadToApi(leadData);
 
     sendGTMEvent({
       event: "buttonWhatsappClicked",
@@ -167,21 +299,7 @@ export default function LandingClient() {
       action: "Click",
       label: "Falar com o médico - LP3",
       value: patologias.join(", "),
-      leadData: {
-        name: trimmed,
-        patologies: patologias,
-        referrer: document.referrer,
-        userAgent: navigator.userAgent,
-        language: navigator.language,
-        platform: navigator.platform,
-        src: params.get("src") || "",
-        utm_source: params.get("utm_source") || "",
-        utm_medium: params.get("utm_medium") || "",
-        utm_content: params.get("utm_content") || "",
-        utm_campaign: params.get("utm_campaign") || "",
-        utm_term: params.get("utm_term") || "",
-        fbclid,
-      },
+      leadData,
     });
 
     const url = buildWhatsAppUrl(trimmed, patologias);
