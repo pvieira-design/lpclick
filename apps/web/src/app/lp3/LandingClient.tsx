@@ -22,7 +22,7 @@ const PATOLOGIAS = [
 
 const PHONE = "5521993686082";
 
-const LEADS_API_ENDPOINT = "https://clickcannabis.com/api/leads/";
+const LEADS_API_ENDPOINT = "/api/leads";
 
 type StapeData = {
   external_id: string;
