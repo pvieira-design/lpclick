@@ -36,13 +36,7 @@ export default function DeferredGTM() {
     };
     const cleanup = () => {
       events.forEach((e) => window.removeEventListener(e, onInteraction));
-      clearTimeout(timer);
     };
-
-    const timer = setTimeout(() => {
-      cleanup();
-      loadGTM();
-    }, 2000);
 
     events.forEach((e) =>
       window.addEventListener(e, onInteraction, { once: true, passive: true }),
