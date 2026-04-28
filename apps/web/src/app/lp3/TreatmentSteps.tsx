@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 const STEPS = [
@@ -136,12 +137,12 @@ export default function TreatmentSteps() {
 
           {/* CTA Card */}
           <div className="relative mt-2 w-full overflow-hidden rounded-3xl bg-[#083b0e]">
-            <img
+            <Image
               src="/images/card_precess.webp"
               alt=""
-              className="absolute inset-0 h-full w-full object-cover object-center"
-              loading="lazy"
-              decoding="async"
+              fill
+              sizes="(max-width: 640px) 100vw, 600px"
+              className="object-cover object-center"
             />
             <div className="relative flex min-h-[520px] flex-col justify-end gap-5 p-6 sm:min-h-[600px] sm:p-8">
               <p
