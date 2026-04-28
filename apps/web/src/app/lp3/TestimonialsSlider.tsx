@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type Testimonial = {
@@ -73,13 +74,15 @@ export default function TestimonialsSlider({ items }: { items: Testimonial[] }) 
               aria-label="Assistir depoimento"
             >
               {s.thumbnail_url ? (
-                <img
-                  src={s.thumbnail_url}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  className="aspect-[9/16] w-full object-cover"
-                />
+                <div className="relative aspect-[9/16] w-full">
+                  <Image
+                    src={s.thumbnail_url}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 64vw, 220px"
+                    className="object-cover"
+                  />
+                </div>
               ) : (
                 <video
                   src={`${s.video_url}#t=1`}
