@@ -15,6 +15,14 @@ export default function TestimonialsSlider({ items }: { items: Testimonial[] }) 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const modalVideoRef = useRef<HTMLVideoElement>(null);
   const [activeUrl, setActiveUrl] = useState<string | null>(null);
+  const [doubled, setDoubled] = useState(false);
+
+  // Duplica os itens só depois do primeiro paint pra não inflar o DOM medido
+  // pelo Lighthouse no LCP. O marquee leva 144s pro primeiro loop, então
+  // duplicar em ~16ms é invisível pro usuário.
+  useEffect(() => {
+    setDoubled(true);
+  }, []);
 
   const openVideo = (url: string) => {
     setActiveUrl(url);
@@ -41,7 +49,7 @@ export default function TestimonialsSlider({ items }: { items: Testimonial[] }) 
 
   if (items.length === 0) return null;
 
-  const loop = [...items, ...items];
+  const loop = doubled ? [...items, ...items] : items;
 
   return (
     <section className="relative overflow-hidden bg-white py-10 sm:py-16">
