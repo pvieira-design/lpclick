@@ -87,7 +87,7 @@ export default function TestimonialsSlider({ items }: { items: Testimonial[] }) 
                     src={s.thumbnail_url}
                     alt=""
                     fill
-                    sizes="(max-width: 640px) 64vw, 220px"
+                    sizes="220px"
                     className="object-cover"
                   />
                 </div>
