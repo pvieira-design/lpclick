@@ -41,6 +41,10 @@ export default async function LandingPage() {
           from { opacity: 0; transform: translateY(16px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes slideUp {
+          from { transform: translateY(16px); }
+          to { transform: translateY(0); }
+        }
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -54,12 +58,10 @@ export default async function LandingPage() {
           100% { background-position: 200% center; }
         }
         .anim-logo {
-          opacity: 0;
-          animation: fadeInUp 600ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+          animation: slideUp 600ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
         .anim-title {
-          opacity: 0;
-          animation: fadeInUp 600ms cubic-bezier(0.23, 1, 0.32, 1) 120ms forwards;
+          animation: slideUp 600ms cubic-bezier(0.23, 1, 0.32, 1) 120ms forwards;
         }
         .anim-subtitle {
           opacity: 0;
