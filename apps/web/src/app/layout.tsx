@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import { GoogleTagManager } from "@next/third-parties/google";
 import Script from "next/script";
+import DeferredGTM from "./DeferredGTM";
 import "../index.css";
 
 const geistSans = Geist({
@@ -42,9 +42,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
       </head>
-      {process.env.NODE_ENV === "production" && (
-        <GoogleTagManager gtmId="GTM-NHB2NDHK" />
-      )}
+      {process.env.NODE_ENV === "production" && <DeferredGTM />}
       <body className={`${geistSans.variable} antialiased`}>
         {children}
         <Script
