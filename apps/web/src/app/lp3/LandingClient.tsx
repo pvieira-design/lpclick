@@ -24,33 +24,21 @@ const PHONE = "5521993686082";
 
 const LEADS_API_ENDPOINT = "/api/leads";
 
-type StapeData = {
-  external_id: string;
-  client_id: string;
-  timestamp_micros: string;
-  session_id: string;
-  page_location: string;
-  session_number: string;
-  client_ip_address: string;
-  client_user_agent: string;
-  fbc_click: string | null;
-  fbp_click: string | null;
-  fn_click: string;
-  country: string;
-  st: string;
-  ct: string;
-};
-
 type LeadPayload = {
   name: string;
   patologies: string[];
   data: {
-    userAgent: string;
+    fbclid: string;
     language: string;
-    appVersion: string;
     platform: string;
-    external_id: string;
-    data_stape: StapeData;
+    referrer: string;
+    utm_term: string;
+    userAgent: string;
+    appVersion: string;
+    utm_medium: string;
+    utm_source: string;
+    utm_content: string;
+    utm_campaign: string;
   };
 };
 
@@ -59,24 +47,14 @@ function readCookie(name: string): string {
   return match?.[1] ?? "";
 }
 
-function readGAClientId(): string {
-  // Cookie _ga: "GA1.1.{clientId1}.{clientId2}" — client_id GA4 = "{clientId1}.{clientId2}".
-  const ga = readCookie("_ga");
-  const parts = ga.split(".");
-  return parts.length >= 4 ? `${parts[2]}.${parts[3]}` : "";
-}
-
-function readGASession(): { session_id: string; session_number: string } {
-  // Cookie _ga_<STREAM_ID>: "GS1.1.{session_id}.{session_number}.{engaged}.{hit_ts}..."
-  const raw = document.cookie.split(";").map((c) => c.trim());
-  const entry = raw.find((c) => /^_ga_[A-Z0-9]+=/.test(c));
-  if (!entry) return { session_id: "", session_number: "" };
-  const value = entry.split("=")[1] ?? "";
-  const parts = value.split(".");
-  return {
-    session_id: parts[2] ?? "",
-    session_number: parts[3] ?? "",
-  };
+function readFbclid(): string {
+  // URL param tem prioridade; cookie _fbc tem formato "fb.1.{ts}.{fbclid}".
+  const fromUrl = new URLSearchParams(window.location.search).get("fbclid");
+  if (fromUrl) return fromUrl;
+  const fbc = readCookie("_fbc");
+  if (!fbc) return "";
+  const parts = fbc.split(".");
+  return parts.length >= 4 ? parts.slice(3).join(".") : "";
 }
 
 function readDeprecatedNav(): { appVersion: string; platform: string } {
@@ -85,38 +63,25 @@ function readDeprecatedNav(): { appVersion: string; platform: string } {
   return { appVersion: n.appVersion, platform: n.platform };
 }
 
-function collectLeadData(name: string, patologies: string[], clientIp: string): LeadPayload {
-  const fbc = readCookie("_fbc");
-  const fbp = readCookie("_fbp");
-  const { session_id, session_number } = readGASession();
+function collectLeadData(name: string, patologies: string[]): LeadPayload {
+  const params = new URLSearchParams(window.location.search);
   const { appVersion, platform } = readDeprecatedNav();
-  const firstName = name.split(/\s+/)[0] ?? "";
 
   return {
     name,
     patologies,
     data: {
-      userAgent: navigator.userAgent,
+      fbclid: readFbclid(),
       language: navigator.language,
-      appVersion,
       platform,
-      external_id: "",
-      data_stape: {
-        external_id: "",
-        client_id: readGAClientId(),
-        timestamp_micros: String(Date.now() * 1000),
-        session_id,
-        page_location: window.location.href,
-        session_number,
-        client_ip_address: clientIp,
-        client_user_agent: navigator.userAgent,
-        fbc_click: fbc || null,
-        fbp_click: fbp || null,
-        fn_click: firstName,
-        country: "",
-        st: "",
-        ct: "",
-      },
+      referrer: document.referrer,
+      utm_term: params.get("utm_term") ?? "",
+      userAgent: navigator.userAgent,
+      appVersion,
+      utm_medium: params.get("utm_medium") ?? "",
+      utm_source: params.get("utm_source") ?? "",
+      utm_content: params.get("utm_content") ?? "",
+      utm_campaign: params.get("utm_campaign") ?? "",
     },
   };
 }
@@ -157,25 +122,12 @@ export default function LandingClient() {
   const hasSubmitted = useRef(false);
   const hasInteracted = useRef(false);
   const hasDismissedModal = useRef(false);
-  const clientIpRef = useRef<string>("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!hasInteracted.current) setShowTooltip(true);
     }, 3000);
     return () => clearTimeout(timer);
-  }, []);
-
-  // Pré-busca o IP no load pra não atrasar o clique em "Falar com médico".
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch("/api/ip", { signal: controller.signal })
-      .then((r) => r.json())
-      .then((d: { ip?: string }) => {
-        if (d.ip) clientIpRef.current = d.ip;
-      })
-      .catch(() => {});
-    return () => controller.abort();
   }, []);
 
   const dismissTooltip = useCallback(() => {
@@ -289,7 +241,7 @@ export default function LandingClient() {
     resetInactivityTimer();
 
     const patologias = Array.from(selected);
-    const leadData = collectLeadData(trimmed, patologias, clientIpRef.current);
+    const leadData = collectLeadData(trimmed, patologias);
 
     sendLeadToApi(leadData);
 
