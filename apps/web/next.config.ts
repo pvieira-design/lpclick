@@ -2,9 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
-  experimental: {
-    inlineCss: true,
-  },
   turbopack: {
     resolveAlias: {
       "../build/polyfills/polyfill-module": "./src/lib/noop.js",
