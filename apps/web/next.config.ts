@@ -2,6 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
+  experimental: {
+    inlineCss: true,
+  },
+  turbopack: {
+    resolveAlias: {
+      "../build/polyfills/polyfill-module": "./src/lib/noop.js",
+      "next/dist/build/polyfills/polyfill-module": "./src/lib/noop.js",
+    },
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
