@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
     ],
-    deviceSizes: [480, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    deviceSizes: [400, 480, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
   },
   headers: async () => [
     {
