@@ -250,7 +250,7 @@ export default function FeaturedTestimonial({ items }: Props) {
             gap: "16px",
           }}
         >
-          {items.map((item) => (
+          {items.map((item, i) => (
             <div
               key={item.testimonial.id}
               style={{
@@ -260,7 +260,11 @@ export default function FeaturedTestimonial({ items }: Props) {
                 scrollSnapAlign: "center",
               }}
             >
-              <FeaturedCard item={item} onClick={(e) => handleCardClick(item, e)} />
+              <FeaturedCard
+                item={item}
+                priority={i === 0}
+                onClick={(e) => handleCardClick(item, e)}
+              />
             </div>
           ))}
         </div>
@@ -451,9 +455,11 @@ export default function FeaturedTestimonial({ items }: Props) {
 function FeaturedCard({
   item,
   onClick,
+  priority = false,
 }: {
   item: FeaturedItem;
   onClick: (e: React.MouseEvent) => void;
+  priority?: boolean;
 }) {
   const { testimonial, quote, imageSrc, subtitle, imagePosition = "center" } = item;
   const sub =
@@ -478,7 +484,8 @@ function FeaturedCard({
             src={bgSrc}
             alt=""
             fill
-            sizes="(min-width: 640px) 32rem, 100vw"
+            sizes="(min-width: 460px) 420px, 100vw"
+            priority={priority}
             draggable={false}
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
             style={{ objectPosition: imagePosition }}
