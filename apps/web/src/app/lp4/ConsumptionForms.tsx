@@ -5,21 +5,21 @@ const ITEMS = [
     num: "01",
     title: "Óleo de Cannabis Medicinal",
     desc: "Aplicado sob a língua, o óleo é absorvido pela mucosa bucal, o que permite sua rápida entrada na corrente sanguínea, uma opção de resposta ágil e controlada.",
-    image: "/produtos/oleo.webp",
+    image: "/produtos/oleo-v2.webp",
     alt: "Frasco de óleo de cannabis medicinal",
   },
   {
     num: "02",
     title: "Jujuba de Cannabis Medicinal",
     desc: "A jujuba proporciona uma forma prática, saborosa e discreta de consumo. Embora a absorção seja mais lenta por depender da digestão, os efeitos tendem a ser mais prolongados.",
-    image: "/produtos/jujuba.webp",
+    image: "/produtos/jujuba-v2.webp",
     alt: "Jujubas de cannabis medicinal",
   },
   {
     num: "03",
     title: "Softgel de Cannabis Medicinal",
     desc: "Forma prática, precisa e discreta de consumir cannabis medicinal. Com dosagem padronizada, são ingeridas por via oral e absorvidas gradualmente pelo organismo, proporcionando efeitos prolongados e estáveis.",
-    image: "/produtos/softgel.webp",
+    image: "/produtos/softgel-v2.webp",
     alt: "Cápsulas softgel de cannabis medicinal",
   },
 ] as const;
@@ -56,6 +56,7 @@ export default function ConsumptionForms() {
                   alt={item.alt}
                   fill
                   sizes="(min-width: 1024px) 320px, (min-width: 640px) 33vw, calc(100vw - 40px)"
+                  quality={95}
                   className="object-contain"
                   loading="lazy"
                 />
