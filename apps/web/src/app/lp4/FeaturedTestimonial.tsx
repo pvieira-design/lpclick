@@ -484,7 +484,7 @@ function FeaturedCard({
             src={bgSrc}
             alt=""
             fill
-            sizes="(min-width: 460px) 420px, 100vw"
+            sizes="(min-width: 460px) 420px, calc(100vw - 56px)"
             priority={priority}
             draggable={false}
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
