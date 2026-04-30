@@ -221,6 +221,15 @@ export default function FeaturedTestimonial({ items }: Props) {
     if (v) v.play().catch(() => {});
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   if (N === 0) return null;
   const showControls = N > 1;
 
