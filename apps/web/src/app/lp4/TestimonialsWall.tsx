@@ -1,6 +1,9 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { TEXT_TESTIMONIALS, type TextTestimonial } from "./textTestimonials";
+
+const BATCH = 12;
 
 function relativeDate(iso: string): string {
   const then = new Date(iso).getTime();
@@ -30,13 +33,32 @@ const TAG_STYLES: Record<string, string> = {
 const tagStyle = (t: string) => TAG_STYLES[t] ?? "bg-gray-100 text-gray-600";
 
 export default function TestimonialsWall() {
-  const items = TEXT_TESTIMONIALS;
+  const [visible, setVisible] = useState(BATCH);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const total = TEXT_TESTIMONIALS.length;
 
+  useEffect(() => {
+    if (visible >= total) return;
+    const el = sentinelRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible((v) => Math.min(v + BATCH, total));
+        }
+      },
+      { rootMargin: "600px 0px" },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [visible, total]);
+
+  const items = TEXT_TESTIMONIALS.slice(0, visible);
   const columns: TextTestimonial[][] = [[], [], []];
   items.forEach((r, i) => columns[i % 3].push(r));
 
   return (
-    <section className="bg-white pb-12 sm:pb-20">
+    <section id="lp4-testimonials-wall" className="bg-white pb-12 sm:pb-20">
       <div className="mx-auto w-full max-w-5xl px-5">
         <div className="mx-auto flex max-w-[540px] flex-col gap-4 sm:hidden">
           {items.map((r) => (
@@ -53,6 +75,10 @@ export default function TestimonialsWall() {
             </div>
           ))}
         </div>
+
+        {visible < total && (
+          <div ref={sentinelRef} aria-hidden="true" className="h-1 w-full" />
+        )}
       </div>
     </section>
   );
@@ -78,6 +104,7 @@ function ReviewCard({ review }: { review: TextTestimonial }) {
             {review.name}
           </span>
           <div
+            role="img"
             className="mt-0.5 flex items-center gap-0.5 text-[#f5a623]"
             aria-label="5 estrelas"
           >
