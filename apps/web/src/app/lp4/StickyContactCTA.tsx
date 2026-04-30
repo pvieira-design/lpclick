@@ -91,7 +91,7 @@ export default function StickyContactCTA() {
             }}
           >
             <p className="text-left text-[1.25rem] leading-snug text-gray-800">
-              Consulta de{" "}
+              Consulta com médico especialista de{" "}
               <span className="text-gray-400 line-through">R$120,00</span>{" "}
               por apenas{" "}
               <span className="font-bold text-[#285E31]">R$50,00</span>
