@@ -12,7 +12,17 @@ type Testimonial = {
   patologias: string[];
 };
 
-export default function TestimonialsSlider({ items }: { items: Testimonial[] }) {
+type Props = {
+  items: Testimonial[];
+  titleLight?: string;
+  titleBold?: string;
+};
+
+export default function TestimonialsSlider({
+  items,
+  titleLight = "Histórias reais de",
+  titleBold = "nossos pacientes",
+}: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const modalVideoRef = useRef<HTMLVideoElement>(null);
@@ -153,8 +163,8 @@ export default function TestimonialsSlider({ items }: { items: Testimonial[] }) 
           className="text-[1.5rem] leading-tight tracking-tight text-gray-900 sm:text-3xl"
           style={{ fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}
         >
-          <span className="font-light">Histórias reais de</span>{" "}
-          <span className="font-semibold">nossos pacientes</span>
+          <span className="font-light">{titleLight}</span>{" "}
+          <span className="font-semibold">{titleBold}</span>
         </h2>
       </div>
 

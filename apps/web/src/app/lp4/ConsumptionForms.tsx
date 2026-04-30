@@ -28,7 +28,7 @@ export default function ConsumptionForms() {
   return (
     <section className="bg-white pt-12 pb-6 sm:pt-20">
       <div className="mx-auto w-full max-w-5xl px-5">
-        <header className="consumption-header mb-6 grid grid-cols-1 gap-3 sm:mb-12 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-x-8 sm:gap-y-2">
+        <header className="consumption-header mb-2 grid grid-cols-1 gap-3 sm:mb-12 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-x-8 sm:gap-y-2">
           <span className="inline-flex w-fit items-center rounded-full bg-[#e6f2e9] px-3 py-1 text-xs font-medium text-[#2d6e3f] sm:col-start-2 sm:row-start-1 sm:justify-self-end sm:text-sm">
             Medicamentos
           </span>
@@ -48,7 +48,7 @@ export default function ConsumptionForms() {
             <article
               key={item.num}
               className="card flex flex-col overflow-hidden rounded-3xl bg-[#f5f5f6] ring-1 ring-gray-200/60"
-              style={{ "--stack-top": `${156 + i * 52}px` } as React.CSSProperties}
+              style={{ "--stack-top": `${144 + i * 52}px` } as React.CSSProperties}
             >
               <div className="relative aspect-square w-full bg-[#f5faf6]">
                 <Image

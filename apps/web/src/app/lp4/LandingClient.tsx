@@ -145,7 +145,7 @@ export default function LandingClient() {
           event: "buttonClick",
           category: "Lead",
           action: "Click",
-          label: "Abrir modal (inatividade) - LP3",
+          label: "Abrir modal (inatividade) - LP4",
           value: Array.from(currentSelected).join(", "),
         });
       }
@@ -193,7 +193,7 @@ export default function LandingClient() {
         event: "buttonClick",
         category: "Lead",
         action: "Click",
-        label: "Abrir modal - LP3",
+        label: "Abrir modal - LP4",
         value: Array.from(selected).join(", "),
       });
     }, 0);
@@ -243,7 +243,7 @@ export default function LandingClient() {
       event: "buttonWhatsappClicked",
       category: "Lead",
       action: "Click",
-      label: "Falar com o médico - LP3",
+      label: "Falar com o médico - LP4",
       value: patologias.join(", "),
       leadData,
     });
@@ -438,21 +438,6 @@ export default function LandingClient() {
           <p className="mt-2 text-sm font-medium text-red-500">
             * Escreva o seu nome para continuar
           </p>
-        )}
-
-        {/* Chips selecionadas */}
-        {selected.size > 0 && (
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {Array.from(selected).map((p) => (
-              <span
-                key={p}
-                className="rounded-full px-3 py-1 text-[13px] font-medium"
-                style={{ backgroundColor: "#e6f2e9", color: "#2d6e3f" }}
-              >
-                {p}
-              </span>
-            ))}
-          </div>
         )}
 
         {/* Lista completa de patologias */}
