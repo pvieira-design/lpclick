@@ -154,7 +154,7 @@ const BENEFITS: Benefit[] = [
   {
     id: "ciclo",
     badge: "Ritmo circadiano",
-    title: "Regulação do ciclo do sono — não é sedação",
+    title: "Regulação do ciclo do sono, não é sedação",
     body: "Remédios como zolpidem te “desligam” à força, mas não tratam a causa da insônia: quando você para, ela volta pior. O CBD atua no sistema endocanabinoide, regulador natural do seu ritmo circadiano. Em vez de forçar o sono, ajuda seu corpo a relembrar como dormir naturalmente.",
     theme: T.cream,
   },
@@ -169,7 +169,7 @@ const BENEFITS: Benefit[] = [
     id: "sem-dependencia",
     badge: "Diferencial clínico",
     title: "Sem dependência química conhecida",
-    body: "Benzodiazepínicos como clonazepam e diazepam criam dependência física em poucas semanas — parar de tomar significa síndrome de abstinência (insônia rebote, ansiedade, tremores). Os canabinoides usados no tratamento, principalmente o CBD, não estão associados a esse tipo de dependência química.",
+    body: "Benzodiazepínicos como clonazepam e diazepam criam dependência física em poucas semanas. Parar de tomar significa síndrome de abstinência (insônia rebote, ansiedade, tremores). Os canabinoides usados no tratamento, principalmente o CBD, não estão associados a esse tipo de dependência química.",
     theme: T.dawn,
   },
   {
