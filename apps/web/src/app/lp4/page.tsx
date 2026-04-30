@@ -220,8 +220,8 @@ export default async function LandingPage() {
         {featuredItems.length > 0 && (
           <FeaturedTestimonial items={featuredItems} />
         )}
-        <BenefitsSlider />
         <ConsumptionForms />
+        <BenefitsSlider />
         <TreatmentCTA />
         <TreatmentSteps />
         <TestimonialsSlider

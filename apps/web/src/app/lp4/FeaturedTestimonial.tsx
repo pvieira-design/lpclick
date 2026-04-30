@@ -524,6 +524,24 @@ function FeaturedCard({
           </div>
         )}
 
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <span
+            className="featured-play relative flex size-16 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur transition-all duration-200 ease-out group-hover:bg-white group-hover:text-[#1a5c30] sm:size-[72px]"
+            aria-hidden="true"
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              style={{ transform: "translateX(2px)" }}
+              className="sm:!h-6 sm:!w-6"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </span>
+        </div>
+
         <div className="absolute inset-x-0 bottom-0 flex flex-col gap-5 p-6 sm:p-8">
           <span
             aria-hidden="true"
@@ -539,29 +557,11 @@ function FeaturedCard({
             {quote}
           </blockquote>
 
-          <div className="flex items-end justify-between gap-4">
-            <div className="min-w-0">
-              <p className="text-[15px] font-semibold text-white sm:text-base">
-                {testimonial.nome ?? "Paciente"}
-              </p>
-              <p className="text-[13px] text-white/70 sm:text-sm">{sub}</p>
-            </div>
-
-            <span
-              className="featured-play relative flex size-11 shrink-0 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur transition-all duration-200 ease-out group-hover:bg-white group-hover:text-[#1a5c30] sm:size-12"
-              aria-hidden="true"
-            >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                style={{ transform: "translateX(1px)" }}
-                className="sm:!h-4 sm:!w-4"
-              >
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </span>
+          <div className="min-w-0">
+            <p className="text-[15px] font-semibold text-white sm:text-base">
+              {testimonial.nome ?? "Paciente"}
+            </p>
+            <p className="text-[13px] text-white/70 sm:text-sm">{sub}</p>
           </div>
         </div>
       </div>
