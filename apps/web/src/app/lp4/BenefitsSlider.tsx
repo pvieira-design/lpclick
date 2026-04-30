@@ -101,50 +101,90 @@ const T: Record<string, Theme> = {
     orb: "radial-gradient(closest-side, rgba(255, 232, 200, 0.75), rgba(255, 232, 200, 0))",
     isDark: false,
   },
+  mint: {
+    bg: `
+      radial-gradient(ellipse 70% 55% at 0% 100%, rgba(255, 218, 195, 0.55) 0%, rgba(255, 218, 195, 0) 60%),
+      radial-gradient(ellipse 60% 50% at 100% 0%, rgba(168, 232, 220, 0.65) 0%, rgba(168, 232, 220, 0) 55%),
+      radial-gradient(ellipse 90% 70% at 30% 60%, rgba(196, 230, 218, 0.5) 0%, rgba(196, 230, 218, 0) 70%),
+      linear-gradient(150deg, #e3f4ec 0%, #cee6dc 30%, #b4d7c8 60%, #a4c5b9 85%, #b4cabd 100%)
+    `,
+    fg: "#1B2F2A",
+    fgMuted: "rgba(27, 47, 42, 0.72)",
+    eyebrow: "#2C7361",
+    orb: "radial-gradient(closest-side, rgba(150, 220, 200, 0.65), rgba(150, 220, 200, 0))",
+    isDark: false,
+  },
+  coral: {
+    bg: `
+      radial-gradient(ellipse 70% 55% at 0% 100%, rgba(255, 198, 218, 0.55) 0%, rgba(255, 198, 218, 0) 65%),
+      radial-gradient(ellipse 55% 45% at 100% 0%, rgba(255, 178, 130, 0.7) 0%, rgba(255, 178, 130, 0) 60%),
+      radial-gradient(ellipse 80% 60% at 50% 60%, rgba(252, 220, 195, 0.5) 0%, rgba(252, 220, 195, 0) 70%),
+      linear-gradient(160deg, #fde7dd 0%, #fad1bd 30%, #f4b696 60%, #ec9c7c 85%, #d97f64 100%)
+    `,
+    fg: "#3a1b14",
+    fgMuted: "rgba(58, 27, 20, 0.72)",
+    eyebrow: "#a04428",
+    orb: "radial-gradient(closest-side, rgba(255, 215, 175, 0.75), rgba(255, 215, 175, 0))",
+    isDark: false,
+  },
 };
 
 const BENEFITS: Benefit[] = [
   {
-    id: "cbd",
-    badge: "CBD · Cannabidiol",
-    title: "Silencia a mente para dormir",
-    body: "O canabinoide mais estudado para ansiedade. Reduz a ruminação e os pensamentos acelerados que mantêm você acordado, sem efeito psicoativo nem sonolência diurna.",
-    theme: T.sage,
-  },
-  {
-    id: "cbn",
-    badge: "CBN · Canabinol",
-    title: "O canabinoide do sono profundo",
-    body: "Conhecido como “o canabinoide do sono”. O CBN tem ação sedativa natural e age para iniciar o sono mais rápido e prolongar as fases reparadoras do descanso.",
+    id: "sono-reparador",
+    badge: "Sono profundo · REM",
+    title: "Sono mais reparador, não apenas mais longo",
+    body: "A maioria dos remédios para dormir induz um sono “pesado” e artificial. Os canabinoides atuam regulando as fases naturais do sono, especialmente o sono profundo e o REM, que são as fases responsáveis pela recuperação física e mental.",
     theme: T.twilight,
   },
   {
-    id: "thc",
-    badge: "THC · Tetrahidrocanabinol",
-    title: "Encurta o tempo até adormecer",
-    body: "Em microdoses prescritas pelo médico, o THC reduz a latência do sono — o tempo até pegar no sono — e aprofunda os ciclos N3 de descanso reparador.",
+    id: "adormecer",
+    badge: "CBD · Serotonina",
+    title: "Adormecer com mais facilidade",
+    body: "A dificuldade para pegar no sono quase sempre vem da “mente acelerada”: pensamentos invasivos, preocupações, sensação de alerta. O CBD interage com receptores de serotonina (5-HT1A) e ajuda a reduzir o cortisol, hormônio do estresse que está alto em quem tem insônia.",
+    theme: T.sage,
+  },
+  {
+    id: "menos-despertares",
+    badge: "Continuidade · Cortisol",
+    title: "Menos despertares durante a noite",
+    body: "Acordar 2h, 4h da manhã e não conseguir voltar a dormir é um dos sintomas mais frustrantes da insônia, geralmente ligado à desregulação do ciclo do sono e picos de cortisol. Os canabinoides ajudam o corpo a manter a continuidade do sono ao estabilizar o sistema endocanabinoide.",
     theme: T.dusk,
   },
   {
-    id: "terpenos",
-    badge: "Terpenos · Mirceno + Linalol",
-    title: "O aroma que relaxa o corpo",
-    body: "Mirceno e Linalol — os mesmos compostos da lavanda — agem em sinergia com os canabinoides para relaxar a musculatura e baixar o ritmo cardíaco antes de dormir.",
-    theme: T.lavender,
+    id: "ciclo",
+    badge: "Ritmo circadiano",
+    title: "Regulação do ciclo do sono — não é sedação",
+    body: "Remédios como zolpidem te “desligam” à força, mas não tratam a causa da insônia: quando você para, ela volta pior. O CBD atua no sistema endocanabinoide, regulador natural do seu ritmo circadiano. Em vez de forçar o sono, ajuda seu corpo a relembrar como dormir naturalmente.",
+    theme: T.cream,
   },
   {
-    id: "endocanabinoide",
-    badge: "Sistema Endocanabinoide",
-    title: "Reajusta seu relógio biológico",
-    body: "Os canabinoides interagem com receptores CB1 que regulam o ciclo sono-vigília, ajudando o corpo a reconhecer os horários certos de descanso e energia.",
-    theme: T.cream,
+    id: "alternativa",
+    badge: "Sem tolerância",
+    title: "Alternativa a remédios para dormir tradicionais",
+    body: "Zolpidem, trazodona, benzodiazepínicos e até melatonina em altas doses têm limitações sérias: tolerância (você precisa de doses cada vez maiores), dependência, efeitos colaterais cognitivos e, em muitos casos, perda de eficácia depois de meses.",
+    theme: T.lavender,
   },
   {
     id: "sem-dependencia",
     badge: "Diferencial clínico",
-    title: "Sem ressaca medicamentosa",
-    body: "Diferente dos hipnóticos tradicionais, a cannabis medicinal não cria dependência química nem deixa aquela sensação de cabeça pesada ao acordar.",
+    title: "Sem dependência química conhecida",
+    body: "Benzodiazepínicos como clonazepam e diazepam criam dependência física em poucas semanas — parar de tomar significa síndrome de abstinência (insônia rebote, ansiedade, tremores). Os canabinoides usados no tratamento, principalmente o CBD, não estão associados a esse tipo de dependência química.",
     theme: T.dawn,
+  },
+  {
+    id: "complementar",
+    badge: "Transição gradual",
+    title: "Pode complementar o tratamento atual",
+    body: "Você não precisa parar tudo do dia para a noite. O médico pode iniciar a cannabis medicinal junto com seu tratamento atual e, conforme você responde, ir ajustando e reduzindo gradualmente a dose do remédio convencional à medida que os canabinoides assumem o trabalho.",
+    theme: T.mint,
+  },
+  {
+    id: "ansiedade-sono",
+    badge: "Ansiedade + sono",
+    title: "Trata ansiedade e sono ao mesmo tempo",
+    body: "Mais de 80% dos nossos pacientes têm ansiedade. O ciclo é cruel: você não dorme porque está ansioso, e fica mais ansioso porque não dormiu. Remédios para insônia tratam só o sono. Ansiolíticos tratam só a ansiedade. O CBD age nos dois ao mesmo tempo. É por isso que os pacientes sentem melhora “em camadas”.",
+    theme: T.coral,
   },
 ];
 
@@ -412,7 +452,7 @@ function BenefitCard({ benefit }: { benefit: Benefit }) {
   const { badge, title, body, theme } = benefit;
   return (
     <article
-      className="benefit-card relative flex aspect-[4/5] w-full flex-col overflow-hidden rounded-[28px]"
+      className="benefit-card relative flex aspect-[2/3] w-full flex-col overflow-hidden rounded-[28px]"
       data-dark={theme.isDark ? "true" : "false"}
       style={{ background: theme.bg, color: theme.fg }}
     >
