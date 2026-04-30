@@ -517,7 +517,7 @@ function BenefitCard({ benefit }: { benefit: Benefit }) {
             {title}
           </h3>
           <p
-            className="text-[0.9375rem] leading-relaxed sm:text-[0.975rem]"
+            className="text-[13px] leading-relaxed"
             style={{ color: theme.fgMuted }}
           >
             {body}
