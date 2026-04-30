@@ -48,7 +48,7 @@ export default function ConsumptionForms() {
             <article
               key={item.num}
               className="card flex flex-col overflow-hidden rounded-3xl bg-[#f5f5f6] ring-1 ring-gray-200/60"
-              style={{ "--stack-top": `${144 + i * 52}px` } as React.CSSProperties}
+              style={{ "--stack-top": `${16 + i * 52}px` } as React.CSSProperties}
             >
               <div className="relative aspect-square w-full bg-[#f5faf6]">
                 <Image
@@ -83,14 +83,6 @@ export default function ConsumptionForms() {
 
       <style>{`
         @media (max-width: 639px) {
-          .consumption-header {
-            position: sticky;
-            top: 0;
-            z-index: 20;
-            background: white;
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
-          }
           .consumption-cards .card {
             position: sticky;
             top: var(--stack-top);
