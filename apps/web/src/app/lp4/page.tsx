@@ -6,6 +6,8 @@ import FeaturedTestimonial from "./FeaturedTestimonial";
 import BenefitsSlider from "./BenefitsSlider";
 import TreatmentSteps from "./TreatmentSteps";
 import TreatmentCTA from "./TreatmentCTA";
+import TestimonialsWall from "./TestimonialsWall";
+import StickyContactCTA from "./StickyContactCTA";
 import { TESTIMONIALS_META } from "./testimonialsMeta";
 
 const FLAVIA_ID = "c4c187de-ba4a-4793-9700-ce8a37b215b1";
@@ -217,6 +219,7 @@ export default async function LandingPage() {
 
       <main className="flex min-h-svh flex-col bg-white">
         <LandingClient />
+        <div id="lp4-sticky-anchor" aria-hidden="true" />
         {featuredItems.length > 0 && (
           <FeaturedTestimonial items={featuredItems} />
         )}
@@ -229,7 +232,9 @@ export default async function LandingPage() {
           titleLight="Histórias reais de"
           titleBold="nossos pacientes"
         />
+        <TestimonialsWall />
       </main>
+      <StickyContactCTA />
     </>
   );
 }

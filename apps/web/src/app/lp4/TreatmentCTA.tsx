@@ -6,7 +6,7 @@ export default function TreatmentCTA() {
   };
 
   return (
-    <section className="bg-white pb-16 sm:pb-24">
+    <section className="hidden bg-white pb-16 sm:block sm:pb-24">
       <div className="mx-auto w-full max-w-xl px-5">
         <button
           type="button"

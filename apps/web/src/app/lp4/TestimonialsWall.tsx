@@ -1,0 +1,119 @@
+"use client";
+
+import { TEXT_TESTIMONIALS, type TextTestimonial } from "./textTestimonials";
+
+function relativeDate(iso: string): string {
+  const then = new Date(iso).getTime();
+  if (!then) return "";
+  const days = Math.max(0, Math.floor((Date.now() - then) / (1000 * 60 * 60 * 24)));
+  if (days < 7) return `há ${days} dia${days === 1 ? "" : "s"}`;
+  if (days < 30) {
+    const w = Math.floor(days / 7);
+    return `há ${w} semana${w === 1 ? "" : "s"}`;
+  }
+  const months = Math.floor(days / 30);
+  if (months < 12) return `há ${months} ${months === 1 ? "mês" : "meses"}`;
+  const years = Math.floor(months / 12);
+  return `há ${years} ano${years === 1 ? "" : "s"}`;
+}
+
+const TAG_STYLES: Record<string, string> = {
+  Insônia: "bg-[#e6f2e9] text-[#2d6e3f]",
+  Ansiedade: "bg-[#eef2ff] text-[#4f46e5]",
+  Dor: "bg-[#fee7e6] text-[#b1382e]",
+  Pânico: "bg-[#f3e8ff] text-[#7c3aed]",
+  Depressão: "bg-[#e0e7ef] text-[#475569]",
+  Foco: "bg-[#fef3c7] text-[#92400e]",
+  Estresse: "bg-[#ffedd5] text-[#9a3412]",
+  Artrite: "bg-[#fce7f3] text-[#9d174d]",
+};
+const tagStyle = (t: string) => TAG_STYLES[t] ?? "bg-gray-100 text-gray-600";
+
+export default function TestimonialsWall() {
+  const items = TEXT_TESTIMONIALS;
+
+  const columns: TextTestimonial[][] = [[], [], []];
+  items.forEach((r, i) => columns[i % 3].push(r));
+
+  return (
+    <section className="bg-white pb-12 sm:pb-20">
+      <div className="mx-auto w-full max-w-5xl px-5">
+        <div className="mx-auto flex max-w-[540px] flex-col gap-4 sm:hidden">
+          {items.map((r) => (
+            <ReviewCard key={`m-${r.name}`} review={r} />
+          ))}
+        </div>
+
+        <div className="hidden grid-cols-3 gap-4 sm:grid">
+          {columns.map((col, ci) => (
+            <div key={ci} className="flex flex-col gap-4">
+              {col.map((r) => (
+                <ReviewCard key={`c${ci}-${r.name}`} review={r} />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ReviewCard({ review }: { review: TextTestimonial }) {
+  return (
+    <article className="rounded-2xl border border-gray-200/80 bg-white p-5 shadow-sm">
+      <div className="flex items-center gap-3">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={review.photo}
+          alt=""
+          width={40}
+          height={40}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-100 object-cover"
+        />
+        <div className="flex flex-1 flex-col">
+          <span className="text-[0.875rem] font-medium text-gray-900">
+            {review.name}
+          </span>
+          <div
+            className="mt-0.5 flex items-center gap-0.5 text-[#f5a623]"
+            aria-label="5 estrelas"
+          >
+            {Array.from({ length: 5 }).map((_, i) => (
+              <svg
+                key={i}
+                width="12"
+                height="12"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.78L10 14.77l-5.2 2.73.99-5.78L1.58 7.62l5.82-.85L10 1.5z" />
+              </svg>
+            ))}
+          </div>
+        </div>
+        <span className="text-[0.75rem] text-gray-400">
+          {relativeDate(review.publishedAt)}
+        </span>
+      </div>
+      <p className="mt-3 text-[0.9375rem] leading-relaxed text-gray-700">
+        “{review.text}”
+      </p>
+      {review.tags.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {review.tags.map((t) => (
+            <span
+              key={t}
+              className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${tagStyle(t)}`}
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+      )}
+    </article>
+  );
+}
