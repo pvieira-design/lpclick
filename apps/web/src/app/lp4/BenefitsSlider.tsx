@@ -200,6 +200,9 @@ export default function BenefitsSlider() {
     startX: 0,
     startScrollLeft: 0,
     startIdx: 0,
+    startTime: 0,
+    lastX: 0,
+    lastTime: 0,
     moved: false,
   });
 
@@ -261,12 +264,16 @@ export default function BenefitsSlider() {
     if (e.pointerType === "mouse" && e.button !== 0) return;
     const el = trackRef.current;
     if (!el) return;
+    const now = performance.now();
     dragRef.current = {
       isDown: true,
       pointerId: e.pointerId,
       startX: e.clientX,
       startScrollLeft: el.scrollLeft,
       startIdx: getActiveIdx(),
+      startTime: now,
+      lastX: e.clientX,
+      lastTime: now,
       moved: false,
     };
   };
@@ -286,6 +293,8 @@ export default function BenefitsSlider() {
       }
     }
     el.scrollLeft = d.startScrollLeft - dx;
+    d.lastX = e.clientX;
+    d.lastTime = performance.now();
   };
   const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     const d = dragRef.current;
@@ -296,9 +305,24 @@ export default function BenefitsSlider() {
     d.isDown = false;
     d.pointerId = null;
     if (d.moved) {
-      const nearest = getActiveIdx();
-      const clamped = Math.max(d.startIdx - 1, Math.min(d.startIdx + 1, nearest));
-      goTo(clamped);
+      const el = trackRef.current;
+      const dx = e.clientX - d.startX;
+      const slide = el?.children[0] as HTMLElement | undefined;
+      const slideWidth = slide?.clientWidth ?? el?.clientWidth ?? 320;
+      // Velocidade dos últimos ~80ms — capta flicks mesmo após pausa.
+      const recentDx = e.clientX - d.lastX;
+      const recentDt = Math.max(1, performance.now() - d.lastTime);
+      const flickV = Math.abs(recentDx) / recentDt; // px/ms
+      const totalDt = Math.max(1, performance.now() - d.startTime);
+      const avgV = Math.abs(dx) / totalDt;
+      const isFlick = (flickV > 0.5 || avgV > 0.4) && Math.abs(dx) > 6;
+      const crossedThreshold = Math.abs(dx) > slideWidth * 0.18;
+      if (isFlick || crossedThreshold) {
+        const direction = dx < 0 ? 1 : -1;
+        goTo(d.startIdx + direction);
+      } else {
+        goTo(d.startIdx);
+      }
     }
   };
 
@@ -330,7 +354,7 @@ export default function BenefitsSlider() {
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
-          className="benefits-track flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain"
+          className="benefits-track flex overflow-x-auto overscroll-x-contain"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
@@ -346,7 +370,6 @@ export default function BenefitsSlider() {
                 flexShrink: 0,
                 width: "calc(100% - 56px)",
                 maxWidth: "360px",
-                scrollSnapAlign: "center",
               }}
             >
               <BenefitCard benefit={b} />

@@ -41,6 +41,9 @@ export default function FeaturedTestimonial({ items }: Props) {
     startX: 0,
     startScrollLeft: 0,
     startIdx: 0,
+    startTime: 0,
+    lastX: 0,
+    lastTime: 0,
     moved: false,
   });
   const hoverPausedRef = useRef(false);
@@ -150,12 +153,16 @@ export default function FeaturedTestimonial({ items }: Props) {
     if (e.pointerType === "mouse" && e.button !== 0) return;
     const el = trackRef.current;
     if (!el) return;
+    const now = performance.now();
     dragRef.current = {
       isDown: true,
       pointerId: e.pointerId,
       startX: e.clientX,
       startScrollLeft: el.scrollLeft,
       startIdx: getActiveIdx(),
+      startTime: now,
+      lastX: e.clientX,
+      lastTime: now,
       moved: false,
     };
   };
@@ -175,6 +182,8 @@ export default function FeaturedTestimonial({ items }: Props) {
       }
     }
     el.scrollLeft = d.startScrollLeft - dx;
+    d.lastX = e.clientX;
+    d.lastTime = performance.now();
   };
   const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     const d = dragRef.current;
@@ -185,9 +194,23 @@ export default function FeaturedTestimonial({ items }: Props) {
     d.isDown = false;
     d.pointerId = null;
     if (d.moved) {
-      const nearest = getActiveIdx();
-      const clamped = Math.max(d.startIdx - 1, Math.min(d.startIdx + 1, nearest));
-      goTo(clamped);
+      const el = trackRef.current;
+      const dx = e.clientX - d.startX;
+      const slide = el?.children[0] as HTMLElement | undefined;
+      const slideWidth = slide?.clientWidth ?? el?.clientWidth ?? 320;
+      const recentDx = e.clientX - d.lastX;
+      const recentDt = Math.max(1, performance.now() - d.lastTime);
+      const flickV = Math.abs(recentDx) / recentDt;
+      const totalDt = Math.max(1, performance.now() - d.startTime);
+      const avgV = Math.abs(dx) / totalDt;
+      const isFlick = (flickV > 0.5 || avgV > 0.4) && Math.abs(dx) > 6;
+      const crossedThreshold = Math.abs(dx) > slideWidth * 0.18;
+      if (isFlick || crossedThreshold) {
+        const direction = dx < 0 ? 1 : -1;
+        goTo(d.startIdx + direction);
+      } else {
+        goTo(d.startIdx);
+      }
       startAutoAdvance();
     }
     // moved permanece true até o próximo pointerdown — usado pra suprimir click
@@ -252,7 +275,7 @@ export default function FeaturedTestimonial({ items }: Props) {
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
-          className="featured-track flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain"
+          className="featured-track flex overflow-x-auto overscroll-x-contain"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
@@ -268,7 +291,6 @@ export default function FeaturedTestimonial({ items }: Props) {
                 flexShrink: 0,
                 width: "calc(100% - 56px)",
                 maxWidth: "420px",
-                scrollSnapAlign: "center",
               }}
             >
               <FeaturedCard
@@ -526,7 +548,7 @@ function FeaturedCard({
           </div>
         )}
 
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+        <div className="pointer-events-none absolute inset-0 flex -translate-y-14 items-center justify-center sm:translate-y-0">
           <span
             className="featured-play relative flex size-16 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur transition-all duration-200 ease-out group-hover:bg-white group-hover:text-[#1a5c30] sm:size-[72px]"
             aria-hidden="true"
