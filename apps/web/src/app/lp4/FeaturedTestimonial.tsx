@@ -35,17 +35,6 @@ export default function FeaturedTestimonial({ items }: Props) {
 
   const N = items.length;
 
-  const dragRef = useRef({
-    isDown: false,
-    pointerId: null as number | null,
-    startX: 0,
-    startScrollLeft: 0,
-    startIdx: 0,
-    startTime: 0,
-    lastX: 0,
-    lastTime: 0,
-    moved: false,
-  });
   const hoverPausedRef = useRef(false);
   const dialogPausedRef = useRef(false);
   // Direção do auto-advance: 1 = avançando, -1 = retrocedendo. Faz "ping-pong"
@@ -123,11 +112,7 @@ export default function FeaturedTestimonial({ items }: Props) {
     stopAutoAdvance();
     if (N <= 1) return;
     intervalIdRef.current = window.setInterval(() => {
-      if (
-        hoverPausedRef.current ||
-        dialogPausedRef.current ||
-        dragRef.current.isDown
-      ) {
+      if (hoverPausedRef.current || dialogPausedRef.current) {
         return;
       }
       const cur = activeIndexRef.current;
@@ -149,79 +134,7 @@ export default function FeaturedTestimonial({ items }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [N]);
 
-  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === "mouse" && e.button !== 0) return;
-    const el = trackRef.current;
-    if (!el) return;
-    const now = performance.now();
-    dragRef.current = {
-      isDown: true,
-      pointerId: e.pointerId,
-      startX: e.clientX,
-      startScrollLeft: el.scrollLeft,
-      startIdx: getActiveIdx(),
-      startTime: now,
-      lastX: e.clientX,
-      lastTime: now,
-      moved: false,
-    };
-  };
-  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    const d = dragRef.current;
-    if (!d.isDown || e.pointerId !== d.pointerId) return;
-    const el = trackRef.current;
-    if (!el) return;
-    const dx = e.clientX - d.startX;
-    if (!d.moved) {
-      if (Math.abs(dx) <= 4) return;
-      d.moved = true;
-      try {
-        e.currentTarget.setPointerCapture(e.pointerId);
-      } catch {
-        /* noop */
-      }
-    }
-    el.scrollLeft = d.startScrollLeft - dx;
-    d.lastX = e.clientX;
-    d.lastTime = performance.now();
-  };
-  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    const d = dragRef.current;
-    if (e.pointerId !== d.pointerId) return;
-    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    }
-    d.isDown = false;
-    d.pointerId = null;
-    if (d.moved) {
-      const el = trackRef.current;
-      const dx = e.clientX - d.startX;
-      const slide = el?.children[0] as HTMLElement | undefined;
-      const slideWidth = slide?.clientWidth ?? el?.clientWidth ?? 320;
-      const recentDx = e.clientX - d.lastX;
-      const recentDt = Math.max(1, performance.now() - d.lastTime);
-      const flickV = Math.abs(recentDx) / recentDt;
-      const totalDt = Math.max(1, performance.now() - d.startTime);
-      const avgV = Math.abs(dx) / totalDt;
-      const isFlick = (flickV > 0.5 || avgV > 0.4) && Math.abs(dx) > 6;
-      const crossedThreshold = Math.abs(dx) > slideWidth * 0.18;
-      if (isFlick || crossedThreshold) {
-        const direction = dx < 0 ? 1 : -1;
-        goTo(d.startIdx + direction);
-      } else {
-        goTo(d.startIdx);
-      }
-      startAutoAdvance();
-    }
-    // moved permanece true até o próximo pointerdown — usado pra suprimir click
-  };
-
-  const handleCardClick = (item: FeaturedItem, e: React.MouseEvent) => {
-    if (dragRef.current.moved) {
-      e.preventDefault();
-      dragRef.current.moved = false;
-      return;
-    }
+  const handleCardClick = (item: FeaturedItem) => {
     setActiveUrl(item.testimonial.video_url);
     setOpen(true);
     dialogPausedRef.current = true;
@@ -271,15 +184,8 @@ export default function FeaturedTestimonial({ items }: Props) {
       >
         <div
           ref={trackRef}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-          className="featured-track flex overflow-x-auto overscroll-x-contain"
+          className="featured-track flex overflow-hidden"
           style={{
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-            touchAction: "pan-y",
             paddingInline: "28px",
             gap: "16px",
           }}
@@ -296,7 +202,7 @@ export default function FeaturedTestimonial({ items }: Props) {
               <FeaturedCard
                 item={item}
                 priority={i === 0}
-                onClick={(e) => handleCardClick(item, e)}
+                onClick={() => handleCardClick(item)}
               />
             </div>
           ))}
@@ -313,9 +219,9 @@ export default function FeaturedTestimonial({ items }: Props) {
               }}
               disabled={activeIndex === 0}
               aria-label="Depoimento anterior"
-              className="flex size-9 items-center justify-center rounded-full bg-gray-100 text-[#285E31] transition-colors duration-150 ease-out hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-gray-100"
+              className="flex size-11 items-center justify-center rounded-full bg-gray-100 text-[#285E31] transition-colors duration-150 ease-out hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-gray-100"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
@@ -350,9 +256,9 @@ export default function FeaturedTestimonial({ items }: Props) {
               }}
               disabled={activeIndex >= N - 1}
               aria-label="Próximo depoimento"
-              className="flex size-9 items-center justify-center rounded-full bg-gray-100 text-[#285E31] transition-colors duration-150 ease-out hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-gray-100"
+              className="flex size-11 items-center justify-center rounded-full bg-gray-100 text-[#285E31] transition-colors duration-150 ease-out hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-gray-100"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
@@ -491,7 +397,7 @@ function FeaturedCard({
   priority = false,
 }: {
   item: FeaturedItem;
-  onClick: (e: React.MouseEvent) => void;
+  onClick: () => void;
   priority?: boolean;
 }) {
   const { testimonial, quote, imageSrc, subtitle, imagePosition = "center" } = item;
