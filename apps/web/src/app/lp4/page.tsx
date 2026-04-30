@@ -3,6 +3,7 @@ import LandingClient from "./LandingClient";
 import ConsumptionForms from "./ConsumptionForms";
 import TestimonialsSlider from "./TestimonialsSlider";
 import FeaturedTestimonial from "./FeaturedTestimonial";
+import BenefitsSlider from "./BenefitsSlider";
 import TreatmentSteps from "./TreatmentSteps";
 import TreatmentCTA from "./TreatmentCTA";
 import { TESTIMONIALS_META } from "./testimonialsMeta";
@@ -219,6 +220,7 @@ export default async function LandingPage() {
         {featuredItems.length > 0 && (
           <FeaturedTestimonial items={featuredItems} />
         )}
+        <BenefitsSlider />
         <ConsumptionForms />
         <TreatmentCTA />
         <TreatmentSteps />
