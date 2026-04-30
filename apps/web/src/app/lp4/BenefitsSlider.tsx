@@ -199,6 +199,7 @@ export default function BenefitsSlider() {
     pointerId: null as number | null,
     startX: 0,
     startScrollLeft: 0,
+    startIdx: 0,
     moved: false,
   });
 
@@ -257,8 +258,7 @@ export default function BenefitsSlider() {
   }, []);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType !== "mouse") return;
-    if (e.button !== 0) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
     const el = trackRef.current;
     if (!el) return;
     dragRef.current = {
@@ -266,6 +266,7 @@ export default function BenefitsSlider() {
       pointerId: e.pointerId,
       startX: e.clientX,
       startScrollLeft: el.scrollLeft,
+      startIdx: getActiveIdx(),
       moved: false,
     };
   };
@@ -294,7 +295,11 @@ export default function BenefitsSlider() {
     }
     d.isDown = false;
     d.pointerId = null;
-    if (d.moved) goTo(getActiveIdx());
+    if (d.moved) {
+      const nearest = getActiveIdx();
+      const clamped = Math.max(d.startIdx - 1, Math.min(d.startIdx + 1, nearest));
+      goTo(clamped);
+    }
   };
 
   return (
@@ -329,7 +334,7 @@ export default function BenefitsSlider() {
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
-            touchAction: "pan-x pan-y",
+            touchAction: "pan-y",
             paddingInline: "20px",
             gap: "14px",
           }}

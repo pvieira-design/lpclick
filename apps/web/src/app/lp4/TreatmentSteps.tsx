@@ -50,7 +50,7 @@ export default function TreatmentSteps() {
   };
 
   return (
-    <section className="bg-white py-12 sm:py-16">
+    <section id="lp4-treatment-steps" className="bg-white py-12 sm:py-16">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-5">
         {/* Header */}
         <header className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-x-8 sm:gap-y-2">

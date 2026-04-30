@@ -40,6 +40,7 @@ export default function FeaturedTestimonial({ items }: Props) {
     pointerId: null as number | null,
     startX: 0,
     startScrollLeft: 0,
+    startIdx: 0,
     moved: false,
   });
   const hoverPausedRef = useRef(false);
@@ -145,10 +146,8 @@ export default function FeaturedTestimonial({ items }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [N]);
 
-  // Drag por mouse (touch usa scroll nativo)
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType !== "mouse") return;
-    if (e.button !== 0) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
     const el = trackRef.current;
     if (!el) return;
     dragRef.current = {
@@ -156,6 +155,7 @@ export default function FeaturedTestimonial({ items }: Props) {
       pointerId: e.pointerId,
       startX: e.clientX,
       startScrollLeft: el.scrollLeft,
+      startIdx: getActiveIdx(),
       moved: false,
     };
   };
@@ -185,7 +185,9 @@ export default function FeaturedTestimonial({ items }: Props) {
     d.isDown = false;
     d.pointerId = null;
     if (d.moved) {
-      goTo(getActiveIdx());
+      const nearest = getActiveIdx();
+      const clamped = Math.max(d.startIdx - 1, Math.min(d.startIdx + 1, nearest));
+      goTo(clamped);
       startAutoAdvance();
     }
     // moved permanece true até o próximo pointerdown — usado pra suprimir click
@@ -254,7 +256,7 @@ export default function FeaturedTestimonial({ items }: Props) {
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
-            touchAction: "pan-x pan-y",
+            touchAction: "pan-y",
             paddingInline: "28px",
             gap: "16px",
           }}
