@@ -1,6 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 import LandingClient from "./LandingClient";
 import ConsumptionForms from "./ConsumptionForms";
+import MediaLogosMarquee from "./MediaLogosMarquee";
 import TestimonialsSlider from "./TestimonialsSlider";
 import TreatmentSteps from "./TreatmentSteps";
 import TreatmentCTA from "./TreatmentCTA";
@@ -154,6 +155,7 @@ export default async function LandingPage() {
         )}
         <ConsumptionForms />
         <TreatmentCTA />
+        <MediaLogosMarquee />
         <div id="lp5-treatment-steps">
           <TreatmentSteps />
         </div>
