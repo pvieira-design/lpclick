@@ -20,7 +20,11 @@ export default function StickyContactCTA() {
   }, []);
 
   useEffect(() => {
-    const ids = ["lp5-treatment-steps", "lp5-other-testimonials"];
+    const ids = [
+      "lp5-treatment-steps",
+      "lp5-other-testimonials",
+      "lp5-testimonials-wall",
+    ];
     const targets = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);

@@ -5,6 +5,7 @@ import TestimonialsSlider from "./TestimonialsSlider";
 import TreatmentSteps from "./TreatmentSteps";
 import TreatmentCTA from "./TreatmentCTA";
 import StickyContactCTA from "./StickyContactCTA";
+import TestimonialsWall from "./TestimonialsWall";
 import { TESTIMONIALS_META } from "./testimonialsMeta";
 
 const FEATURED_INSOMNIA_IDS = [
@@ -165,6 +166,7 @@ export default async function LandingPage() {
             />
           </div>
         )}
+        <TestimonialsWall />
       </main>
       <StickyContactCTA />
     </>
