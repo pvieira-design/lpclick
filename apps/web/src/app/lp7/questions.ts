@@ -28,8 +28,8 @@ export const QUESTIONS: Question[] = [
       "Existem gomas (jujubas) de cannabis medicinal que podem ajudar no sono.",
     answer: true,
     image: {
-      src: "/lp7/question-2.png?v=1",
-      alt: "Pote de vidro com gomas coloridas de suplemento natural",
+      src: "/lp7/question-2.png?v=2",
+      alt: "Goma quadrada com cristais de açúcar em close-up macro",
     },
     explanation:
       "Verdadeiro. Existem formatos como gomas, óleos e cápsulas. A escolha depende da avaliação médica, da composição do produto e do objetivo do tratamento.",

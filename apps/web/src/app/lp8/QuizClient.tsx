@@ -711,44 +711,39 @@ function WrongScreen({
     <div className="flex min-h-svh w-full flex-col">
       <TopHud progress={progress} lives={lives} />
 
-      <section className="flex flex-1 flex-col items-center justify-center px-5 py-8">
-        <div className="q-shake mb-4 flex size-20 items-center justify-center rounded-full bg-red-100 text-red-500 sm:size-24">
+      <section className="flex flex-1 flex-col items-center justify-center px-5 py-5">
+        <div className="q-shake mb-3 flex size-14 items-center justify-center rounded-full bg-red-100 text-red-500 sm:size-16">
           {reason === "timeout" ? (
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" />
               <path d="M12 7v5l3 3" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           ) : (
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
             </svg>
           )}
         </div>
-        <p className="mb-1 text-sm font-semibold tracking-wide text-red-500 uppercase">
+        <p className="mb-1 text-xs font-semibold tracking-wide text-red-500 uppercase">
           {reason === "timeout" ? "Tempo esgotado!" : "Resposta incorreta"}
         </p>
-        <h2 className="mb-6 max-w-[20ch] text-center text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+        <h2 className="mb-4 max-w-[20ch] text-center text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
           A resposta era <span className="text-[#3a7a4f]">{question.answer ? "Verdadeiro" : "Falso"}</span>
         </h2>
 
-        <div className="q-scale-in w-full max-w-2xl rounded-3xl border border-gray-100 bg-white p-6 shadow-lg shadow-gray-900/5 opacity-0 sm:p-8">
-          <p className="mb-2 text-xs font-semibold tracking-wide text-gray-400 uppercase">Sobre a afirmação</p>
-          <p className="mb-4 text-base font-medium text-gray-700 italic sm:text-lg">
-            &ldquo;{question.statement}&rdquo;
-          </p>
-          <div className="rounded-xl bg-[#f0f7f1] p-4 sm:p-5">
-            <p className="text-sm leading-relaxed text-gray-700 sm:text-base">{question.explanation}</p>
-          </div>
+        <div className="q-scale-in w-full max-w-2xl rounded-2xl bg-[#f0f7f1] p-5 opacity-0 sm:p-6">
+          <p className="mb-2 text-xs font-semibold tracking-wide text-[#3a7a4f] uppercase">Explicação</p>
+          <p className="text-sm leading-relaxed text-gray-700 sm:text-base">{question.explanation}</p>
         </div>
 
-        <p className="mt-6 text-sm text-gray-500">
+        <p className="mt-4 text-sm text-gray-500">
           Você ainda tem <strong className="text-red-500">{remaining}</strong> {remaining === 1 ? "chance" : "chances"}
         </p>
 
         <button
           type="button"
           onClick={onNext}
-          className="mt-4 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#3a7a4f] px-8 py-4 text-base font-semibold text-white shadow-lg shadow-[#3a7a4f]/25 transition-transform duration-150 active:scale-95"
+          className="mt-3 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#3a7a4f] px-8 py-4 text-base font-semibold text-white shadow-lg shadow-[#3a7a4f]/25 transition-transform duration-150 active:scale-95"
         >
           Próxima pergunta
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
