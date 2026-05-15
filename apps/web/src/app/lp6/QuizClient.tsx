@@ -25,13 +25,13 @@ function whatsappUrl(text: string) {
 
 function buildWonWhatsAppUrl(name: string, patologias: string[]) {
   const list = patologias.map((p, i) => `${i + 1}. ${p}`).join("\n");
-  const text = `Olá, me chamo ${name}.\n\nAcabei de acertar 10 perguntas no quiz da Click Cannabis e quero resgatar minha consulta de acompanhamento gratuita!\n\nPatologias:\n${list}`;
+  const text = `Olá, me chamo ${name}.\n\nPatologias selecionadas:\n${list}\n\nAcabei de acertar 10 perguntas no quiz da Click Cannabis e quero resgatar minha consulta de acompanhamento gratuita!`;
   return whatsappUrl(text);
 }
 
 function buildLostWhatsAppUrl(name: string, patologias: string[]) {
   const list = patologias.map((p, i) => `${i + 1}. ${p}`).join("\n");
-  const text = `Olá, me chamo ${name}.\n\nJoguei o quiz da Click Cannabis e gostaria de saber mais sobre o tratamento com cannabis medicinal.\n\nPatologias:\n${list}`;
+  const text = `Olá, me chamo ${name}.\n\nPatologias selecionadas:\n${list}\n\nJoguei o quiz da Click Cannabis e gostaria de saber mais sobre o tratamento com cannabis medicinal.`;
   return whatsappUrl(text);
 }
 
