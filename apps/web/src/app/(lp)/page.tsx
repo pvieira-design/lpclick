@@ -220,7 +220,7 @@ export default function LP2() {
           <h1
             className="text-center text-3xl leading-tight font-normal tracking-tight text-gray-900"
           >
-            Médicos Prescritores de Cannabis Medicinal
+            Médicos Prescritores de Cannabis Medicinal Online
           </h1>
           <p className="mt-2 max-w-md text-center text-sm font-normal text-gray-500">
             Selecione abaixo uma ou mais patologias e inicie seu tratamento com
