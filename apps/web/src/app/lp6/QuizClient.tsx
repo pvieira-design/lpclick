@@ -57,9 +57,12 @@ function sendLeadToApi(name: string, patologies: string[]): void {
     patologies,
     data: {
       fbclid: readFbclid(),
+      fbp: readCookie("_fbp"),
+      fbc: readCookie("_fbc"),
       language: navigator.language,
       platform: n.platform,
       referrer: document.referrer,
+      pageUrl: window.location.href,
       utm_term: params.get("utm_term") ?? "",
       userAgent: navigator.userAgent,
       appVersion: n.appVersion,

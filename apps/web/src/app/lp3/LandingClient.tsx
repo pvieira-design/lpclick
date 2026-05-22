@@ -29,9 +29,12 @@ type LeadPayload = {
   patologies: string[];
   data: {
     fbclid: string;
+    fbp: string;
+    fbc: string;
     language: string;
     platform: string;
     referrer: string;
+    pageUrl: string;
     utm_term: string;
     userAgent: string;
     appVersion: string;
@@ -72,9 +75,12 @@ function collectLeadData(name: string, patologies: string[]): LeadPayload {
     patologies,
     data: {
       fbclid: readFbclid(),
+      fbp: readCookie("_fbp"),
+      fbc: readCookie("_fbc"),
       language: navigator.language,
       platform,
       referrer: document.referrer,
+      pageUrl: window.location.href,
       utm_term: params.get("utm_term") ?? "",
       userAgent: navigator.userAgent,
       appVersion,
