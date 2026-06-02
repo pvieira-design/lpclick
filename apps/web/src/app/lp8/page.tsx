@@ -9,7 +9,8 @@ export const metadata: Metadata = {
     "Acerte 8 perguntas sobre cannabis medicinal no Brasil, formatos modernos e atendimento médico online e ganhe uma consulta de acompanhamento gratuita com a Click.",
 };
 
-export const revalidate = 60;
+// Cache estático; revalidado sob demanda pelo /api/forms/submit ao entrar um depoimento novo.
+export const revalidate = false;
 
 const FEATURED_TESTIMONIAL_IDS = [
   "c4c187de-ba4a-4793-9700-ce8a37b215b1",

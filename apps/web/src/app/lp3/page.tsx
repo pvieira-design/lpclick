@@ -5,7 +5,8 @@ import TestimonialsSlider from "./TestimonialsSlider";
 import TreatmentSteps from "./TreatmentSteps";
 import TreatmentCTA from "./TreatmentCTA";
 
-export const revalidate = 60;
+// Cache estático; revalidado sob demanda pelo /api/forms/submit ao entrar um depoimento novo.
+export const revalidate = false;
 
 const sql = neon(process.env.NEON_DATABASE_URL!);
 

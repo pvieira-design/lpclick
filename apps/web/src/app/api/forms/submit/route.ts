@@ -1,7 +1,20 @@
 import { neon } from "@neondatabase/serverless";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 const sql = neon(process.env.NEON_DATABASE_URL!);
+
+// Páginas que renderizam depoimentos a partir do banco. Revalidadas sob demanda
+// quando entra um depoimento novo, em vez de consultar o Neon a cada 60s.
+const TESTIMONIAL_PATHS = [
+  "/depoimentos",
+  "/lp3",
+  "/lp4",
+  "/lp5",
+  "/lp6",
+  "/lp7",
+  "/lp8",
+];
 
 function clientIp(request: Request): string | null {
   const xff = request.headers.get("x-forwarded-for");
@@ -40,6 +53,12 @@ export async function POST(request: Request) {
       VALUES (${formType}, ${JSON.stringify(auditedPayload)}::jsonb)
       RETURNING id, created_at
     `;
+
+    // Um depoimento novo (com vídeo) só afeta as páginas de depoimentos.
+    // Invalida o cache estático delas sob demanda para não depender de ISR por tempo.
+    if (formType === "historia" && payload.videoUrl) {
+      for (const path of TESTIMONIAL_PATHS) revalidatePath(path);
+    }
 
     return NextResponse.json({ id: result[0].id, created_at: result[0].created_at });
   } catch (error) {

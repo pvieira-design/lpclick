@@ -17,7 +17,8 @@ const FEATURED_INSOMNIA_IDS = [
   "23c65bc9-2930-4fb6-a7b5-02d9bfb2d1da", // Rafaella
 ];
 
-export const revalidate = 60;
+// Cache estático; revalidado sob demanda pelo /api/forms/submit ao entrar um depoimento novo.
+export const revalidate = false;
 
 const sql = neon(process.env.NEON_DATABASE_URL!);
 
