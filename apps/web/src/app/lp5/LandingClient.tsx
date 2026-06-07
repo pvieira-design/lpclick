@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { sendGTMEvent } from "@next/third-parties/google";
+import { sendLeadToCrm } from "@/lib/crmLead";
 
 const PATOLOGIAS = [
   "Insônia",
@@ -244,6 +245,7 @@ export default function LandingClient() {
     const leadData = collectLeadData(trimmed, patologias);
 
     sendLeadToApi(leadData);
+    sendLeadToCrm(trimmed, patologias);
 
     sendGTMEvent({
       event: "buttonWhatsappClicked",

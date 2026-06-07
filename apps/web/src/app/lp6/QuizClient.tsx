@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { sendGTMEvent } from "@next/third-parties/google";
+import { sendLeadToCrm } from "@/lib/crmLead";
 import { QUESTIONS, type Question } from "./questions";
 import type { Testimonial } from "./page";
 import TestimonialsSlider from "../lp5/TestimonialsSlider";
@@ -970,6 +971,7 @@ function WonLeadModal({ onClose, mode }: { onClose: () => void; mode: "won" | "l
     const patologias = Array.from(selected);
 
     sendLeadToApi(trimmed, patologias);
+    sendLeadToCrm(trimmed, patologias);
 
     sendGTMEvent({
       event: "buttonWhatsappClicked",
