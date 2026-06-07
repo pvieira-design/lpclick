@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { sendGTMEvent } from "@next/third-parties/google";
+import { sendLeadToCrm } from "@/lib/crmLead";
 
 const PATOLOGIAS = [
   "Ansiedade",
@@ -148,6 +149,8 @@ export default function LandingPage() {
         fbclid,
       },
     });
+
+    sendLeadToCrm(trimmed, patologias);
 
     const url = buildWhatsAppUrl(trimmed, patologias);
     window.open(url, "_blank", "noopener,noreferrer");
