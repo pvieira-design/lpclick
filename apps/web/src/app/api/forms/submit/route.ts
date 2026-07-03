@@ -14,6 +14,7 @@ const TESTIMONIAL_PATHS = [
   "/lp6",
   "/lp7",
   "/lp8",
+  "/lp9",
 ];
 
 function clientIp(request: Request): string | null {
