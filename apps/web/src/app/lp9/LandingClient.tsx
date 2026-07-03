@@ -251,6 +251,9 @@ const CSS = `
     .lp9 .form-card .num{font-size:1.9rem}
     .lp9 .final-in{gap:22px}
     .lp9 .form-box{padding:1.5rem}
+    .lp9 .chips{gap:.4rem}
+    .lp9 .chip{font-size:.8rem;padding:.45rem .72rem}
+    .lp9 .form-box .secure{font-size:.64rem;gap:.4rem}
     .lp9 footer{padding:40px 0 104px}
     .lp9 .foot-cols{gap:2.2rem;justify-content:space-around;text-align:center}
   }
