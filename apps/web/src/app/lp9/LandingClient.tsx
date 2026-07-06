@@ -70,7 +70,7 @@ const CSS = `
     .lp9 .hero-cta-row .btn:active,
     .lp9 .sticky-cta .btn:active{animation:none;transform:scale(.96)}
   }
-  .lp9 .btn-sub{display:block;font-size:.8rem;font-weight:400;color:var(--muted);margin-top:.55rem;letter-spacing:.01em}
+  .lp9 .btn-sub{display:block;font-size:.8rem;font-weight:400;color:var(--muted);margin-top:.55rem;letter-spacing:.01em;text-align:center}
 
   /* announcement bar */
   .lp9 .anno{background:var(--green-900);color:#e9e3d3;font-size:.82rem;letter-spacing:.04em;overflow:hidden;position:relative;border-bottom:1px solid rgba(255,255,255,.06)}
@@ -111,7 +111,7 @@ const CSS = `
   /* live badge inline (mobile, primeira dobra) */
   .lp9 .hero-live{display:none;align-items:center;gap:.55rem;margin:0 0 1.3rem;font-size:.92rem;color:var(--green-700);font-weight:500}
   .lp9 .hero-live b{color:var(--green-700);font-weight:700}
-  .lp9 .hero-cta-row{display:flex;flex-direction:column;gap:.4rem;align-items:flex-start}
+  .lp9 .hero-cta-row{display:flex;flex-direction:column;gap:.4rem;align-items:stretch;width:fit-content}
   .lp9 .hero-cta-row .btn{font-size:1.08rem}
   .lp9 .hero-visual{position:relative;height:460px;display:flex;align-items:center;justify-content:center}
   @media(max-width:920px){.lp9 .hero-visual{display:none}}
@@ -240,9 +240,8 @@ const CSS = `
     .lp9 section.block{padding:56px 0}
     .lp9 .hero{padding:30px 0 22px}
     .lp9 .hero-sub{margin:1.1rem 0 1.3rem;font-size:1.02rem;max-width:none}
-    .lp9 .hero-cta-row{align-items:stretch}
+    .lp9 .hero-cta-row{align-items:stretch;width:auto}
     .lp9 .hero-cta-row .btn{width:100%}
-    .lp9 .btn-sub{text-align:center}
     .lp9 .sec-head{margin-bottom:2rem}
     .lp9 .sec-head.center{margin-bottom:2.2rem}
     .lp9 .steps .sec-head h2{font-size:1.55rem}
