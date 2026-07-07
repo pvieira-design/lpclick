@@ -1,6 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  type Variants,
+} from "framer-motion";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
 import TestimonialsSlider, { type VideoTestimonial } from "./TestimonialsSlider";
@@ -23,6 +29,11 @@ const PATOLOGIAS = [
 ] as const;
 
 const PHONE = "5521993686082";
+
+// easing/física padrão das animações da página
+const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
+const BTN_SPRING = { type: "spring", stiffness: 420, damping: 26 } as const;
+const VIEWPORT = { once: true, amount: 0.2 } as const;
 
 function buildWhatsAppUrl(name: string, patologias: string[]) {
   const list = patologias.map((p, i) => `${i + 1}. ${p}`).join("\n");
@@ -51,6 +62,8 @@ const CSS = `
   }
   html:has(.lp9){scroll-behavior:smooth}
   .lp9 [id]{scroll-margin-top:76px}
+  .lp9 section.block[id]{scroll-margin-top:-14px}
+  @media(max-width:640px){.lp9 section.block[id]{scroll-margin-top:20px}}
   .lp9 h1,.lp9 h2,.lp9 h3{font-family:var(--font-fraunces),serif;font-weight:500;line-height:1.05;letter-spacing:-.015em}
   .lp9 a{color:inherit;text-decoration:none}
   .lp9 img{max-width:100%;display:block}
@@ -58,10 +71,9 @@ const CSS = `
   .lp9 .eyebrow{font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--green-600)}
 
   /* buttons */
-  .lp9 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;font-family:var(--font-lexend);font-weight:600;font-size:1rem;padding:1.05rem 2rem;border-radius:100px;border:none;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background .25s;white-space:nowrap}
+  .lp9 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;font-family:var(--font-lexend);font-weight:600;font-size:1rem;padding:1.05rem 2rem;border-radius:100px;border:none;cursor:pointer;transition:box-shadow .25s,background .25s;white-space:nowrap}
   .lp9 .btn-primary{background:linear-gradient(180deg,var(--green-600),var(--green-700));color:#fdfcf6;box-shadow:0 14px 30px -12px rgba(31,69,51,.7),inset 0 1px 0 rgba(255,255,255,.18)}
-  .lp9 .btn-primary:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 22px 44px -14px rgba(31,69,51,.75),inset 0 1px 0 rgba(255,255,255,.22)}
-  .lp9 .btn-primary:active{transform:scale(.96);transition-duration:.12s}
+  .lp9 .btn-primary:hover{box-shadow:0 22px 44px -14px rgba(31,69,51,.75),inset 0 1px 0 rgba(255,255,255,.22)}
   /* celular não tem hover: CTAs principais pulsam de leve pra chamar o olho */
   @keyframes lp9pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
   @media(hover:none){
@@ -160,8 +172,8 @@ const CSS = `
   /* forms of consumption */
   .lp9 .forms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
   @media(max-width:820px){.lp9 .forms-grid{grid-template-columns:1fr}}
-  .lp9 .form-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:1.5rem 1.6rem;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s}
-  .lp9 .form-card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+  .lp9 .form-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:1.5rem 1.6rem;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:box-shadow .3s}
+  .lp9 .form-card:hover{box-shadow:var(--shadow)}
   .lp9 .form-head{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem}
   .lp9 .form-card .num{font-family:var(--font-fraunces);font-size:2.2rem;font-weight:400;color:var(--ocher-soft);line-height:1;opacity:.65;flex-shrink:0}
   .lp9 .form-card h3{font-size:1.3rem}
@@ -196,7 +208,7 @@ const CSS = `
   .lp9 .field input{width:100%;padding:.9rem 1rem;border:1.5px solid var(--line);border-radius:12px;font-family:var(--font-lexend);font-size:1rem;background:var(--cream-2);transition:border .2s,box-shadow .2s}
   .lp9 .field input:focus{outline:none;border-color:var(--green-500);box-shadow:0 0 0 4px rgba(58,125,87,.12);background:#fff}
   .lp9 .chips{display:flex;flex-wrap:wrap;gap:.5rem}
-  .lp9 .chip{font-family:var(--font-lexend);font-size:.85rem;font-weight:500;padding:.5rem .9rem;border-radius:100px;border:1.5px solid var(--line);background:var(--cream-2);color:var(--muted);cursor:pointer;transition:transform .15s,background .2s,color .2s,border-color .2s}
+  .lp9 .chip{font-family:var(--font-lexend);font-size:.85rem;font-weight:500;padding:.5rem .9rem;border-radius:100px;border:1.5px solid var(--line);background:var(--cream-2);color:var(--muted);cursor:pointer;transition:background .2s,color .2s,border-color .2s}
   .lp9 .chip:hover{border-color:var(--green-500);color:var(--green-700)}
   .lp9 .chip.on{background:linear-gradient(180deg,var(--green-600),var(--green-700));border-color:var(--green-700);color:#fdfcf6}
   .lp9 .field-err{color:#c0392b;font-size:.82rem;margin:.2rem 0 .6rem}
@@ -219,16 +231,6 @@ const CSS = `
   .lp9 .sticky-cta{position:fixed;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom));z-index:95;display:flex;justify-content:center;pointer-events:none;opacity:0;transform:translateY(18px);transition:opacity .3s ease,transform .35s cubic-bezier(.2,.8,.2,1)}
   .lp9 .sticky-cta.show{opacity:1;transform:none}
   .lp9 .sticky-cta .btn{pointer-events:auto;padding:.95rem 2.2rem;box-shadow:0 20px 44px -12px rgba(19,36,27,.6),0 14px 30px -12px rgba(31,69,51,.75),inset 0 1px 0 rgba(255,255,255,.18)}
-
-  /* reveal on scroll */
-  .lp9 .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
-  .lp9 .reveal.in{opacity:1;transform:none}
-  .lp9 .stagger>*{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
-  .lp9 .stagger.in>*{opacity:1;transform:none}
-  .lp9 .stagger.in>*:nth-child(1){transition-delay:.05s}
-  .lp9 .stagger.in>*:nth-child(2){transition-delay:.13s}
-  .lp9 .stagger.in>*:nth-child(3){transition-delay:.21s}
-  .lp9 .stagger.in>*:nth-child(4){transition-delay:.29s}
 
   /* ------- mobile tuning ------- */
   @media(max-width:920px){
@@ -262,7 +264,6 @@ const CSS = `
 
   @media(prefers-reduced-motion:reduce){
     .lp9 *{animation:none!important;transition:none!important}
-    .lp9 .reveal,.lp9 .stagger>*{opacity:1;transform:none}
   }
 `;
 
@@ -306,34 +307,47 @@ export default function LandingClient({
   const nameRef = useRef<HTMLInputElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
 
-  // reveal on scroll
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("in");
-            io.unobserve(e.target);
-          }
-        });
+  // framer-motion — variants e gestos compartilhados (respeitando reduced motion)
+  const reduceMotion = useReducedMotion();
+
+  const fadeUp: Variants = {
+    hidden: { opacity: 0, y: reduceMotion ? 0 : 24 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: EASE },
+    },
+  };
+  const heroStagger: Variants = {
+    hidden: {},
+    visible: {
+      transition: { staggerChildren: reduceMotion ? 0 : 0.09 },
+    },
+  };
+  const staggerGrid: Variants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: reduceMotion ? 0 : 0.1,
+        delayChildren: reduceMotion ? 0 : 0.08,
       },
-      { threshold: 0.16 },
-    );
-    document
-      .querySelectorAll(".lp9 .reveal, .lp9 .stagger")
-      .forEach((el) => io.observe(el));
-
-    const raf = requestAnimationFrame(() => {
-      document
-        .querySelectorAll(".lp9 .hero .reveal")
-        .forEach((el) => el.classList.add("in"));
-    });
-
-    return () => {
-      io.disconnect();
-      cancelAnimationFrame(raf);
-    };
-  }, []);
+    },
+  };
+  const gridItem: Variants = {
+    hidden: {
+      opacity: 0,
+      y: reduceMotion ? 0 : 28,
+      scale: reduceMotion ? 1 : 0.97,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.55, ease: EASE },
+    },
+  };
+  const btnHover = reduceMotion ? undefined : { y: -3, scale: 1.04 };
+  const btnTap = reduceMotion ? undefined : { scale: 0.96 };
 
   // CTA flutuante: aparece quando o botão do hero sai da tela e some
   // enquanto o formulário final está visível (evita botão duplicado).
@@ -495,9 +509,15 @@ export default function LandingClient({
             <a href="#formas">Tratamento</a>
             <a href="#depo">Histórias</a>
             <a href="#faq">Dúvidas</a>
-            <a href="#form-box" className="btn btn-primary nav-cta">
+            <motion.a
+              href="#form-box"
+              className="btn btn-primary nav-cta"
+              whileHover={btnHover}
+              whileTap={btnTap}
+              transition={BTN_SPRING}
+            >
               Falar com o médico
-            </a>
+            </motion.a>
           </div>
         </div>
       </nav>
@@ -509,41 +529,69 @@ export default function LandingClient({
           <div className="blob b2" />
         </div>
         <div className="wrap hero-grid">
-          <div className="hero-copy">
-            <div className="hero-rate reveal">
+          <motion.div
+            className="hero-copy"
+            variants={heroStagger}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div className="hero-rate" variants={fadeUp}>
               <span className="stars">★★★★★</span>
               <b>4.9</b>
               <span className="sep" />
               <span>
                 <b>+50 mil pacientes</b>
               </span>
-            </div>
-            <h1 className="reveal">
+            </motion.div>
+            <motion.h1 variants={fadeUp}>
               Tudo para o seu tratamento com <em>cannabis medicinal</em>.
-            </h1>
-            <p className="hero-sub reveal">
+            </motion.h1>
+            <motion.p className="hero-sub" variants={fadeUp}>
               Consulta médica, receita, importação e acompanhamento. Tudo 100%
               online.
-            </p>
-            <div className="hero-live reveal">
+            </motion.p>
+            <motion.div className="hero-live" variants={fadeUp}>
               <span className="pulse" />
               <span>
-                <b>{liveCount}</b> pessoas em consulta agora
+                <motion.b
+                  key={liveCount}
+                  initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, ease: EASE }}
+                >
+                  {liveCount}
+                </motion.b>{" "}
+                pessoas em consulta agora
               </span>
-            </div>
-            <div className="hero-cta-row reveal">
-              <a href="#form-box" className="btn btn-primary">
+            </motion.div>
+            <motion.div className="hero-cta-row" variants={fadeUp}>
+              <motion.a
+                href="#form-box"
+                className="btn btn-primary"
+                whileHover={btnHover}
+                whileTap={btnTap}
+                transition={BTN_SPRING}
+              >
                 Falar com o médico
                 {arrowIcon}
-              </a>
+              </motion.a>
               <span className="btn-sub">
                 Primeira consulta{" "}
                 <b style={{ color: "var(--green-700)" }}>R$50</b>
               </span>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          <div className="hero-visual reveal">
+          <motion.div
+            className="hero-visual"
+            initial={
+              reduceMotion
+                ? { opacity: 0 }
+                : { opacity: 0, y: 28, scale: 0.98 }
+            }
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.75, ease: EASE, delay: 0.2 }}
+          >
             <div className="hero-card">
               <div className="bottle">
                 <div className="cap" />
@@ -555,7 +603,16 @@ export default function LandingClient({
               <span className="pulse" />
               <div>
                 <span className="big">
-                  <span className="num">{liveCount}</span> pessoas em consulta
+                  <motion.span
+                    className="num"
+                    key={liveCount}
+                    initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, ease: EASE }}
+                  >
+                    {liveCount}
+                  </motion.span>{" "}
+                  pessoas em consulta
                 </span>
                 <small>agora, com médicos de plantão</small>
               </div>
@@ -569,7 +626,7 @@ export default function LandingClient({
                 Entrega em até <b>15 dias úteis</b>
               </span>
             </div>
-          </div>
+          </motion.div>
         </div>
       </header>
 
@@ -580,13 +637,30 @@ export default function LandingClient({
       <section className="block steps" id="como">
         <div className="blob b1" />
         <div className="wrap">
-          <div className="sec-head center reveal">
+          <motion.div
+            className="sec-head center"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
             <span className="eyebrow">Tratamento descomplicado</span>
             <h2>Da consulta à sua porta, a gente cuida de cada etapa.</h2>
             <p>Quatro passos simples, com a Click ao seu lado em todos eles.</p>
-          </div>
-          <div className="step-grid stagger">
-            <div className="step">
+          </motion.div>
+          <motion.div
+            className="step-grid"
+            variants={staggerGrid}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
+            <motion.div
+              className="step"
+              variants={gridItem}
+              whileHover={reduceMotion ? undefined : { y: -5 }}
+              transition={BTN_SPRING}
+            >
               <div className="step-head">
                 <div className="n">1</div>
                 <h3>Consulta médica</h3>
@@ -596,8 +670,13 @@ export default function LandingClient({
                 sair de casa.
               </p>
               <span className="tag">Apenas R$50</span>
-            </div>
-            <div className="step">
+            </motion.div>
+            <motion.div
+              className="step"
+              variants={gridItem}
+              whileHover={reduceMotion ? undefined : { y: -5 }}
+              transition={BTN_SPRING}
+            >
               <div className="step-head">
                 <div className="n">2</div>
                 <h3>Receita médica</h3>
@@ -605,8 +684,13 @@ export default function LandingClient({
               <p>
                 Sendo apto, o médico emite a receita que autoriza a importação.
               </p>
-            </div>
-            <div className="step">
+            </motion.div>
+            <motion.div
+              className="step"
+              variants={gridItem}
+              whileHover={reduceMotion ? undefined : { y: -5 }}
+              transition={BTN_SPRING}
+            >
               <div className="step-head">
                 <div className="n">3</div>
                 <h3>Autorização ANVISA</h3>
@@ -615,8 +699,13 @@ export default function LandingClient({
                 Te orientamos em toda a documentação e burocracia da
                 importação.
               </p>
-            </div>
-            <div className="step">
+            </motion.div>
+            <motion.div
+              className="step"
+              variants={gridItem}
+              whileHover={reduceMotion ? undefined : { y: -5 }}
+              transition={BTN_SPRING}
+            >
               <div className="step-head">
                 <div className="n">4</div>
                 <h3>Importação e entrega</h3>
@@ -626,20 +715,37 @@ export default function LandingClient({
                 impostos.
               </p>
               <span className="tag">Até 15 dias úteis</span>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* forms of consumption */}
       <section className="block" id="formas">
         <div className="wrap">
-          <div className="sec-head reveal">
+          <motion.div
+            className="sec-head"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
             <span className="eyebrow">Formas de tratamento</span>
             <h2>Um formato ideal para cada rotina.</h2>
-          </div>
-          <div className="forms-grid stagger">
-            <div className="form-card">
+          </motion.div>
+          <motion.div
+            className="forms-grid"
+            variants={staggerGrid}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
+            <motion.div
+              className="form-card"
+              variants={gridItem}
+              whileHover={reduceMotion ? undefined : { y: -6 }}
+              transition={BTN_SPRING}
+            >
               <div className="form-head">
                 <div className="num">01</div>
                 <h3>Óleo</h3>
@@ -648,8 +754,13 @@ export default function LandingClient({
                 Gotas aplicadas sob a língua, com absorção rápida pelo
                 organismo.
               </p>
-            </div>
-            <div className="form-card">
+            </motion.div>
+            <motion.div
+              className="form-card"
+              variants={gridItem}
+              whileHover={reduceMotion ? undefined : { y: -6 }}
+              transition={BTN_SPRING}
+            >
               <div className="form-head">
                 <div className="num">02</div>
                 <h3>Jujuba</h3>
@@ -657,8 +768,13 @@ export default function LandingClient({
               <p>
                 Prática e saborosa, com efeito mais prolongado ao longo do dia.
               </p>
-            </div>
-            <div className="form-card">
+            </motion.div>
+            <motion.div
+              className="form-card"
+              variants={gridItem}
+              whileHover={reduceMotion ? undefined : { y: -6 }}
+              transition={BTN_SPRING}
+            >
               <div className="form-head">
                 <div className="num">03</div>
                 <h3>Softgel</h3>
@@ -666,26 +782,44 @@ export default function LandingClient({
               <p>
                 Cápsula com dose padronizada, ideal pra quem busca praticidade.
               </p>
-            </div>
-          </div>
-          <p className="forms-note reveal">
+            </motion.div>
+          </motion.div>
+          <motion.p
+            className="forms-note"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
               <path d="M5 12l5 5L20 7" />
             </svg>
             Todas com importação regulamentada pela ANVISA: seu médico indica
             a ideal pro seu caso.
-          </p>
+          </motion.p>
         </div>
       </section>
 
       {/* faq */}
       <section className="block" id="faq">
         <div className="wrap">
-          <div className="sec-head center reveal">
+          <motion.div
+            className="sec-head center"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
             <span className="eyebrow">Tira-dúvidas</span>
             <h2>As perguntas que todo mundo faz.</h2>
-          </div>
-          <div className="faq-wrap reveal">
+          </motion.div>
+          <motion.div
+            className="faq-wrap"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
             <details className="faq" open>
               <summary>
                 O tratamento com cannabis medicinal é legal?{" "}
@@ -754,7 +888,7 @@ export default function LandingClient({
                 objetivo.
               </div>
             </details>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -762,87 +896,141 @@ export default function LandingClient({
       <section className="block final" id="form">
         <div className="blob b1" />
         <div className="wrap final-in">
-          <div className="form-box reveal" id="form-box">
+          <motion.div
+            className="form-box"
+            id="form-box"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT}
+          >
             <div className="form-progress">Passo {step} de 2</div>
-            {step === 1 ? (
-              <>
-                <h3>O que você quer tratar?</h3>
-                <p className="fp">
-                  Escolha uma ou mais opções pra falar com o médico certo.
-                </p>
-                <div className="field">
-                  <div className="chips">
-                    {PATOLOGIAS.map((p) => (
-                      <button
-                        type="button"
-                        key={p}
-                        className={`chip${selected.has(p) ? " on" : ""}`}
-                        aria-pressed={selected.has(p)}
-                        onClick={() => toggle(p)}
+            <AnimatePresence mode="wait" initial={false}>
+              {step === 1 ? (
+                <motion.div
+                  key="step-1"
+                  initial={{ opacity: 0, x: reduceMotion ? 0 : -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: reduceMotion ? 0 : -20 }}
+                  transition={{ duration: 0.28, ease: EASE }}
+                >
+                  <h3>O que você quer tratar?</h3>
+                  <p className="fp">
+                    Escolha uma ou mais opções pra falar com o médico certo.
+                  </p>
+                  <div className="field">
+                    <div className="chips">
+                      {PATOLOGIAS.map((p) => (
+                        <motion.button
+                          type="button"
+                          key={p}
+                          className={`chip${selected.has(p) ? " on" : ""}`}
+                          aria-pressed={selected.has(p)}
+                          onClick={() => toggle(p)}
+                          whileHover={reduceMotion ? undefined : { scale: 1.05 }}
+                          whileTap={reduceMotion ? undefined : { scale: 0.93 }}
+                          transition={BTN_SPRING}
+                        >
+                          {p}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+                  <AnimatePresence>
+                    {patologiaError && (
+                      <motion.p
+                        className="field-err"
+                        initial={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2, ease: EASE }}
                       >
-                        {p}
-                      </button>
+                        Selecione ao menos uma opção.
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                  <motion.button
+                    className="btn btn-primary"
+                    type="button"
+                    onClick={goToStep2}
+                    whileHover={btnHover}
+                    whileTap={btnTap}
+                    transition={BTN_SPRING}
+                  >
+                    Continuar
+                    {arrowIcon}
+                  </motion.button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="step-2"
+                  initial={{ opacity: 0, x: reduceMotion ? 0 : 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: reduceMotion ? 0 : 20 }}
+                  transition={{ duration: 0.28, ease: EASE }}
+                  onAnimationComplete={() => nameRef.current?.focus()}
+                >
+                  <h3>Falta só o seu nome</h3>
+                  <p className="fp">Como o médico pode te chamar?</p>
+                  <div className="field">
+                    <label htmlFor="lp9-nome">Seu nome</label>
+                    <input
+                      id="lp9-nome"
+                      ref={nameRef}
+                      autoFocus
+                      type="text"
+                      placeholder="Como podemos te chamar?"
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        if (nameError) setNameError(false);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSubmit();
+                      }}
+                    />
+                  </div>
+                  <AnimatePresence>
+                    {nameError && (
+                      <motion.p
+                        className="field-err"
+                        initial={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2, ease: EASE }}
+                      >
+                        Preencha o seu nome.
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                  <motion.button
+                    className="btn btn-primary"
+                    type="button"
+                    onClick={handleSubmit}
+                    whileHover={btnHover}
+                    whileTap={btnTap}
+                    transition={BTN_SPRING}
+                  >
+                    {submitted
+                      ? "Tudo certo! Redirecionando..."
+                      : "Falar com o médico"}
+                    {!submitted && arrowIcon}
+                  </motion.button>
+                  <div className="sel-summary">
+                    {Array.from(selected).map((p) => (
+                      <span key={p}>{p}</span>
                     ))}
                   </div>
-                </div>
-                {patologiaError && (
-                  <p className="field-err">Selecione ao menos uma opção.</p>
-                )}
-                <button
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={goToStep2}
-                >
-                  Continuar
-                  {arrowIcon}
-                </button>
-              </>
-            ) : (
-              <>
-                <h3>Falta só o seu nome</h3>
-                <p className="fp">Como o médico pode te chamar?</p>
-                <div className="field">
-                  <label htmlFor="lp9-nome">Seu nome</label>
-                  <input
-                    id="lp9-nome"
-                    ref={nameRef}
-                    type="text"
-                    placeholder="Como podemos te chamar?"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      if (nameError) setNameError(false);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleSubmit();
-                    }}
-                  />
-                </div>
-                {nameError && <p className="field-err">Preencha o seu nome.</p>}
-                <button
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={handleSubmit}
-                >
-                  {submitted
-                    ? "Tudo certo! Redirecionando..."
-                    : "Falar com o médico"}
-                  {!submitted && arrowIcon}
-                </button>
-                <div className="sel-summary">
-                  {Array.from(selected).map((p) => (
-                    <span key={p}>{p}</span>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="form-back"
-                  onClick={() => setStep(1)}
-                >
-                  ← Voltar e editar a seleção
-                </button>
-              </>
-            )}
+                  <button
+                    type="button"
+                    className="form-back"
+                    onClick={() => setStep(1)}
+                  >
+                    ← Voltar e editar a seleção
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
             <div className="secure">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="11" width="18" height="11" rx="2" />
@@ -850,7 +1038,7 @@ export default function LandingClient({
               </svg>
               Seus dados estão protegidos e não são compartilhados.
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -884,9 +1072,15 @@ export default function LandingClient({
 
       {/* CTA flutuante */}
       <div className="sticky-cta" ref={stickyRef}>
-        <a href="#form-box" className="btn btn-primary">
+        <motion.a
+          href="#form-box"
+          className="btn btn-primary"
+          whileHover={btnHover}
+          whileTap={btnTap}
+          transition={BTN_SPRING}
+        >
           Falar com o médico
-        </a>
+        </motion.a>
       </div>
     </>
   );

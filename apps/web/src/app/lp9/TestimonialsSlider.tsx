@@ -8,6 +8,9 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+
+const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 export type VideoTestimonial = {
   id: string;
@@ -55,6 +58,7 @@ const CSS = `
 `;
 
 export default function TestimonialsSlider({ items }: Props) {
+  const reduceMotion = useReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const modalVideoRef = useRef<HTMLVideoElement>(null);
@@ -191,10 +195,16 @@ export default function TestimonialsSlider({ items }: Props) {
     <section className="block testi" id="depo">
       <style>{CSS}</style>
       <div className="wrap">
-        <div className="sec-head center reveal">
+        <motion.div
+          className="sec-head center"
+          initial={{ opacity: 0, y: reduceMotion ? 0 : 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6, ease: EASE }}
+        >
           <span className="eyebrow">Histórias reais</span>
           <h2>Veja os depoimentos de quem faz o tratamento com a Click.</h2>
-        </div>
+        </motion.div>
       </div>
 
       <div
