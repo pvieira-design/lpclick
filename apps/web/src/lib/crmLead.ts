@@ -20,6 +20,15 @@ function readFbclid(): string {
 }
 
 export function sendLeadToCrm(name: string, pathologies: string[]): void {
+  // Em dev, não suja o CRM de produção: loga o payload e sai.
+  if (process.env.NODE_ENV === "development") {
+    console.info("[crmLead] dev — lead não enviado ao CRM", {
+      name,
+      pathologies,
+    });
+    return;
+  }
+
   const params = new URLSearchParams(window.location.search);
   const n = navigator as unknown as { platform: string };
 
