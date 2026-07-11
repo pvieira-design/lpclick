@@ -3,15 +3,12 @@ import { neon } from "@neondatabase/serverless";
 import { Bricolage_Grotesque } from "next/font/google";
 import LandingClient from "./LandingClient";
 import AnnouncementBar from "./AnnouncementBar";
-import Benefits from "./Benefits";
 import ConsumptionForms from "./ConsumptionForms";
 import Faq from "./Faq";
 import Footer from "./Footer";
-import MediaLogosMarquee from "./MediaLogosMarquee";
 import StickyContactCTA from "./StickyContactCTA";
 import TestimonialsSlider from "./TestimonialsSlider";
 import TestimonialsWall from "./TestimonialsWall";
-import TreatmentCTA from "./TreatmentCTA";
 import TreatmentSteps from "./TreatmentSteps";
 import TrustPillars from "./TrustPillars";
 import { TESTIMONIALS_META } from "../lp5/testimonialsMeta";
@@ -92,9 +89,6 @@ export default async function LandingPage() {
   const insomniaTestimonials = testimonials.filter((t) =>
     FEATURED_INSOMNIA_IDS.includes(t.id),
   );
-  const otherTestimonials = testimonials.filter(
-    (t) => !FEATURED_INSOMNIA_IDS.includes(t.id),
-  );
 
   return (
     <div className={`lp12 ${bricolage.variable}`}>
@@ -132,9 +126,33 @@ export default async function LandingPage() {
         @media (prefers-reduced-motion: reduce) {
           .lp12 dialog, .lp12 dialog::backdrop { transition: none; }
         }
+        @keyframes ctaWave {
+          0% {
+            box-shadow: 0 0 0 0 rgba(61,143,74,0.55);
+          }
+          100% {
+            box-shadow: 0 0 0 18px rgba(61,143,74,0);
+          }
+        }
+        .lp12 .cta-pulse {
+          position: relative;
+          isolation: isolate;
+        }
+        .lp12 .cta-pulse::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          z-index: -1;
+          animation: ctaWave 1.6s cubic-bezier(0.25, 0.8, 0.4, 1) infinite;
+          pointer-events: none;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .lp12 .cta-pulse::after { animation: none; }
+        }
       `}</style>
 
-      <main className="flex min-h-svh flex-col bg-white pb-[calc(10rem+env(safe-area-inset-bottom))]">
+      <main className="flex min-h-svh flex-col bg-white">
         <AnnouncementBar />
         <LandingClient />
         {insomniaTestimonials.length > 0 ? (
@@ -142,7 +160,7 @@ export default async function LandingPage() {
             <TestimonialsSlider
               items={insomniaTestimonials}
               titleLight="Histórias reais de"
-              titleBold="pacientes com insônia"
+              titleBold="nossos pacientes"
             />
             <div
               id="lp12-sticky-anchor"
@@ -153,26 +171,13 @@ export default async function LandingPage() {
         ) : (
           <div id="lp12-sticky-anchor" aria-hidden="true" />
         )}
-        <Benefits />
-        <TreatmentCTA />
         <ConsumptionForms />
-        <MediaLogosMarquee />
         <div id="lp12-treatment-steps">
           <TreatmentSteps />
         </div>
         <TrustPillars />
-        {otherTestimonials.length > 0 && (
-          <div id="lp12-other-testimonials">
-            <TestimonialsSlider
-              items={otherTestimonials}
-              titleLight="Conheça os"
-              titleBold="demais pacientes"
-            />
-          </div>
-        )}
         <TestimonialsWall />
         <Faq />
-        <TreatmentCTA />
       </main>
       <Footer />
       <StickyContactCTA />

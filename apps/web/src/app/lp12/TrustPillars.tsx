@@ -10,8 +10,8 @@ const PILLARS = [
     desc: "Prescrição médica e importação regulamentada e acompanhada pela ANVISA, do início ao fim.",
   },
   {
-    title: "Médico especialista, 24h",
-    desc: "Consulta 100% online com médicos prescritores de plantão todos os dias, a qualquer hora.",
+    title: "Atendimento 24h",
+    desc: "Consulta 100% online com médicos especialistas e vários horários disponíveis, todos os dias.",
   },
   {
     title: "1º acompanhamento grátis",
@@ -19,7 +19,7 @@ const PILLARS = [
   },
   {
     title: "Suporte humano de verdade",
-    desc: "Nosso time acompanha você da receita à entrega — burocracia é problema nosso, não seu.",
+    desc: "Nosso time acompanha você do agendamento à entrega, te orientando em todas as etapas.",
   },
 ];
 

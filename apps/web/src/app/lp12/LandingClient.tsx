@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
+import AnimatedLogo from "./AnimatedLogo";
 
 const PATOLOGIAS = [
   "Insônia",
@@ -128,25 +129,11 @@ export default function LandingClient() {
   const [submitted, setSubmitted] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [showTooltip, setShowTooltip] = useState(false);
   const inactivityTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasSubmitted = useRef(false);
-  const hasInteracted = useRef(false);
   const hasDismissedModal = useRef(false);
 
   const reduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!hasInteracted.current) setShowTooltip(true);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const dismissTooltip = useCallback(() => {
-    hasInteracted.current = true;
-    setShowTooltip(false);
-  }, []);
 
   const resetInactivityTimer = useCallback(() => {
     if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
@@ -176,7 +163,6 @@ export default function LandingClient() {
   }, [resetInactivityTimer]);
 
   const toggle = useCallback((patologia: string) => {
-    dismissTooltip();
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(patologia)) next.delete(patologia);
@@ -184,7 +170,7 @@ export default function LandingClient() {
       startInactivityTimer(next);
       return next;
     });
-  }, [startInactivityTimer, dismissTooltip]);
+  }, [startInactivityTimer]);
 
   const lockScroll = useCallback(() => {
     document.body.style.overflow = "hidden";
@@ -301,23 +287,15 @@ export default function LandingClient() {
       >
         {/* Header */}
         <header className="mb-6 text-center sm:mb-8">
-          <motion.img
-            variants={heroItem}
-            src="/logo.svg"
-            alt="Click Cannabis"
-            width={200}
-            height={29}
-            fetchPriority="high"
-            decoding="async"
-            className="mx-auto mb-6"
-          />
+          <motion.div variants={heroItem} className="mx-auto mb-6 w-fit">
+            <AnimatedLogo />
+          </motion.div>
           <motion.h1
             variants={heroItem}
-            className="font-display text-[1.75rem] leading-tight text-gray-900 sm:text-4xl"
+            className="text-[1.75rem] leading-tight tracking-tight text-gray-900 sm:text-4xl"
+            style={{ fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}
           >
-            <span className="font-medium" style={{ color: "var(--muted)" }}>
-              Médicos Prescritores de
-            </span>{" "}
+            <span className="font-light">Médicos Prescritores de</span>{" "}
             <span className="font-semibold" style={{ color: "var(--green-700)" }}>
               Cannabis Medicinal
             </span>
@@ -332,23 +310,6 @@ export default function LandingClient() {
 
         {/* Pathology Grid */}
         <div className="relative">
-          {/* Tooltip */}
-          <AnimatePresence>
-            {showTooltip && (
-              <motion.div
-                initial={{ opacity: 0, y: reduceMotion ? 0 : 8, scale: reduceMotion ? 1 : 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: reduceMotion ? 0 : 4 }}
-                transition={{ duration: 0.4, ease: EASE }}
-                className="absolute inset-x-0 -top-10 z-20 flex justify-center"
-              >
-                <div className="relative rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white shadow-lg">
-                  Selecione uma das patologias para iniciar
-                  <div className="absolute -bottom-1.5 left-1/2 size-3 -translate-x-1/2 rotate-45 bg-gray-800" />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
           <div className="grid grid-cols-2 gap-2 sm:gap-3" role="group" aria-label="Patologias">
             {PATOLOGIAS.map((p) => {
               const isSelected = selected.has(p);
@@ -421,7 +382,7 @@ export default function LandingClient() {
           type="button"
           onClick={openModal}
           disabled={selected.size === 0}
-          className="mt-6 w-full rounded-[var(--radius-btn)] py-4 text-base font-bold text-white sm:mt-8 sm:text-lg"
+          className={`mt-6 w-full rounded-[var(--radius-btn)] py-4 text-base font-bold text-white sm:mt-8 sm:text-lg ${selected.size > 0 ? "cta-pulse" : ""}`}
           style={{
             backgroundColor: selected.size > 0 ? "var(--green-500)" : "#c5d4c9",
             cursor: selected.size > 0 ? "pointer" : "not-allowed",
@@ -435,11 +396,11 @@ export default function LandingClient() {
         {/* Badges de segurança */}
         <motion.div
           variants={heroItem}
-          className="mt-4 flex items-center justify-center gap-4 sm:mt-6"
+          className="mt-8 flex items-center justify-center gap-4 sm:mt-12"
         >
-          <img src="/1.webp" alt="Ótimo - Reclame Aqui" width={120} height={60} loading="lazy" decoding="async" className="h-12 w-auto object-contain" />
-          <img src="/2.webp" alt="Certificado RA1000 - Reclame Aqui" width={120} height={60} loading="lazy" decoding="async" className="h-12 w-auto object-contain" />
-          <img src="/3.webp" alt="4.9 Google - Avaliação de pacientes" width={120} height={60} loading="lazy" decoding="async" className="h-12 w-auto object-contain" />
+          <img src="/1.webp" alt="Ótimo - Reclame Aqui" width={120} height={60} loading="lazy" decoding="async" className="h-12 w-auto object-contain mix-blend-multiply" />
+          <img src="/2.webp" alt="Certificado RA1000 - Reclame Aqui" width={120} height={60} loading="lazy" decoding="async" className="h-12 w-auto object-contain mix-blend-multiply" />
+          <img src="/3.webp" alt="4.9 Google - Avaliação de pacientes" width={120} height={60} loading="lazy" decoding="async" className="h-12 w-auto object-contain mix-blend-multiply" />
         </motion.div>
       </motion.section>
 

@@ -22,11 +22,7 @@ export default function StickyContactCTA() {
   }, []);
 
   useEffect(() => {
-    const ids = [
-      "lp12-treatment-steps",
-      "lp12-other-testimonials",
-      "lp12-testimonials-wall",
-    ];
+    const ids = ["lp12-treatment-steps", "lp12-testimonials-wall"];
     const targets = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
@@ -52,32 +48,7 @@ export default function StickyContactCTA() {
 
   return (
     <>
-      <style>{`
-        @keyframes ctaWave {
-          0% {
-            box-shadow: 0 0 0 0 rgba(61,143,74,0.55);
-          }
-          100% {
-            box-shadow: 0 0 0 18px rgba(61,143,74,0);
-          }
-        }
-        .cta-pulse {
-          position: relative;
-          isolation: isolate;
-        }
-        .cta-pulse::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          z-index: -1;
-          animation: ctaWave 1.6s cubic-bezier(0.25, 0.8, 0.4, 1) infinite;
-          pointer-events: none;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .cta-pulse::after { animation: none; }
-        }
-      `}</style>
+      {/* Estilo .cta-pulse é global da lp12 (definido em page.tsx), compartilhado com o CTA do hero. */}
       <motion.div
         aria-hidden={!visible}
         className="pointer-events-none fixed inset-x-0 bottom-0 z-40 border-t bg-white px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3"
@@ -104,10 +75,8 @@ export default function StickyContactCTA() {
             }}
           >
             <p className="text-left text-[1.25rem] leading-snug text-gray-800">
-              Consulta com médico especialista de{" "}
-              <span className="text-gray-400 line-through">R$120,00</span>{" "}
-              por apenas{" "}
-              <span className="font-bold text-[#285E31]">R$50,00</span>
+              Consulta com médico especialista por apenas{" "}
+              <span className="whitespace-nowrap font-bold text-[#285E31]">R$50</span>
             </p>
             <div className="mt-2.5 flex items-center justify-start gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#cfe3d3] bg-gradient-to-b from-white to-[#f5faf6] px-3 py-1.5 text-[11px] font-semibold tracking-[0.01em] text-[#1f4f2a] shadow-[0_1px_2px_rgba(40,94,49,0.06)] sm:text-xs">
@@ -134,7 +103,7 @@ export default function StickyContactCTA() {
             tabIndex={visible ? 0 : -1}
             whileHover={reduceMotion ? undefined : { y: -2, scale: 1.01 }}
             whileTap={reduceMotion ? undefined : { scale: 0.97 }}
-            className={`pointer-events-auto w-full rounded-[var(--radius-btn)] py-4 text-base font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a7a4f] focus-visible:ring-offset-2 sm:text-lg ${pulsing && visible ? "cta-pulse" : ""}`}
+            className={`pointer-events-auto w-full rounded-[var(--radius-btn)] py-4 text-base font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a7a4f] focus-visible:ring-offset-2 sm:text-lg ${visible ? "cta-pulse" : ""}`}
             style={{
               backgroundColor: "var(--green-500)",
               boxShadow: "var(--shadow-float)",

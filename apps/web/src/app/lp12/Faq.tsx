@@ -11,7 +11,7 @@ const FAQS = [
   },
   {
     q: "Como funciona a consulta e quanto custa?",
-    a: "A consulta é 100% online, com médicos de plantão 24h, e custa R$50. Se você for apto ao tratamento, o médico emite a receita necessária. E a sua primeira consulta de acompanhamento é gratuita.",
+    a: "A consulta é 100% online, custa R$50 e tem vários horários disponíveis todos os dias, com atendimento 24h. Se você for apto ao tratamento, o médico emite a receita necessária. E a sua primeira consulta de acompanhamento é gratuita.",
   },
   {
     q: "Em quanto tempo o medicamento chega?",

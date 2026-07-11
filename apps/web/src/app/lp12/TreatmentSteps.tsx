@@ -13,7 +13,7 @@ const STEPS = [
     description: "Médica",
     flipTitle: "Consulta médica",
     flipDescription:
-      "Faça sua consulta médica por apenas R$50, todo o processo é 100% online, com médicos de plantão 24h por dia.",
+      "Faça sua consulta médica por apenas R$50, todo o processo é 100% online, com atendimento 24h e vários horários de consulta disponíveis.",
     Illustration: IllustrationStep1,
   },
   {

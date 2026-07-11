@@ -9,7 +9,7 @@ const MESSAGES = [
     <b className="font-semibold">grátis</b>
   </>,
   <>
-    Médicos de plantão <b className="font-semibold">24h</b>, 100% online
+    Médicos especialistas <b className="font-semibold">online</b>
   </>,
   <>
     Tratamento <b className="font-semibold">regulamentado pela ANVISA</b>

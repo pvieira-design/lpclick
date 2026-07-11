@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { TEXT_TESTIMONIALS, type TextTestimonial } from "../lp5/textTestimonials";
 
-const BATCH = 12;
+// Carrossel duplicado: mantém o DOM leve usando só os primeiros N depoimentos.
+const MAX_ITEMS = 16;
 
 function relativeDate(iso: string): string {
   const then = new Date(iso).getTime();
@@ -34,67 +35,149 @@ const TAG_STYLES: Record<string, string> = {
 const tagStyle = (t: string) => TAG_STYLES[t] ?? "bg-gray-100 text-gray-600";
 
 export default function TestimonialsWall() {
-  const [visible, setVisible] = useState(BATCH);
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const total = TEXT_TESTIMONIALS.length;
+  const reduceMotion = useReducedMotion();
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [doubled, setDoubled] = useState(false);
 
+  const offsetRef = useRef(0);
+  const halfWidthRef = useRef(0);
+  const draggingRef = useRef(false);
+  const pointerDownRef = useRef(false);
+  const pointerIdRef = useRef<number | null>(null);
+  const dragStartXRef = useRef(0);
+  const dragStartOffsetRef = useRef(0);
+  const hoverPausedRef = useRef(false);
+
+  const items = TEXT_TESTIMONIALS.slice(0, MAX_ITEMS);
+
+  // Duplica os itens só depois do primeiro paint pra não inflar o DOM medido
+  // pelo Lighthouse no LCP.
   useEffect(() => {
-    if (visible >= total) return;
-    const el = sentinelRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible((v) => Math.min(v + BATCH, total));
-        }
-      },
-      { rootMargin: "600px 0px" },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [visible, total]);
+    setDoubled(true);
+  }, []);
 
-  const items = TEXT_TESTIMONIALS.slice(0, visible);
-  const columns: TextTestimonial[][] = [[], [], []];
-  items.forEach((r, i) => columns[i % 3].push(r));
+  // Loop de auto-scroll + render do offset (compartilhado com drag)
+  useEffect(() => {
+    if (!doubled) return;
+    const SPEED_PX_PER_S = 32;
+    let raf = 0;
+    let lastTs = 0;
+
+    const measure = () => {
+      const el = trackRef.current;
+      if (!el) return;
+      halfWidthRef.current = el.scrollWidth / 2;
+    };
+    measure();
+    window.addEventListener("resize", measure);
+
+    const tick = (ts: number) => {
+      if (lastTs === 0) lastTs = ts;
+      const dt = ts - lastTs;
+      lastTs = ts;
+      const paused = draggingRef.current || hoverPausedRef.current;
+      const half = halfWidthRef.current;
+      if (!paused && half > 0) {
+        offsetRef.current -= (SPEED_PX_PER_S * dt) / 1000;
+        if (offsetRef.current <= -half) offsetRef.current += half;
+      }
+      const el = trackRef.current;
+      if (el) el.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", measure);
+    };
+  }, [doubled]);
+
+  const wrapOffset = (off: number) => {
+    const half = halfWidthRef.current;
+    if (half <= 0) return off;
+    let x = off;
+    while (x <= -half) x += half;
+    while (x > 0) x -= half;
+    return x;
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    pointerDownRef.current = true;
+    pointerIdRef.current = e.pointerId;
+    draggingRef.current = false;
+    dragStartXRef.current = e.clientX;
+    dragStartOffsetRef.current = offsetRef.current;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!pointerDownRef.current || e.pointerId !== pointerIdRef.current) return;
+    const delta = e.clientX - dragStartXRef.current;
+    if (!draggingRef.current) {
+      if (Math.abs(delta) <= 4) return;
+      draggingRef.current = true;
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch { /* already captured or unsupported */ }
+    }
+    offsetRef.current = wrapOffset(dragStartOffsetRef.current + delta);
+  };
+
+  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerId !== pointerIdRef.current) return;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+    pointerDownRef.current = false;
+    pointerIdRef.current = null;
+    draggingRef.current = false;
+  };
+
+  const loop = doubled ? [...items, ...items] : items;
 
   return (
-    <section id="lp12-testimonials-wall" className="bg-white pb-12 sm:pb-20">
-      <div className="mx-auto w-full max-w-5xl px-5">
-        <div className="mx-auto flex max-w-[540px] flex-col gap-4 sm:hidden">
-          {items.map((r) => (
-            <ReviewCard key={`m-${r.name}`} review={r} />
+    <section
+      id="lp12-testimonials-wall"
+      className="relative overflow-hidden bg-white pb-12 sm:pb-20"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: reduceMotion ? 0 : 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+        onMouseEnter={() => { hoverPausedRef.current = true; }}
+        onMouseLeave={() => { hoverPausedRef.current = false; }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        className="cursor-grab select-none active:cursor-grabbing"
+        style={{ touchAction: "pan-y" }}
+      >
+        <div
+          ref={trackRef}
+          className="flex w-max items-stretch gap-4 px-4 sm:gap-5"
+          style={{ willChange: "transform" }}
+        >
+          {loop.map((r, i) => (
+            <ReviewCard key={`${r.name}-${i}`} review={r} />
           ))}
         </div>
-
-        <div className="hidden grid-cols-3 gap-4 sm:grid">
-          {columns.map((col, ci) => (
-            <div key={ci} className="flex flex-col gap-4">
-              {col.map((r) => (
-                <ReviewCard key={`c${ci}-${r.name}`} review={r} />
-              ))}
-            </div>
-          ))}
-        </div>
-
-        {visible < total && (
-          <div ref={sentinelRef} aria-hidden="true" className="h-1 w-full" />
-        )}
-      </div>
+      </motion.div>
     </section>
   );
 }
 
 function ReviewCard({ review }: { review: TextTestimonial }) {
-  const reduceMotion = useReducedMotion();
   return (
-    <motion.article
-      initial={{ opacity: 0, y: reduceMotion ? 0 : 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
-      className="rounded-[var(--radius-card)] border bg-white p-5"
-      style={{ borderColor: "var(--line)", boxShadow: "var(--shadow-card)" }}
+    <article
+      className="flex shrink-0 flex-col rounded-[var(--radius-card)] border bg-white p-5"
+      style={{
+        width: "min(78vw, 340px)",
+        borderColor: "var(--line)",
+        boxShadow: "var(--shadow-card)",
+      }}
     >
       <div className="flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -105,6 +188,7 @@ function ReviewCard({ review }: { review: TextTestimonial }) {
           height={40}
           loading="lazy"
           decoding="async"
+          draggable={false}
           referrerPolicy="no-referrer"
           className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-100 object-cover"
         />
@@ -135,7 +219,7 @@ function ReviewCard({ review }: { review: TextTestimonial }) {
           {relativeDate(review.publishedAt)}
         </span>
       </div>
-      <p className="mt-3 text-[0.9375rem] leading-relaxed text-gray-700">
+      <p className="mt-3 flex-1 text-[0.9375rem] leading-relaxed text-gray-700">
         “{review.text}”
       </p>
       {review.tags.length > 0 && (
@@ -150,6 +234,6 @@ function ReviewCard({ review }: { review: TextTestimonial }) {
           ))}
         </div>
       )}
-    </motion.article>
+    </article>
   );
 }
