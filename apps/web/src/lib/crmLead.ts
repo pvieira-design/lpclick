@@ -19,12 +19,25 @@ function readFbclid(): string {
   return parts.length >= 4 ? parts.slice(3).join(".") : "";
 }
 
-export function sendLeadToCrm(name: string, pathologies: string[]): void {
+// Origem padrão para quando a URL não traz UTM (ex.: link da bio sem parâmetros).
+// Opcional: LPs que não passam nada mantêm o comportamento anterior (undefined).
+type LeadOrigin = {
+  utmSource?: string;
+  utmMedium?: string;
+  utmContent?: string;
+};
+
+export function sendLeadToCrm(
+  name: string,
+  pathologies: string[],
+  defaults?: LeadOrigin,
+): void {
   // Em dev, não suja o CRM de produção: loga o payload e sai.
   if (process.env.NODE_ENV === "development") {
     console.info("[crmLead] dev — lead não enviado ao CRM", {
       name,
       pathologies,
+      defaults,
     });
     return;
   }
@@ -35,10 +48,10 @@ export function sendLeadToCrm(name: string, pathologies: string[]): void {
   const payload = {
     name,
     pathologies,
-    utmSource: params.get("utm_source") ?? undefined,
-    utmMedium: params.get("utm_medium") ?? undefined,
+    utmSource: params.get("utm_source") ?? defaults?.utmSource ?? undefined,
+    utmMedium: params.get("utm_medium") ?? defaults?.utmMedium ?? undefined,
     utmCampaign: params.get("utm_campaign") ?? undefined,
-    utmContent: params.get("utm_content") ?? undefined,
+    utmContent: params.get("utm_content") ?? defaults?.utmContent ?? undefined,
     utmTerm: params.get("utm_term") ?? undefined,
     utmId: params.get("utm_id") ?? undefined,
     fbclid: readFbclid() || undefined,
