@@ -45,11 +45,11 @@ export default function Image() {
         {/* Mensagem central */}
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: 76, fontWeight: 700, color: "#12301A", letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-              Cannabis medicinal
+            <span style={{ fontSize: 68, fontWeight: 700, color: "#12301A", letterSpacing: "-0.03em", lineHeight: 1.08 }}>
+              Médicos Prescritores de
             </span>
-            <span style={{ fontSize: 76, fontWeight: 700, color: "#2d6e3f", letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-              sem burocracia
+            <span style={{ fontSize: 68, fontWeight: 700, color: "#2d6e3f", letterSpacing: "-0.03em", lineHeight: 1.08 }}>
+              Cannabis Medicinal
             </span>
           </div>
           <span style={{ fontSize: 34, fontWeight: 400, color: "#5B6660", lineHeight: 1.3 }}>

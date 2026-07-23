@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   description:
     "Consulta online com médico especialista por R$50. Receita e autorização ANVISA sem burocracia. Agende em menos de 1 minuto.",
   openGraph: {
-    title: "Cannabis medicinal sem burocracia · Click Cannabis",
+    title: "Médicos Prescritores de Cannabis Medicinal · Click Cannabis",
     description:
       "Consulta online com médico especialista por R$50. Agende em menos de 1 minuto, 100% online.",
     siteName: "Click Cannabis",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Cannabis medicinal sem burocracia · Click Cannabis",
+    title: "Médicos Prescritores de Cannabis Medicinal · Click Cannabis",
     description:
       "Consulta online com médico especialista por R$50. Agende em menos de 1 minuto, 100% online.",
   },
