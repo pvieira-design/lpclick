@@ -16,8 +16,7 @@ const PASSOS = [
   },
   {
     titulo: "Receita e autorização da ANVISA",
-    texto:
-      "O médico emite a receita e a Click te guia no passo a passo da autorização, sem custo nenhum.",
+    texto: "O médico emite a receita e a Click te guia no passo a passo da autorização.",
   },
   {
     titulo: "Importação do medicamento",

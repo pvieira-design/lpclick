@@ -76,10 +76,14 @@ export default function BioClient() {
 
         <motion.p
           variants={item}
-          className="mt-3.5 max-w-[26rem] text-balance text-[15px] leading-relaxed text-[color:var(--muted)]"
+          className="mt-3.5 text-[14px] leading-relaxed text-[color:var(--muted)]"
         >
-          Consulta online com médico especialista por{" "}
-          <strong className="font-semibold text-[color:var(--ink)]">R$50</strong>.
+          {/* Cada frase em sua própria linha; a 14px a primeira cabe sem quebrar
+              até ~360px de largura. Sem text-balance, que forçava duas linhas. */}
+          <span className="block">
+            Consulta online com médico especialista por{" "}
+            <strong className="font-semibold text-[color:var(--ink)]">R$50</strong>.
+          </span>
           <span className="mt-1 block">A Click está com você em cada etapa:</span>
         </motion.p>
 

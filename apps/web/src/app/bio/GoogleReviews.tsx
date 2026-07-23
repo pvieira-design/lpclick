@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { TEXT_TESTIMONIALS, type TextTestimonial } from "../lp5/textTestimonials";
 import { LINKS } from "./config";
@@ -62,115 +61,10 @@ function Stars({ size = 13 }: { size?: number }) {
 
 export default function GoogleReviews() {
   const reduceMotion = useReducedMotion();
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [doubled, setDoubled] = useState(false);
 
-  const offsetRef = useRef(0);
-  const halfWidthRef = useRef(0);
-  const draggingRef = useRef(false);
-  const pointerDownRef = useRef(false);
-  const pointerIdRef = useRef<number | null>(null);
-  const dragStartXRef = useRef(0);
-  const dragStartOffsetRef = useRef(0);
-  const pausedRef = useRef(false);
-
+  // Scroll nativo horizontal, o mesmo padrão dos depoimentos em vídeo:
+  // toque com snap, sem arraste manual ou movimento automático.
   const items = TEXT_TESTIMONIALS.slice(0, MAX_ITEMS);
-
-  // Duplica os itens só depois do primeiro paint pra não inflar o DOM do LCP.
-  useEffect(() => {
-    setDoubled(true);
-  }, []);
-
-  // O trilho só anda enquanto está em tela: quem chega rolando vê o carrossel
-  // começando do primeiro depoimento, não no meio.
-  useEffect(() => {
-    const el = trackRef.current?.parentElement;
-    if (!el) return;
-    pausedRef.current = true;
-    const observer = new IntersectionObserver(
-      ([entry]) => { pausedRef.current = !entry.isIntersecting; },
-      { threshold: 0.15 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [doubled]);
-
-  useEffect(() => {
-    if (!doubled || reduceMotion) return;
-    const SPEED_PX_PER_S = 28;
-    let raf = 0;
-    let lastTs = 0;
-
-    const measure = () => {
-      const el = trackRef.current;
-      if (el) halfWidthRef.current = el.scrollWidth / 2;
-    };
-    measure();
-    window.addEventListener("resize", measure);
-
-    const tick = (ts: number) => {
-      if (lastTs === 0) lastTs = ts;
-      const dt = ts - lastTs;
-      lastTs = ts;
-      const half = halfWidthRef.current;
-      if (!draggingRef.current && !pausedRef.current && half > 0) {
-        offsetRef.current -= (SPEED_PX_PER_S * dt) / 1000;
-        if (offsetRef.current <= -half) offsetRef.current += half;
-      }
-      const el = trackRef.current;
-      if (el) el.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", measure);
-    };
-  }, [doubled, reduceMotion]);
-
-  const wrapOffset = (off: number) => {
-    const half = halfWidthRef.current;
-    if (half <= 0) return off;
-    let x = off;
-    while (x <= -half) x += half;
-    while (x > 0) x -= half;
-    return x;
-  };
-
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === "mouse" && e.button !== 0) return;
-    pointerDownRef.current = true;
-    pointerIdRef.current = e.pointerId;
-    draggingRef.current = false;
-    dragStartXRef.current = e.clientX;
-    dragStartOffsetRef.current = offsetRef.current;
-  };
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!pointerDownRef.current || e.pointerId !== pointerIdRef.current) return;
-    const delta = e.clientX - dragStartXRef.current;
-    if (!draggingRef.current) {
-      if (Math.abs(delta) <= 4) return;
-      draggingRef.current = true;
-      try {
-        e.currentTarget.setPointerCapture(e.pointerId);
-      } catch { /* já capturado ou sem suporte */ }
-    }
-    offsetRef.current = wrapOffset(dragStartOffsetRef.current + delta);
-  };
-
-  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerId !== pointerIdRef.current) return;
-    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    }
-    pointerDownRef.current = false;
-    pointerIdRef.current = null;
-    draggingRef.current = false;
-  };
-
-  const loop = doubled ? [...items, ...items] : items;
 
   return (
     <motion.section
@@ -197,23 +91,14 @@ export default function GoogleReviews() {
         </span>
       </div>
 
-      {/* Carrossel de avaliações reais */}
-      <motion.div
-        className="-mx-5 mt-5 cursor-grab select-none overflow-hidden active:cursor-grabbing"
-        onMouseEnter={() => { pausedRef.current = true; }}
-        onMouseLeave={() => { pausedRef.current = false; }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-        style={{ touchAction: "pan-y" }}
-      >
-        <div ref={trackRef} className="flex w-max items-stretch gap-3 px-5" style={{ willChange: "transform" }}>
-          {loop.map((r, i) => (
+      {/* Carrossel de avaliações reais — scroll nativo com snap */}
+      <div className="-mx-5 mt-5 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex w-max snap-x snap-mandatory items-stretch gap-3 px-5">
+          {items.map((r, i) => (
             <ReviewCard key={`${r.name}-${i}`} review={r} />
           ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* Selos de reputação */}
       <div className="mt-6 flex items-center justify-center gap-5">
@@ -253,7 +138,7 @@ export default function GoogleReviews() {
 function ReviewCard({ review }: { review: TextTestimonial }) {
   return (
     <article
-      className="flex shrink-0 flex-col rounded-[var(--radius-card)] border bg-white p-4"
+      className="flex shrink-0 snap-start flex-col rounded-[var(--radius-card)] border bg-white p-4"
       style={{
         width: "min(76vw, 300px)",
         borderColor: "var(--line)",
