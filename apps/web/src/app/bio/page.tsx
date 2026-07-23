@@ -117,6 +117,19 @@ export default async function BioPage() {
           font-weight: 600;
           letter-spacing: -0.025em;
         }
+        /* Sem o contorno azul do sistema ao voltar de outra aba (ex.: WhatsApp).
+           Foco por teclado ganha um anel verde discreto da marca. */
+        .bio button:focus,
+        .bio a:focus,
+        .bio [role="checkbox"]:focus {
+          outline: none;
+        }
+        .bio button:focus-visible,
+        .bio a:focus-visible,
+        .bio [role="checkbox"]:focus-visible {
+          outline: 2px solid var(--green-500);
+          outline-offset: 2px;
+        }
         .bio dialog {
           position: fixed;
           margin: 0;

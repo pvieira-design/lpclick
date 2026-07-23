@@ -35,6 +35,10 @@ export default function ScheduleDialog() {
     dialogRef.current?.close();
     setShowError(false);
     lockScroll(false);
+    // Ao fechar, o <dialog> devolve o foco ao CTA que o abriu, e o navegador
+    // desenha o anel de foco. Como quem fecha aqui é toque, tiramos o foco
+    // para não deixar contorno residual no botão.
+    (document.activeElement as HTMLElement | null)?.blur();
   }, [lockScroll]);
 
   // Único ponto de abertura: qualquer CTA da página dispara OPEN_EVENT.
@@ -124,6 +128,9 @@ export default function ScheduleDialog() {
     const aba = window.open(url, "_blank", "noopener,noreferrer");
     // Popup bloqueado (comum em navegador in-app do Instagram): navega na própria aba.
     if (!aba) window.location.href = url;
+    // Ao voltar da aba do WhatsApp o botão retém o foco e o navegador desenha
+    // o anel; tiramos o foco para não deixar contorno residual.
+    (document.activeElement as HTMLElement | null)?.blur();
   }, [name, selected]);
 
   // O botão só esmaece sem nenhum sintoma marcado — o nome é cobrado na validação,
