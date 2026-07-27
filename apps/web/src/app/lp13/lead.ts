@@ -95,8 +95,11 @@ export function sendLeadToApi(payload: LeadPayload): void {
 }
 
 export function buildWhatsAppUrl(name: string, patologias: string[]): string {
+  // ATENÇÃO: este texto é o gatilho que registra o contato no CRM. Precisa bater
+  // EXATAMENTE com o padrão das demais LPs — não adicionar linhas (ex.: "Quero
+  // agendar minha consulta"), senão o CRM não reconhece e o lead não é atribuído.
   const list = patologias.map((p, i) => `${i + 1}. ${p}`).join("\n");
-  const text = `Olá, me chamo ${name}.\n\nQuero agendar minha consulta.\n\nPatologias selecionadas:\n${list}`;
+  const text = `Olá, me chamo ${name}.\n\nPatologias selecionadas:\n${list}`;
   return `https://api.whatsapp.com/send/?phone=${PHONE}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
 }
 
