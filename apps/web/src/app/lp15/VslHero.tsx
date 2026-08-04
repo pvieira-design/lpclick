@@ -28,8 +28,10 @@ export default function VslHero() {
         }}
       />
 
-      <div className="relative z-10 mx-auto w-full max-w-xl px-5 pb-10 pt-6 sm:pt-10 lg:max-w-[64rem] lg:pb-16">
-        <header className="mb-5 text-center lg:mb-8">
+      {/* Coluna única em toda largura de tela: sem headline nem parágrafo, duas
+          colunas deixariam metade do desktop vazia ao lado do filme. */}
+      <div className="relative z-10 mx-auto flex w-full max-w-xl flex-col items-center px-5 pb-10 pt-6 sm:pt-9 lg:pb-14 lg:pt-10">
+        <header className="mb-5 text-center lg:mb-7">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/logo.svg"
@@ -38,14 +40,20 @@ export default function VslHero() {
             height={24}
             fetchPriority="high"
             decoding="async"
-            className="lp15-fade mx-auto h-[24px] w-auto brightness-0 invert"
+            className="lp15-fade mx-auto h-[24px] w-auto brightness-0 invert lg:h-[26px]"
           />
+          {/* Sem headline, o filme fala por si — mas a página não pode ficar sem
+              título, então o eyebrow assume o h1. */}
+          <h1
+            className="lp15-fade mt-4 text-[11.5px] font-semibold uppercase tracking-[0.22em] text-[color:var(--green-bright)]"
+            style={{ animationDelay: "90ms" }}
+          >
+            Click Cannabis no esporte
+          </h1>
         </header>
 
-        <div className="grid items-center gap-7 lg:grid-cols-[auto_1fr] lg:gap-12">
-          <VideoPlayer />
-          <Pitch />
-        </div>
+        <VideoPlayer />
+        <Pitch />
       </div>
 
       <style>{`
@@ -137,16 +145,15 @@ function VideoPlayer() {
   }, []);
 
   return (
-    <figure className="lp15-fade mx-auto w-full max-w-[22rem] lg:mx-0 lg:max-w-[20rem]">
+    <figure className="lp15-fade w-full max-w-[22rem] lg:max-w-none">
+      {/* Altura primeiro, largura derivada do 9:16 — assim o filme nunca empurra
+          o CTA para fora da dobra. No desktop sobra altura, e é ela que o
+          filme ganha: 66svh contra os 58svh do celular. */}
       <div
-        className="relative mx-auto overflow-hidden rounded-3xl border"
+        className="relative mx-auto aspect-[9/16] h-[min(58svh,32rem)] overflow-hidden rounded-3xl border lg:h-[min(60svh,34rem)]"
         style={{
           borderColor: "var(--line)",
           backgroundColor: "#000",
-          // Altura primeiro, largura derivada do 9:16 — assim o filme nunca
-          // empurra a headline e o CTA para fora da dobra no celular.
-          height: "min(58svh, 32rem)",
-          aspectRatio: "9 / 16",
           boxShadow: "0 24px 60px rgba(0,0,0,.55)",
         }}
       >
@@ -302,20 +309,12 @@ function Pitch() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="text-center lg:text-left">
-      {/* Sem headline: o filme fala por si. O eyebrow assume o h1 para a página
-          não ficar sem título — o peso visual continua o mesmo. */}
-      <h1
-        className="lp15-fade text-[11.5px] font-semibold uppercase tracking-[0.22em] text-[color:var(--green-bright)]"
-        style={{ animationDelay: "90ms" }}
-      >
-        Click Cannabis no esporte
-      </h1>
+    <div className="w-full max-w-[22rem] text-center">
       <motion.button
         type="button"
         onClick={() => openSchedule({ origem: "hero" })}
         whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-        className="lp15-fade-flat mt-6 w-full rounded-2xl py-4 text-base font-bold text-white transition-all duration-150 hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--green-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0D0B] sm:text-lg lg:w-auto lg:px-10"
+        className="lp15-fade-flat mt-6 w-full rounded-2xl py-4 text-base font-bold text-white transition-all duration-150 hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--green-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B0D0B] sm:text-lg"
         style={{
           animationDelay: "320ms",
           backgroundColor: "var(--green-500)",
@@ -333,7 +332,7 @@ function Pitch() {
       </p>
 
       <div
-        className="lp15-fade mt-6 flex items-center justify-center gap-3 lg:justify-start"
+        className="lp15-fade mt-6 flex items-center justify-center gap-3"
         style={{ animationDelay: "440ms" }}
       >
         {[
