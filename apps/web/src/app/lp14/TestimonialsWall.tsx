@@ -23,17 +23,25 @@ const TAGS_DOR = new Set(["Dor", "Dor na coluna", "Artrite", "Fibromialgia"]);
 // Perfis com nome que soa fake derrubam a credibilidade da faixa.
 const NOMES_EXCLUIDOS = new Set(["Jacaré Junior"]);
 
+// Escolhidos a dedo por citarem atividade física no relato: abrem a faixa e
+// passam por fora dos filtros de tag.
+const NOMES_DESTAQUE = ["Sandra CardosoBueno", "Juliana Lopes", "luiz carlos pizani"];
+
 const MAX_ITEMS = 18;
 
 const ITEMS: TextTestimonial[] = (() => {
+  const destaque = NOMES_DESTAQUE.map((n) =>
+    TEXT_TESTIMONIALS.find((t) => t.name === n),
+  ).filter((t): t is TextTestimonial => t !== undefined);
   const aptos = TEXT_TESTIMONIALS.filter(
     (t) =>
       !NOMES_EXCLUIDOS.has(t.name) &&
+      !NOMES_DESTAQUE.includes(t.name) &&
       !t.tags.some((tag) => TAGS_EXCLUIDAS.has(tag)),
   );
   const comDor = aptos.filter((t) => t.tags.some((tag) => TAGS_DOR.has(tag)));
   const demais = aptos.filter((t) => !t.tags.some((tag) => TAGS_DOR.has(tag)));
-  return [...comDor, ...demais].slice(0, MAX_ITEMS);
+  return [...destaque, ...comDor, ...demais].slice(0, MAX_ITEMS);
 })();
 
 // Recebe o "agora" medido no cliente: calcular com Date.now() na renderização
