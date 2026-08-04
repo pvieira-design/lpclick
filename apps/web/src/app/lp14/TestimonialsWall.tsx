@@ -20,11 +20,16 @@ const TAGS_EXCLUIDAS = new Set([
 // Queixas nº 1 de quem treina — esses depoimentos abrem a faixa.
 const TAGS_DOR = new Set(["Dor", "Dor na coluna", "Artrite", "Fibromialgia"]);
 
+// Perfis com nome que soa fake derrubam a credibilidade da faixa.
+const NOMES_EXCLUIDOS = new Set(["Jacaré Junior"]);
+
 const MAX_ITEMS = 18;
 
 const ITEMS: TextTestimonial[] = (() => {
   const aptos = TEXT_TESTIMONIALS.filter(
-    (t) => !t.tags.some((tag) => TAGS_EXCLUIDAS.has(tag)),
+    (t) =>
+      !NOMES_EXCLUIDOS.has(t.name) &&
+      !t.tags.some((tag) => TAGS_EXCLUIDAS.has(tag)),
   );
   const comDor = aptos.filter((t) => t.tags.some((tag) => TAGS_DOR.has(tag)));
   const demais = aptos.filter((t) => !t.tags.some((tag) => TAGS_DOR.has(tag)));

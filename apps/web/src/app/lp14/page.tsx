@@ -4,6 +4,7 @@ import LandingClient from "./LandingClient";
 import ConsumptionForms from "./ConsumptionForms";
 import Footer from "./Footer";
 import MediaLogosMarquee from "./MediaLogosMarquee";
+import PartnerAthlete from "./PartnerAthlete";
 import ScheduleDialog from "./ScheduleDialog";
 import StickyCta from "./StickyCta";
 import TestimonialsWall from "./TestimonialsWall";
@@ -64,6 +65,7 @@ export default function LandingPage() {
 
       <main className="flex min-h-svh flex-col bg-[color:var(--bg)] pb-[calc(7rem+env(safe-area-inset-bottom))] text-[color:var(--ink)]">
         <LandingClient />
+        <PartnerAthlete />
         <div className="relative">
           <div
             id="lp14-sticky-anchor"
