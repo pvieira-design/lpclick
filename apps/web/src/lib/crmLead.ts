@@ -21,11 +21,26 @@ function readFbclid(): string {
 
 // Origem padrão para quando a URL não traz UTM (ex.: link da bio sem parâmetros).
 // Opcional: LPs que não passam nada mantêm o comportamento anterior (undefined).
+//
+// Precedência (intencional): UTM na URL SEMPRE vence os defaults. Atenção: o
+// Instagram anexa ig/social/link_in_bio ao link da bio, então tráfego real
+// chega com UTM da Meta — os defaults só valem para URL sem nenhuma utm_*.
+// O fallback é atômico: nunca mistura UTM de link com default no mesmo lead
+// (param vazio conta como ausente). Ver também bio/lead.ts.
 type LeadOrigin = {
   utmSource?: string;
   utmMedium?: string;
   utmContent?: string;
 };
+
+const UTM_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_content",
+  "utm_term",
+  "utm_id",
+] as const;
 
 export function sendLeadToCrm(
   name: string,
@@ -45,15 +60,24 @@ export function sendLeadToCrm(
   const params = new URLSearchParams(window.location.search);
   const n = navigator as unknown as { platform: string };
 
+  // Sem defaults (demais LPs): leitura crua, comportamento original intacto.
+  // Com defaults (/bio): vazio = ausente, e o trio só entra se a URL não
+  // trouxer nenhuma utm_* — nunca híbrido.
+  const raw = (k: string) => params.get(k);
+  const clean = (k: string) => params.get(k)?.trim() || null;
+  const get = defaults ? clean : raw;
+  const applied =
+    defaults && !UTM_KEYS.some((k) => clean(k) !== null) ? defaults : undefined;
+
   const payload = {
     name,
     pathologies,
-    utmSource: params.get("utm_source") ?? defaults?.utmSource ?? undefined,
-    utmMedium: params.get("utm_medium") ?? defaults?.utmMedium ?? undefined,
-    utmCampaign: params.get("utm_campaign") ?? undefined,
-    utmContent: params.get("utm_content") ?? defaults?.utmContent ?? undefined,
-    utmTerm: params.get("utm_term") ?? undefined,
-    utmId: params.get("utm_id") ?? undefined,
+    utmSource: get("utm_source") ?? applied?.utmSource ?? undefined,
+    utmMedium: get("utm_medium") ?? applied?.utmMedium ?? undefined,
+    utmCampaign: get("utm_campaign") ?? undefined,
+    utmContent: get("utm_content") ?? applied?.utmContent ?? undefined,
+    utmTerm: get("utm_term") ?? undefined,
+    utmId: get("utm_id") ?? undefined,
     fbclid: readFbclid() || undefined,
     fbp: readCookie("_fbp") || undefined,
     fbc: readCookie("_fbc") || undefined,

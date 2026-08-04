@@ -5,14 +5,31 @@ import { PHONE } from "./config";
 
 const LEADS_API_ENDPOINT = "/api/leads";
 
-// Origem carimbada quando o link da bio é aberto sem UTM na URL. A rota /bio é
-// o próprio identificador, então não precisa de cauda de parâmetros visível.
-// Link de campanha com ?utm_source=... sempre tem prioridade sobre estes.
+// ── Carimbo de origem: leia antes de mexer ───────────────────────────────────
+// 1. UTM presente na URL SEMPRE vence o carimbo padrão — intencional, para
+//    links de campanha/stories poderem se identificar.
+// 2. O Instagram anexa sozinho `utm_source=ig&utm_medium=social&
+//    utm_content=link_in_bio` ao link da bio. Tráfego real do IG chega
+//    rotulado pela Meta, a menos que a URL do perfil carregue as UTMs
+//    canônicas abaixo. O Gerenciador tem regra que traduz os dois formatos.
+// 3. A tripla abaixo só entra quando a URL não traz NENHUMA utm_* não-vazia
+//    (fallback atômico: nunca mistura URL + padrão no mesmo lead; param vazio
+//    tipo `?utm_medium=` conta como ausente).
+// Em jul-ago/2026 essas regras renderam 10 dias de investigação: os leads
+// pareciam "sem carimbo" porque chegavam como ig/social/link_in_bio.
 export const BIO_ORIGIN = {
   utmSource: "organico_bio",
   utmMedium: "bio",
   utmContent: "lp_bio",
 } as const;
+
+const UTM_KEYS = [
+  "utm_source",
+  "utm_medium",
+  "utm_content",
+  "utm_campaign",
+  "utm_term",
+] as const;
 
 export type LeadPayload = {
   name: string;
@@ -60,6 +77,10 @@ export function collectLeadData(name: string, patologies: string[]): LeadPayload
   const params = new URLSearchParams(window.location.search);
   const { appVersion, platform } = readDeprecatedNav();
 
+  // Vazio conta como ausente; fallback é atômico (ver bloco no topo).
+  const utm = (key: string) => params.get(key)?.trim() ?? "";
+  const urlTemUtm = UTM_KEYS.some((k) => utm(k) !== "");
+
   return {
     name,
     patologies,
@@ -71,13 +92,13 @@ export function collectLeadData(name: string, patologies: string[]): LeadPayload
       platform,
       referrer: document.referrer,
       pageUrl: window.location.href,
-      utm_term: params.get("utm_term") ?? "",
+      utm_term: utm("utm_term"),
       userAgent: navigator.userAgent,
       appVersion,
-      utm_medium: params.get("utm_medium") ?? BIO_ORIGIN.utmMedium,
-      utm_source: params.get("utm_source") ?? BIO_ORIGIN.utmSource,
-      utm_content: params.get("utm_content") ?? BIO_ORIGIN.utmContent,
-      utm_campaign: params.get("utm_campaign") ?? "",
+      utm_medium: urlTemUtm ? utm("utm_medium") : BIO_ORIGIN.utmMedium,
+      utm_source: urlTemUtm ? utm("utm_source") : BIO_ORIGIN.utmSource,
+      utm_content: urlTemUtm ? utm("utm_content") : BIO_ORIGIN.utmContent,
+      utm_campaign: utm("utm_campaign"),
     },
   };
 }
