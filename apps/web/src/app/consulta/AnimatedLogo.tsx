@@ -36,7 +36,7 @@ export default function AnimatedLogo() {
       style={{ overflow: "visible" }}
     >
       <defs>
-        <clipPath id="atendimento-consulta-logo-wipe">
+        <clipPath id="consulta-logo-wipe">
           <motion.rect
             x="75"
             y="-6"
@@ -71,7 +71,7 @@ export default function AnimatedLogo() {
       </motion.g>
 
       {/* Letras: wipe da esquerda pra direita */}
-      <g clipPath="url(#atendimento-consulta-logo-wipe)">
+      <g clipPath="url(#consulta-logo-wipe)">
         <path fill="#263a2d" d={LOGO_TEXT_D} />
       </g>
     </svg>

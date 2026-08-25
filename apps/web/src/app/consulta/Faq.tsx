@@ -44,7 +44,7 @@ export default function Faq() {
   };
 
   return (
-    <section className="bg-white py-14 sm:py-20" id="atendimento-consulta-faq">
+    <section className="bg-white py-14 sm:py-20" id="consulta-faq">
       <div className="mx-auto w-full max-w-3xl px-5">
         <motion.header
           className="mb-8 grid grid-cols-1 gap-3 sm:mb-12 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-x-8 sm:gap-y-2"

@@ -9,7 +9,7 @@ export default function StickyContactCTA() {
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    const anchor = document.getElementById("atendimento-consulta-sticky-anchor");
+    const anchor = document.getElementById("consulta-sticky-anchor");
     if (!anchor) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -22,7 +22,7 @@ export default function StickyContactCTA() {
   }, []);
 
   useEffect(() => {
-    const ids = ["atendimento-consulta-treatment-steps", "atendimento-consulta-testimonials-wall"];
+    const ids = ["consulta-treatment-steps", "consulta-testimonials-wall"];
     const targets = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);

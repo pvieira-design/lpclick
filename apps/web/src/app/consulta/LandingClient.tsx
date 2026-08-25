@@ -157,7 +157,7 @@ export default function LandingClient() {
           event: "buttonClick",
           category: "Lead",
           action: "Click",
-          label: "Selecionar objetivo - Atendimento-Consulta",
+          label: "Selecionar objetivo - Consulta",
           value: g.patologia,
         });
       }, 0);
@@ -182,7 +182,7 @@ export default function LandingClient() {
           event: "buttonClick",
           category: "Lead",
           action: "Click",
-          label: "CTA voltar ao formulário - Atendimento-Consulta",
+          label: "CTA voltar ao formulário - Consulta",
           value: goal?.patologia ?? "",
         });
       }, 0);
@@ -211,7 +211,7 @@ export default function LandingClient() {
       event: "buttonWhatsappClicked",
       category: "Lead",
       action: "Click",
-      label: "Falar com o médico - Atendimento-Consulta",
+      label: "Falar com o médico - Consulta",
       value: patologias.join(", "),
       leadData,
     });
@@ -241,7 +241,7 @@ export default function LandingClient() {
     <>
       <motion.section
         ref={sectionRef}
-        id="atendimento-consulta-treatment-form"
+        id="consulta-treatment-form"
         className="mx-auto flex w-full max-w-xl flex-col px-5 pt-6 pb-10 sm:py-16"
         variants={heroStagger}
         initial="hidden"
@@ -329,11 +329,11 @@ export default function LandingClient() {
                   Horários disponíveis hoje
                 </p>
 
-                <label htmlFor="atendimento-consulta-name" className="mt-4 block text-[15px] text-gray-800">
+                <label htmlFor="consulta-name" className="mt-4 block text-[15px] text-gray-800">
                   Nome <span className="text-red-500">*</span>
                 </label>
                 <input
-                  id="atendimento-consulta-name"
+                  id="consulta-name"
                   ref={inputRef}
                   type="text"
                   autoComplete="given-name"

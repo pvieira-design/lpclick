@@ -12,7 +12,7 @@ import TestimonialsWall from "./TestimonialsWall";
 import TreatmentSteps from "./TreatmentSteps";
 import { TESTIMONIALS_META } from "../lp5/testimonialsMeta";
 
-// atendimento-consulta = lp12 com o hero em ângulo de OBJETIVO (seleção única → patologia).
+// consulta = lp12 com o hero em ângulo de OBJETIVO (seleção única → patologia).
 // Display font só desta rota: personalidade nos headings/números sem
 // abandonar o tom clínico sans da lp5 (corpo continua Geist do root).
 const bricolage = Bricolage_Grotesque({
@@ -45,7 +45,7 @@ const FEATURED_INSOMNIA_IDS = [
 ];
 
 // Cache estático; revalidado sob demanda pelo /api/forms/submit ao entrar
-// um depoimento novo (atendimento-consulta está em TESTIMONIAL_PATHS).
+// um depoimento novo (consulta está em TESTIMONIAL_PATHS).
 export const revalidate = false;
 
 const sql = neon(process.env.NEON_DATABASE_URL!);
@@ -91,9 +91,9 @@ export default async function LandingPage() {
   );
 
   return (
-    <div className={`atendimento-consulta ${bricolage.variable}`}>
+    <div className={`consulta ${bricolage.variable}`}>
       <style>{`
-        .atendimento-consulta {
+        .consulta {
           --green-900: #1C4423;
           --green-700: #285E31;
           --green-600: #2d6e3f;
@@ -109,7 +109,7 @@ export default async function LandingPage() {
           --radius-panel: 1.5rem;
           --radius-btn: .875rem;
         }
-        .atendimento-consulta .font-display {
+        .consulta .font-display {
           font-family: var(--font-display), var(--font-geist-sans), system-ui, sans-serif;
           letter-spacing: -0.02em;
         }
@@ -121,11 +121,11 @@ export default async function LandingPage() {
             box-shadow: 0 0 0 18px rgba(61,143,74,0);
           }
         }
-        .atendimento-consulta .cta-pulse {
+        .consulta .cta-pulse {
           position: relative;
           isolation: isolate;
         }
-        .atendimento-consulta .cta-pulse::after {
+        .consulta .cta-pulse::after {
           content: "";
           position: absolute;
           inset: 0;
@@ -135,7 +135,7 @@ export default async function LandingPage() {
           pointer-events: none;
         }
         @media (prefers-reduced-motion: reduce) {
-          .atendimento-consulta .cta-pulse::after { animation: none; }
+          .consulta .cta-pulse::after { animation: none; }
         }
       `}</style>
 
@@ -150,16 +150,16 @@ export default async function LandingPage() {
               titleBold="nossos pacientes"
             />
             <div
-              id="atendimento-consulta-sticky-anchor"
+              id="consulta-sticky-anchor"
               aria-hidden="true"
               className="pointer-events-none absolute left-0 top-1/2 h-px w-px"
             />
           </div>
         ) : (
-          <div id="atendimento-consulta-sticky-anchor" aria-hidden="true" />
+          <div id="consulta-sticky-anchor" aria-hidden="true" />
         )}
         <ConsumptionForms />
-        <div id="atendimento-consulta-treatment-steps">
+        <div id="consulta-treatment-steps">
           <TreatmentSteps />
         </div>
         <TestimonialsWall />
