@@ -93,7 +93,7 @@ export default function StickyContactCTA() {
                   <circle cx="11.5" cy="4.5" r="1.8" stroke="currentColor" strokeWidth="1.3" opacity="0.55" />
                   <path d="M10.4 9.8c1.6.2 2.9 1.4 3.4 3.1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" opacity="0.55" />
                 </svg>
-                +50 mil pacientes
+                +150 mil consultas
               </span>
             </div>
           </div>

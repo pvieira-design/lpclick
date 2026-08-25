@@ -2,10 +2,10 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 
-// Prova social: SÓ claims aprovados pelo manual da marca (doc-click, jun/2026).
+// Prova social: SÓ claims aprovados. Atualizado em ago/2026: +150 mil
+// consultas. O "% aprovam o médico" é dado sensível e NÃO deve ser exibido.
 const PROOF = [
-  { value: "+50 mil", label: "consultas realizadas" },
-  { value: "92%", label: "aprovam o médico" },
+  { value: "+150 mil", label: "consultas realizadas" },
   { value: "+2.000", label: "avaliações no Google" },
   { value: "R$50", label: "primeira consulta" },
 ] as const;
@@ -20,7 +20,7 @@ export default function ProofStrip() {
       style={{ borderColor: "var(--line)", backgroundColor: "var(--green-50)" }}
     >
       <motion.ul
-        className="mx-auto grid w-full max-w-xl grid-cols-2 gap-x-4 gap-y-5 px-5 py-6 sm:grid-cols-4 sm:gap-x-2 sm:py-7"
+        className="mx-auto grid w-full max-w-xl grid-cols-3 gap-x-3 px-5 py-6 sm:py-7"
         initial={reduceMotion ? false : { opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.4 }}
