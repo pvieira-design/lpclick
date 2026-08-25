@@ -1,4 +1,4 @@
-// Captação de lead da /lp16 — mesmo contrato usado nas demais LPs.
+// Captação de lead da /vsl — mesmo contrato usado nas demais LPs.
 "use client";
 
 import { PHONE } from "./config";

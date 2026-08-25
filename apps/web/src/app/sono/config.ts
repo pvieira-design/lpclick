@@ -1,4 +1,4 @@
-// Constantes da /lp16 — LP de anúncio focada em insônia/dificuldade para
+// Constantes da /sono — LP de anúncio focada em insônia/dificuldade para
 // dormir. Tudo que muda com frequência mora aqui.
 
 export const PHONE = "5521993686082";
@@ -17,7 +17,7 @@ export const PATOLOGIAS = [
 ] as const;
 
 export const LINKS = {
-  site: "https://clickcannabis.com/?src=&utm_source=lp16",
+  site: "https://clickcannabis.com/?src=&utm_source=sono",
   privacidade: "https://clickcannabis.com/politica-de-privacidade/",
   termos: "https://clickcannabis.com/termos-de-uso/",
 } as const;

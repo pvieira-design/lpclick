@@ -1,6 +1,6 @@
 "use client";
 
-// Dobra única da /lp17: o vídeo é a página inteira.
+// Dobra única da /vsl: o vídeo é a página inteira.
 //
 // O filme é vertical (9:16) e tem legenda queimada, então entra mudo e em
 // autoplay — quem chega do anúncio já entende a mensagem sem tocar em nada — e

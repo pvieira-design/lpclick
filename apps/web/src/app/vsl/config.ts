@@ -1,4 +1,4 @@
-// Constantes da /lp17 — VSL pura: vídeo, botão liberado aos 45s e o rodapé
+// Constantes da /vsl — VSL pura: vídeo, botão liberado aos 45s e o rodapé
 // legal. Tudo que muda com frequência mora aqui.
 
 export const PHONE = "5521993686082";
@@ -16,7 +16,7 @@ export const PATOLOGIAS = [
 ] as const;
 
 export const LINKS = {
-  site: "https://clickcannabis.com/?src=&utm_source=lp17",
+  site: "https://clickcannabis.com/?src=&utm_source=vsl",
   privacidade: "https://clickcannabis.com/politica-de-privacidade/",
   termos: "https://clickcannabis.com/termos-de-uso/",
 } as const;
