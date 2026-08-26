@@ -9,7 +9,7 @@ export default function StickyContactCTA() {
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    const anchor = document.getElementById("objetivo-light-sticky-anchor");
+    const anchor = document.getElementById("bem-estar-sticky-anchor");
     if (!anchor) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -22,7 +22,7 @@ export default function StickyContactCTA() {
   }, []);
 
   useEffect(() => {
-    const ids = ["objetivo-light-testimonials-wall"];
+    const ids = ["bem-estar-testimonials-wall"];
     const targets = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);

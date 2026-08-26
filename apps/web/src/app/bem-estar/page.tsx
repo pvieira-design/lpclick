@@ -10,7 +10,7 @@ import TestimonialsSlider from "./TestimonialsSlider";
 import TestimonialsWall from "./TestimonialsWall";
 import { TESTIMONIALS_META } from "../lp5/testimonialsMeta";
 
-// /objetivo-light = /objetivo sem menção a médico/cannabis (copy neutra de
+// /bem-estar = /objetivo sem menção a médico/cannabis (copy neutra de
 // bem-estar, sem as seções de tratamento). Origem: /objetivo = evolução da /consulta: hero em 2 etapas (objetivo → nome),
 // prova social aprovada antes do CTA e tipografia da marca (Lexend nos
 // títulos, conforme o manual doc-click). Corpo continua Geist do root.
@@ -90,9 +90,9 @@ export default async function LandingPage() {
   );
 
   return (
-    <div className={`objetivo-light ${lexend.variable}`}>
+    <div className={`bem-estar ${lexend.variable}`}>
       <style>{`
-        .objetivo-light {
+        .bem-estar {
           --green-900: #1C4423;
           --green-700: #285E31;
           --green-600: #2d6e3f;
@@ -108,13 +108,13 @@ export default async function LandingPage() {
           --radius-panel: 1.5rem;
           --radius-btn: .875rem;
         }
-        .objetivo-light .hero-atmosphere {
+        .bem-estar .hero-atmosphere {
           background:
             radial-gradient(60% 45% at 50% -5%, rgba(61,143,74,.16), transparent 70%),
             radial-gradient(40% 30% at 90% 20%, rgba(229,242,231,.9), transparent 70%),
             #fff;
         }
-        .objetivo-light .font-display {
+        .bem-estar .font-display {
           font-family: var(--font-display), var(--font-geist-sans), system-ui, sans-serif;
           letter-spacing: -0.02em;
         }
@@ -126,11 +126,11 @@ export default async function LandingPage() {
             box-shadow: 0 0 0 18px rgba(61,143,74,0);
           }
         }
-        .objetivo-light .cta-pulse {
+        .bem-estar .cta-pulse {
           position: relative;
           isolation: isolate;
         }
-        .objetivo-light .cta-pulse::after {
+        .bem-estar .cta-pulse::after {
           content: "";
           position: absolute;
           inset: 0;
@@ -140,7 +140,7 @@ export default async function LandingPage() {
           pointer-events: none;
         }
         @media (prefers-reduced-motion: reduce) {
-          .objetivo-light .cta-pulse::after { animation: none; }
+          .bem-estar .cta-pulse::after { animation: none; }
         }
       `}</style>
 
@@ -159,13 +159,13 @@ export default async function LandingPage() {
               Relatos pessoais. Resultados variam de pessoa para pessoa.
             </p>
             <div
-              id="objetivo-light-sticky-anchor"
+              id="bem-estar-sticky-anchor"
               aria-hidden="true"
               className="pointer-events-none absolute left-0 top-1/2 h-px w-px"
             />
           </div>
         ) : (
-          <div id="objetivo-light-sticky-anchor" aria-hidden="true" />
+          <div id="bem-estar-sticky-anchor" aria-hidden="true" />
         )}
         <TestimonialsWall />
       </main>

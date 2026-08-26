@@ -21,7 +21,7 @@ const TESTIMONIAL_PATHS = [
   "/lp13",
   "/consulta",
   "/objetivo",
-  "/objetivo-light",
+  "/bem-estar",
 ];
 
 function clientIp(request: Request): string | null {

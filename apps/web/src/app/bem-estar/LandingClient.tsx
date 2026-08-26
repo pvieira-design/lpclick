@@ -191,7 +191,7 @@ export default function LandingClient() {
         event: "buttonClick",
         category: "Lead",
         action: "Click",
-        label: "Selecionar objetivo - ObjetivoLight",
+        label: "Selecionar objetivo - BemEstar",
         value: g.patologia,
       });
     }, 0);
@@ -219,7 +219,7 @@ export default function LandingClient() {
           event: "buttonClick",
           category: "Lead",
           action: "Click",
-          label: "CTA voltar ao formulário - ObjetivoLight",
+          label: "CTA voltar ao formulário - BemEstar",
           value: goal?.patologia ?? "",
         });
       }, 0);
@@ -247,7 +247,7 @@ export default function LandingClient() {
       event: "buttonWhatsappClicked",
       category: "Lead",
       action: "Click",
-      label: "Falar com especialista - ObjetivoLight",
+      label: "Falar com especialista - BemEstar",
       value: patologias.join(", "),
       leadData,
     });
@@ -283,7 +283,7 @@ export default function LandingClient() {
   return (
     <motion.section
       ref={sectionRef}
-      id="objetivo-light-treatment-form"
+      id="bem-estar-treatment-form"
       className="hero-atmosphere scroll-mt-2"
       variants={heroStagger}
       initial="hidden"
@@ -431,11 +431,11 @@ export default function LandingClient() {
                     </button>
                   )}
 
-                  <label htmlFor="objetivo-light-name" className="mt-5 block text-[15px]" style={{ color: "var(--ink)" }}>
+                  <label htmlFor="bem-estar-name" className="mt-5 block text-[15px]" style={{ color: "var(--ink)" }}>
                     Nome <span className="text-red-500">*</span>
                   </label>
                   <input
-                    id="objetivo-light-name"
+                    id="bem-estar-name"
                     ref={inputRef}
                     type="text"
                     autoComplete="given-name"
@@ -448,14 +448,14 @@ export default function LandingClient() {
                     onKeyDown={handleKeyDown}
                     placeholder="Seu primeiro nome"
                     aria-invalid={showError}
-                    aria-describedby={showError ? "objetivo-light-name-error" : undefined}
+                    aria-describedby={showError ? "bem-estar-name-error" : undefined}
                     className="mt-2 h-12 w-full rounded-lg border bg-white px-4 text-base outline-none transition-colors duration-150 placeholder:text-gray-400 focus:border-[#3a7a4f]"
                     style={{ fontSize: "16px", borderColor: showError ? "#ef4444" : "#d1d5db", color: "var(--ink)" }}
                   />
                   <AnimatePresence>
                     {showError && (
                       <motion.p
-                        id="objetivo-light-name-error"
+                        id="bem-estar-name-error"
                         role="alert"
                         initial={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
                         animate={{ opacity: 1, y: 0 }}

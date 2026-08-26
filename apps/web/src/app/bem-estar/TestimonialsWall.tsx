@@ -138,7 +138,7 @@ export default function TestimonialsWall() {
 
   return (
     <section
-      id="objetivo-light-testimonials-wall"
+      id="bem-estar-testimonials-wall"
       className="relative overflow-hidden bg-white pb-12 sm:pb-20"
     >
       <motion.div
