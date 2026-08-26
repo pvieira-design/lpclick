@@ -311,15 +311,15 @@ export default function LandingClient() {
 
           <motion.h1
             variants={heroItem}
-            className="font-display text-[1.65rem] font-semibold leading-[1.12] sm:text-[2.4rem]"
+            className="font-display text-[1.75rem] font-semibold leading-[1.12] sm:text-[2.4rem]"
             style={{ color: "var(--ink)" }}
           >
-            Bem-estar com{" "}
-            <span style={{ color: "var(--green-700)" }}>acompanhamento de especialistas</span>,
+            Cuide do seu{" "}
+            <span style={{ color: "var(--green-700)" }}>bem-estar</span>,
             100% online
           </motion.h1>
           <motion.p variants={heroItem} className="mt-3 text-[15px] sm:text-base" style={{ color: "var(--muted)" }}>
-            Primeiro atendimento por R$50. Comece dizendo o que você quer melhorar.
+            Acompanhamento de especialistas por R$50. Comece dizendo o que você quer melhorar.
           </motion.p>
         </header>
 
