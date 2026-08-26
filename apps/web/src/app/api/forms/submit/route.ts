@@ -21,6 +21,7 @@ const TESTIMONIAL_PATHS = [
   "/lp13",
   "/consulta",
   "/objetivo",
+  "/objetivo-light",
 ];
 
 function clientIp(request: Request): string | null {
