@@ -224,18 +224,6 @@ export default function PrivacidadePage() {
           `}</style>
 
           <div className="privacy">
-            <aside className="summary-card" aria-label="Atualização da política">
-              <h2>O que mudou nesta versão</h2>
-              <p>
-                Atualizamos as informações sobre uso local e conectado, sincronização de registros,
-                processamento automatizado de receitas com fornecedores externos, acompanhamento de
-                menores por responsáveis e exclusão da conta do aplicativo.
-              </p>
-              <p>
-                Você pode consultar seus direitos e os canais de contato abaixo. A conexão com a
-                Click pode ser interrompida nas configurações do app.
-              </p>
-            </aside>
             <h2>1. Sobre esta política</h2>
 
             <p>
