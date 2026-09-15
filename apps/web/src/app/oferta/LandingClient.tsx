@@ -34,8 +34,8 @@ function buildWhatsAppUrl(name: string, sintomas: string[]) {
 
 const PREMIOS_INFO = {
   "res-0": {
-    prize: "Você liberou R$50 de cashback!",
-    desc: "Aplique o cupom no pagamento da consulta. Você recebe R$50 de cashback se iniciar o tratamento e realizar o processo de importação.",
+    prize: "R$50 de cashback para iniciar seu tratamento.",
+    desc: "Guarde seu cupom e aplique no link de pagamento da consulta que nossa equipe enviará pelo WhatsApp.",
   },
 };
 
@@ -536,7 +536,7 @@ function ResultForm({
         <div className="cashback-ticket">
           <div className="ticket-top"><span>SEU CASHBACK CLICK</span><span aria-hidden="true">✧</span></div>
           <p className="ticket-value"><small>R$</small>50<span>,00</span></p>
-          <p className="ticket-label">de cashback ao iniciar o tratamento e realizar a importação</p>
+          <p className="ticket-label">de cashback para iniciar seu tratamento</p>
           <div className="ticket-bottom coupon-row">
             <div><span>SEU CUPOM</span><code ref={couponRef}>{CUPOM}</code></div>
             <button type="button" onClick={copyCoupon}>{copyState === "copied" ? "Copiado ✓" : "Copiar cupom"}</button>
@@ -549,7 +549,7 @@ function ResultForm({
           <ol>
             <li><b>1</b><span>Preencha seu nome e sintomas e siga para o <strong>WhatsApp</strong>. A equipe fará algumas perguntas rápidas para agendar sua consulta.</span></li>
             <li><b>2</b><span>Você receberá o <strong>link de pagamento da consulta pelo WhatsApp</strong>. Abra o link e aplique <strong>CASHBACK</strong> no campo de cupom antes de pagar.</span></li>
-            <li><b>3</b><span>Se iniciar o tratamento e realizar a <strong>importação</strong>, você recebe <strong>R$50 de cashback</strong> sobre esse processo.</span></li>
+            <li><b>3</b><span>Você ganhou um benefício de <strong>R$50 de cashback</strong>, que será recebido caso você <strong>inicie o tratamento</strong>.</span></li>
           </ol>
         </div>
       </div>
@@ -677,7 +677,7 @@ function ResultForm({
                 </svg>
               </motion.div>
               <h3>Seu cupom vai com você.</h3>
-              <p>Continue com nossa equipe pelo WhatsApp. Aplique <strong>CASHBACK</strong> no link de pagamento da consulta que receber por lá. Os R$50 de cashback são recebidos se você iniciar o tratamento e realizar a importação.</p>
+              <p>Continue com nossa equipe pelo WhatsApp. Aplique <strong>CASHBACK</strong> no link de pagamento da consulta que receber por lá. Você recebe os R$50 de cashback caso inicie o tratamento.</p>
               <a
                 className="btn btn-primary whatsapp-reopen"
                 href={whatsappUrl}
