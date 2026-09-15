@@ -16,12 +16,12 @@ import { sendLeadToCrm } from "@/lib/crmLead";
 
 // Os demais benefícios compõem a roda; esta oferta garante o cashback.
 const PREMIOS = [
-  { label: "R$50\ncashback", cashback: true },
-  { label: "Frete\ngrátis", cashback: false },
-  { label: "Agende 1\nganhe outra", cashback: false },
-  { label: "Frete\ngrátis", cashback: false },
-  { label: "Agende 1\nganhe outra", cashback: false },
-  { label: "Tente na\npróxima", cashback: false },
+  { label: "R$50\ncashback", cashback: true, oferta: true },
+  { label: "Tente na\npróxima", cashback: false, oferta: false },
+  { label: "Frete\ngrátis", cashback: false, oferta: true },
+  { label: "Tente na\npróxima", cashback: false, oferta: false },
+  { label: "2 consultas\npelo preço de 1", cashback: false, oferta: true },
+  { label: "Tente na\npróxima", cashback: false, oferta: false },
 ];
 const CUPOM = "CASHBACK";
 const PHONE = "5521993686082";
@@ -380,9 +380,9 @@ export default function LandingClient() {
                       const lines = prize.label.split("\n");
                       return (
                         <g key={i}>
-                          <path d={`M210 210 L${point(start)} A${radius} ${radius} 0 0 1 ${point(end)} Z`} fill={prize.cashback ? "#efdfb6" : "#254e3d"} stroke="#f8f1dd" strokeWidth="1.3" />
+                          <path d={`M210 210 L${point(start)} A${radius} ${radius} 0 0 1 ${point(end)} Z`} fill={prize.oferta ? "#efdfb6" : "#254e3d"} stroke="#f8f1dd" strokeWidth="1.3" />
                           <g transform={`rotate(${i * SEG + SEG / 2} 210 210)`}>
-                            <text className={prize.cashback ? "svg-prize" : "svg-alternative"} x="210" y="76" textAnchor="middle" fill={prize.cashback ? "#234833" : "#f4ecd9"}>
+                            <text className={prize.cashback ? "svg-prize" : "svg-alternative"} x="210" y="76" textAnchor="middle" fill={prize.oferta ? "#234833" : "#f4ecd9"}>
                               <tspan x="210">{lines[0]}</tspan>
                               <tspan className="svg-prize-caption" x="210" dy="21">{lines[1]}</tspan>
                             </text>
