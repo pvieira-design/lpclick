@@ -1,0 +1,75 @@
+.oferta{--green:#183e32;--cream:#f7f5ed;--gold:#ead39b;--muted:#69746c;--line:#dce1d8;color:var(--green);background:var(--cream);min-height:100svh;font-family:var(--font-lexend),sans-serif;-webkit-font-smoothing:antialiased}
+.oferta *{box-sizing:border-box}.oferta button,.oferta input{font:inherit}.oferta button{cursor:pointer}.oferta button:focus-visible,.oferta a:focus-visible,.oferta input:focus-visible{outline:3px solid #b18535;outline-offset:5px}.oferta h1,.oferta h2,.oferta h3,.oferta p{margin:0}.oferta a{color:inherit;text-decoration:none}
+.oferta .offer-shell{max-width:1440px;margin:auto;padding:0 64px}.oferta .offer-header{height:104px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);gap:16px}.oferta .logo{display:flex;align-items:baseline;gap:9px}.oferta .logo b{font:600 34px var(--font-fraunces),serif;letter-spacing:-2px}.oferta .logo i{font-size:10px;font-style:normal;text-transform:uppercase;letter-spacing:2px}.oferta .header-note{font-size:11px;color:var(--muted)}.oferta .sound-toggle{display:flex;gap:9px;align-items:center;border:1px solid var(--line);border-radius:99px;padding:10px 14px;background:transparent;color:var(--green);font-size:11px}
+.oferta .offer-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;padding:52px 0 56px;min-height:calc(100svh - 163px)}.oferta .eyebrow{display:flex;align-items:center;gap:8px;font-size:9px;letter-spacing:1.8px;font-weight:500}.oferta .eyebrow>span{width:6px;height:6px;border-radius:100%;background:#9f7b37}.oferta h1{font:400 clamp(42px,4.7vw,68px)/1.08 var(--font-fraunces),serif;letter-spacing:-2.8px;margin:26px 0}.oferta h1 em{font-weight:400;color:#728168}.oferta .lead{max-width:390px;font-size:14px;line-height:1.85;color:#66736b}.oferta .benefit-note{display:flex;align-items:center;gap:14px;margin-top:30px}.oferta .gift-icon{display:grid;place-items:center;border:1px solid #d6ddcf;border-radius:14px;width:46px;height:46px;font-size:32px}.oferta .benefit-note strong{font-size:12px;font-weight:500}.oferta .benefit-note p{font-size:11px;color:var(--muted);margin-top:4px}.oferta .steps{list-style:none;margin:40px 0 0;padding:24px 0 0;display:flex;gap:24px;border-top:1px solid var(--line)}.oferta .steps li{font-size:9px;line-height:1.6;color:var(--muted)}.oferta .steps b{display:block;font-weight:400;font-size:10px;margin-bottom:5px;color:#8e9b90}.oferta .steps .active{color:var(--green)}
+.oferta .wheel-panel{background:#173e32;border:1px solid #2a5141;border-radius:28px;overflow:hidden;color:#f5f0dd;padding:26px;position:relative;box-shadow:0 25px 60px -35px #173e3270;background-image:radial-gradient(ellipse at 50% 38%,#3e6043 0,transparent 65%)}.oferta .wheel-stage{position:relative;display:grid;place-items:center;padding:40px 0 34px}
+.oferta .spin-controls{position:relative;text-align:center}.oferta .spin-status{font-size:11px;color:#e1e7d8;min-height:20px;margin:4px 0 12px}.oferta .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:12px;padding:18px 20px;font-size:13px;font-weight:500;min-height:54px;transition:box-shadow .2s,background .2s}.oferta .btn-gold{background:#ecd7a2;color:#243e2c;box-shadow:0 4px 0 #a58c54}.oferta .btn-gold:hover{background:#f7e5b9;box-shadow:0 4px 0 #a58c54,0 0 25px #ecd7a222}.oferta .spin-btn>span:last-child{font-size:22px;line-height:1}.oferta .btn:disabled{cursor:wait}.oferta .offer-footer{border-top:1px solid var(--line);padding:22px 0;display:flex;justify-content:space-between;gap:18px;color:#707a70;font-size:8px;letter-spacing:.7px}
+.oferta .screen.result{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:20px 80px;padding:55px 20px;min-height:calc(100svh - 163px)}.oferta .win-prize{font:400 43px/1.13 var(--font-fraunces),serif;letter-spacing:-1.3px;margin:18px 0 25px;outline:none}.oferta .cashback-ticket{background:#183e32;color:#f4e5bd;border-radius:16px;padding:24px 28px;position:relative;overflow:hidden;box-shadow:0 18px 30px -24px #153c32}.oferta .ticket-top,.oferta .ticket-bottom{display:flex;justify-content:space-between;align-items:center;font-size:8px;letter-spacing:1.6px}.oferta .ticket-top>span:last-child{font-size:23px}.oferta .ticket-value{font:400 108px/1.2 var(--font-fraunces),serif;letter-spacing:-6px}.oferta .ticket-value small{font-size:31px;letter-spacing:-1px;margin-right:10px}.oferta .ticket-value>span{font-size:36px;letter-spacing:-2px}.oferta .ticket-label{font-size:12px;margin-bottom:24px}.oferta .ticket-bottom{border-top:1px dashed #ead39b60;padding-top:19px;color:#d2ddc6}.oferta .win-desc{font-size:12px;line-height:1.8;color:var(--muted);margin-top:22px;max-width:380px}.oferta .result-next{font-size:10px;line-height:1.7;margin-top:18px}.oferta .res-form{background:#fffefa;border:1px solid var(--line);border-radius:22px;padding:32px}.oferta .res-form h3{font:400 28px/1.15 var(--font-fraunces),serif;letter-spacing:-.5px;margin-bottom:10px}.oferta .fp{font-size:12px;line-height:1.7;color:var(--muted);margin-bottom:26px}.oferta .field{margin-bottom:23px}.oferta .field label{display:block;font-size:11px;margin-bottom:10px}.oferta .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.oferta .chip{border:1px solid var(--line);border-radius:9px;background:#fafbf6;color:var(--green);padding:12px 5px;font-size:10px;min-height:44px}.oferta .chip.sel{background:var(--green);color:#fff;border-color:var(--green)}.oferta .field input{width:100%;background:#fffefa;border:1px solid #cbd4c8;border-radius:10px;padding:15px 12px;font-size:16px;color:var(--green)}.oferta .err{font-size:11px;color:#a83a2d;margin-top:7px}.oferta .btn-primary{background:var(--green);color:#fffefa}.oferta .btn-primary:hover{background:#2a5641}.oferta .secure{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;font-size:9px;line-height:1.5;color:var(--muted)}.oferta .secure svg{flex-shrink:0}.oferta .back{grid-column:1/-1;justify-self:center;width:auto;background:transparent;color:var(--muted);font-size:10px;padding:8px;min-height:44px}.oferta .form-done{text-align:center;padding:30px 0}.oferta .form-done .ok{display:grid;place-items:center;background:var(--green);width:55px;height:55px;border-radius:50%;margin:0 auto 20px}.oferta .form-done p{font-size:12px;line-height:1.8;color:var(--muted)}
+
+@media(min-width:1440px){.oferta .offer-grid{gap:100px}.oferta .wheel-panel{padding:30px 42px}.oferta .wheel-stage{padding:48px 0 38px}}
+@media(max-width:1000px){.oferta .offer-shell{padding:0 32px}.oferta .offer-grid{gap:32px}.oferta h1{font-size:47px}.oferta .wheel-panel{padding:22px 18px}.oferta .screen.result{gap:30px;padding:40px 0}.oferta .res-form{padding:24px}.oferta .steps{gap:14px}.oferta .win-prize{font-size:36px}}
+@media(max-width:760px){.oferta .offer-shell{padding:0 20px}.oferta .offer-header{height:76px}.oferta .header-note{display:none}.oferta .logo b{font-size:30px}.oferta .sound-toggle{padding:10px}.oferta .sound-toggle span{font-size:9px}.oferta .offer-grid{grid-template-columns:1fr;gap:26px;padding:29px 0 30px;min-height:0}.oferta .offer-copy{text-align:center}.oferta .eyebrow{font-size:8px;letter-spacing:1.1px;justify-content:center}.oferta h1{font-size:42px;letter-spacing:-1.8px;line-height:1.06;margin:17px 0 14px}.oferta h1 em{display:inline-block}.oferta .lead{font-size:12px;line-height:1.75;margin:auto;max-width:340px}.oferta .benefit-note{display:none}.oferta .steps{display:none}.oferta .wheel-panel{padding:20px 20px 22px;border-radius:22px;width:100%;max-width:470px;margin:auto}.oferta .wheel-stage{padding:33px 0 26px}.oferta .spin-status{font-size:10px}.oferta .btn{font-size:12px;padding:16px}.oferta .offer-footer{flex-direction:column;text-align:center;gap:9px;line-height:1.5;font-size:7px}.oferta .screen.result{grid-template-columns:1fr;padding:30px 0;gap:25px}.oferta .result-intro{text-align:center;max-width:420px;margin:auto}.oferta .win-prize{font-size:36px;margin:15px 0 24px}.oferta .cashback-ticket{text-align:left}.oferta .win-desc{margin:18px auto 0}.oferta .result-next{display:none}.oferta .res-form{width:100%;max-width:420px;margin:auto;padding:24px}.oferta .back{margin-top:-16px}.oferta .ticket-value{font-size:94px}.oferta .res-form h3{font-size:27px}}
+@media(max-width:360px){.oferta .offer-shell{padding:0 14px}.oferta h1{font-size:36px}.oferta .wheel-panel{padding:18px 14px}.oferta .res-form{padding:20px}}
+@media(prefers-reduced-motion:reduce){.oferta *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Resgate do cupom */
+.oferta .coupon-row{gap:16px;letter-spacing:1px}
+.oferta .coupon-row>div>span{display:block;font-size:8px;margin-bottom:8px}
+.oferta .coupon-row code{font-family:var(--font-lexend),sans-serif;font-size:22px;letter-spacing:3px;color:#fff0c9;user-select:all}
+.oferta .coupon-row button{border:1px solid #e9d39b77;border-radius:8px;background:#e9d39b18;color:#fff0c9;padding:12px;font-size:10px;min-height:44px;letter-spacing:0}
+.oferta .coupon-row button:hover{background:#e9d39b30}
+.oferta .copy-status{font-size:10px;line-height:1.6;color:#d2ddc6;margin-top:14px;min-height:32px}
+.oferta .coupon-how{margin-top:25px;text-align:left}
+.oferta .coupon-how h3{font-family:var(--font-lexend),sans-serif;font-size:13px;font-weight:500}
+.oferta .coupon-how ol{padding:0;margin:15px 0 0;list-style:none;display:grid;gap:13px}
+.oferta .coupon-how li{display:flex;gap:12px;align-items:flex-start;font-size:11px;line-height:1.7;color:#657269}
+.oferta .coupon-how li>b{display:grid;place-items:center;flex-shrink:0;width:24px;height:24px;border-radius:50%;background:#e7ebdf;font-size:10px;font-weight:500;color:#274e3a}
+.oferta .coupon-how strong{color:#274e3a;font-weight:500}
+
+
+
+@media(min-width:761px){.oferta h1{font-size:clamp(40px,4.2vw,60px)}}
+@media(max-width:760px){.oferta h1{font-size:37px}}
+@media(max-width:360px){.oferta h1{font-size:32px}.oferta .coupon-row{gap:8px}.oferta .coupon-row code{font-size:19px;letter-spacing:2px}.oferta .coupon-row button{font-size:9px;padding:10px}}
+
+/* Botão de giro compacto, com texto centralizado em todas as telas. */
+.oferta .form-done .whatsapp-reopen{margin-top:20px}
+.oferta .btn.spin-btn{position:relative;width:min(100%,300px);margin:0 auto 8px;justify-content:center;padding:15px 42px;font-size:17px;font-weight:600;min-height:54px}
+.oferta .spin-btn>span:last-child{position:absolute;right:16px;font-size:20px}
+@media(max-width:760px){.oferta .btn.spin-btn{width:min(100%,270px);font-size:16px;padding:14px 36px}.oferta .spin-btn>span:last-child{right:12px}}
+
+/* Abertura direta: título e roleta, com menos espaço vertical no celular. */
+.oferta .offer-copy h1{margin:0}
+@media(max-width:760px){
+  .oferta .offer-grid{gap:16px;padding:16px 0}
+  .oferta .wheel-stage{padding:28px 0 24px}
+}
+@media(max-width:760px) and (max-height:700px){
+  .oferta .offer-header{height:60px}
+  .oferta .offer-grid{gap:12px;padding:12px 0}
+  .oferta .offer-copy h1{font-size:clamp(28px,5svh,34px)}
+  .oferta .wheel-panel{padding-top:16px;padding-bottom:16px}
+  
+  .oferta .wheel-stage{padding:28px 0 16px}
+}
+
+/* Roleta vetorial sem painel de fundo ou elementos decorativos externos. */
+.oferta .wheel-panel{background:none;border:0;box-shadow:none;border-radius:0;overflow:visible;padding:0;color:var(--green)}
+.oferta .wheel-stage{padding:0 0 12px}
+.oferta .wheel-svg{display:block;width:min(100%,420px);height:auto;overflow:visible;filter:drop-shadow(0 12px 13px #183e3214)}
+.oferta .wheel-rotor{transform-origin:210px 210px;will-change:transform}
+.oferta .svg-prize{font:500 35px var(--font-fraunces),serif}
+.oferta .svg-alternative{font:500 22px var(--font-fraunces),serif}
+.oferta .svg-prize-caption{font:400 13px var(--font-lexend),sans-serif;letter-spacing:.2px}
+.oferta .svg-pointer{transform-origin:210px 12px;transition:transform .07s ease-out}
+.oferta .svg-pointer.nudge{transform:rotate(-12deg)}
+.oferta .landed .svg-rim{fill:#e5c986}
+.oferta .spin-status{color:#566b5a;font-size:12px}
+@media(max-width:760px){
+  .oferta .wheel-svg{width:min(78vw,350px)}
+  .oferta .wheel-stage{padding:0 0 8px}
+  .oferta .spin-status{font-size:10px}
+}
+@media(max-width:760px) and (max-height:700px){
+  .oferta .wheel-svg{width:min(76vw,42svh,320px)}
+}
