@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import Script from "next/script";
 import DeferredGTM from "./DeferredGTM";
+import { Suspense } from "react";
+import TrackingContextCapture from "@/components/TrackingContextCapture";
+import { resolveDestinoDoTracking } from "@/lib/tracking-sink";
 import "../index.css";
 
 const geistSans = Geist({
@@ -45,6 +48,12 @@ export default function RootLayout({
       {process.env.NODE_ENV === "production" && <DeferredGTM />}
       <body className={`${geistSans.variable} antialiased`}>
         {children}
+        <Suspense fallback={null}>
+          <TrackingContextCapture
+            enabled={resolveDestinoDoTracking(process.env).envia}
+            cookieDomain={process.env.TRACKING_COOKIE_DOMAIN ?? ".clickatendimento.com"}
+          />
+        </Suspense>
         <Script
           id="fbclid"
           strategy="afterInteractive"
