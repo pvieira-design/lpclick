@@ -150,6 +150,14 @@ function veioDaPropriaCasa(request: NextRequest): boolean {
 }
 
 export function middleware(request: NextRequest, event: NextFetchEvent) {
+  try {
+    return comContextoDePrimeiraParte(request, event);
+  } catch {
+    return NextResponse.next();
+  }
+}
+
+function comContextoDePrimeiraParte(request: NextRequest, event: NextFetchEvent) {
   const cookieValue = request.cookies.get(COOKIE)?.value;
   const existing = contextoValido(cookieValue);
 
