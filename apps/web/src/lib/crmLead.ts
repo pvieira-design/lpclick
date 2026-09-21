@@ -1,6 +1,8 @@
 // Envio de lead para o CRM Click (contrato: integracao-site-crm-leads.md).
 // Chamado direto do browser — o CRM captura o IP do usuário no servidor.
 
+import { captureLead } from "@click-cannabis/tracking-edge/browser";
+
 const CRM_ENDPOINT = "https://projetocrm-api.runveloz.com/public/site-leads";
 const APP_VERSION = "lpclick-v1";
 
@@ -56,6 +58,10 @@ export function sendLeadToCrm(
     });
     return;
   }
+
+  // O envio do formulário entra na trilha do contexto. Sem rastreador ativo, não faz
+  // nada, e nunca lança: rastreamento não derruba página.
+  captureLead();
 
   const params = new URLSearchParams(window.location.search);
   const n = navigator as unknown as { platform: string };
