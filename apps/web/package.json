@@ -14,7 +14,7 @@
     "safari >= 15.4"
   ],
   "dependencies": {
-    "@click-cannabis/tracking-edge": "0.3.0",
+    "@click-cannabis/tracking-edge": "0.3.1",
     "@neondatabase/serverless": "^1.0.2",
     "@next/third-parties": "^16.1.6",
     "@vercel/blob": "^2.3.3",
