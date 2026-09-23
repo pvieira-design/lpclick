@@ -1,13 +1,11 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { TEXT_TESTIMONIALS, type TextTestimonial } from "../lp5/textTestimonials";
+import type { TextTestimonial } from "../lp5/textTestimonials";
+import { SELECTED_TESTIMONIALS } from "./selectedTestimonials";
 import { LINKS } from "./config";
 
 const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
-
-// Carrossel duplicado: mantém o DOM leve usando só os primeiros N depoimentos.
-const MAX_ITEMS = 18;
 
 const TAG_STYLES: Record<string, string> = {
   Insônia: "bg-[#e6f2e9] text-[#2d6e3f]",
@@ -64,7 +62,7 @@ export default function GoogleReviews() {
 
   // Scroll nativo horizontal, o mesmo padrão dos depoimentos em vídeo:
   // toque com snap, sem arraste manual ou movimento automático.
-  const items = TEXT_TESTIMONIALS.slice(0, MAX_ITEMS);
+  const items = SELECTED_TESTIMONIALS;
 
   return (
     <motion.section
