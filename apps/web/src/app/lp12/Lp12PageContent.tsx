@@ -19,9 +19,11 @@ const bricolage = Bricolage_Grotesque({
 export default function Lp12PageContent({
   videoTestimonials,
   variant,
+  testimonialsLayout,
 }: {
   videoTestimonials?: React.ReactNode;
   variant?: "inicio";
+  testimonialsLayout?: "single-row";
 }) {
   return (
     <div className={`lp12 ${bricolage.variable}`}>
@@ -89,7 +91,7 @@ export default function Lp12PageContent({
         <AnnouncementBar variant={variant} />
         <LandingClient variant={variant} />
         {videoTestimonials ?? <div id="lp12-sticky-anchor" aria-hidden="true" />}
-        {variant === "inicio" && <TestimonialsWall variant="inicio" />}
+        {variant === "inicio" && <TestimonialsWall variant="inicio" layout={testimonialsLayout} />}
         <ConsumptionForms />
         <div id="lp12-treatment-steps">
           <TreatmentSteps />

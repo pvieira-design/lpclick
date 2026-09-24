@@ -37,29 +37,64 @@ const TAG_STYLES: Record<string, string> = {
 };
 const tagStyle = (t: string) => TAG_STYLES[t] ?? "bg-gray-100 text-gray-600";
 
-export default function TestimonialsWall({ variant }: { variant?: "inicio" }) {
-  return variant === "inicio" ? <InicioTestimonials /> : <LegacyTestimonials />;
+export default function TestimonialsWall({
+  variant,
+  layout,
+}: {
+  variant?: "inicio";
+  layout?: "single-row";
+}) {
+  return variant === "inicio" ? <InicioTestimonials singleRow={layout === "single-row"} /> : <LegacyTestimonials />;
 }
 
-function InicioTestimonials() {
+function InicioTestimonials({ singleRow = false }: { singleRow?: boolean }) {
+  const singleRowRef = useRef<HTMLDivElement>(null);
+  const allReviews = singleRow
+    ? INICIO_TESTIMONIAL_GROUPS.flatMap((group) => getInicioGroupTestimonials(group.names))
+    : [];
+  const scrollReviews = (direction: -1 | 1) => {
+    const row = singleRowRef.current;
+    if (!row) return;
+    row.scrollBy({ left: direction * Math.max(280, row.clientWidth * 0.8), behavior: "smooth" });
+  };
+
   return (
     <section id="lp12-testimonials-wall" className="bg-white px-5 py-14 sm:py-20">
       <div className="mx-auto max-w-5xl">
         <SectionHeading label="Depoimentos" title="Relatos reais" description="O que pacientes contam sobre sua experiência com a Click." className="mx-auto mb-8 max-w-3xl sm:mb-12" />
-        <div className="space-y-10 sm:space-y-12">
-          {INICIO_TESTIMONIAL_GROUPS.map((group) => (
-            <div key={group.pathology}>
-              <h3 className="font-display mb-4 text-xl font-medium text-[#1c4423] sm:text-2xl">{group.title}</h3>
-              <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto pb-3 [scrollbar-width:thin] sm:grid sm:auto-rows-fr sm:grid-cols-2 sm:gap-4 sm:overflow-visible">
-                {getInicioGroupTestimonials(group.names).map((review) => (
-                  <div key={review.name} className="w-[min(74vw,290px)] shrink-0 snap-start sm:w-auto">
-                    <InicioReviewCard review={review} />
-                  </div>
-                ))}
+        {singleRow ? (
+          <div>
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <span className="text-xs text-[#748278]">Deslize para ler mais</span>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => scrollReviews(-1)} aria-label="Ver depoimentos anteriores" className="flex size-9 items-center justify-center rounded-full border border-[#d7e8db] text-[#285e31] hover:bg-[#f5faf6] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3d8f4a]">←</button>
+                <button type="button" onClick={() => scrollReviews(1)} aria-label="Ver próximos depoimentos" className="flex size-9 items-center justify-center rounded-full border border-[#d7e8db] text-[#285e31] hover:bg-[#f5faf6] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3d8f4a]">→</button>
               </div>
             </div>
-          ))}
-        </div>
+            <div ref={singleRowRef} className="flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto pb-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3d8f4a] [scrollbar-width:thin]" tabIndex={0} aria-label="Depoimentos de pacientes; deslize para ler mais">
+              {allReviews.map((review) => (
+                <div key={review.name} className="w-[min(80vw,320px)] shrink-0 snap-start">
+                  <InicioReviewCard review={review} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-10 sm:space-y-12">
+            {INICIO_TESTIMONIAL_GROUPS.map((group) => (
+              <div key={group.pathology}>
+                <h3 className="font-display mb-4 text-xl font-medium text-[#1c4423] sm:text-2xl">{group.title}</h3>
+                <div className="flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto pb-3 [scrollbar-width:thin] sm:grid sm:auto-rows-fr sm:grid-cols-2 sm:gap-4 sm:overflow-visible">
+                  {getInicioGroupTestimonials(group.names).map((review) => (
+                    <div key={review.name} className="w-[min(74vw,290px)] shrink-0 snap-start sm:w-auto">
+                      <InicioReviewCard review={review} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         <a
           href="https://clickcannabis.com/depoimentos/#depoimentos"
           target="_blank"
