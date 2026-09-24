@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import SectionHeading from "./SectionHeading";
 
 const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -30,23 +31,7 @@ export default function ConsumptionForms() {
   return (
     <section className="bg-white pt-14 pb-6 sm:pt-20">
       <div className="mx-auto w-full max-w-3xl px-5">
-        <motion.header
-          className="mb-8 grid grid-cols-1 gap-3 sm:mb-12 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-x-8 sm:gap-y-2"
-          initial={{ opacity: 0, y: reduceMotion ? 0 : 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.6, ease: EASE }}
-        >
-          <span className="inline-flex w-fit items-center rounded-full bg-[#e6f2e9] px-3 py-1 text-xs font-medium text-[#2d6e3f] sm:col-start-2 sm:row-start-1 sm:justify-self-end sm:text-sm">
-            Medicamentos
-          </span>
-          <h2 className="font-display text-[2rem] font-medium leading-[1.05] text-gray-900 sm:col-start-1 sm:row-span-2 sm:row-start-1 sm:text-[3rem]">
-            Formas de consumo
-          </h2>
-          <p className="text-xs text-gray-500 sm:col-start-2 sm:row-start-2 sm:text-right sm:text-sm">
-            Importação legalizada pela ANVISA.
-          </p>
-        </motion.header>
+        <SectionHeading label="Medicamentos" title="Formas de consumo" description="Importação legalizada pela ANVISA." className="mb-8 sm:mb-12" />
 
         <motion.div
           className="flex flex-col gap-1"

@@ -9,7 +9,7 @@ export type TextTestimonial = {
 export const TEXT_TESTIMONIALS: TextTestimonial[] = [
   {
     name: "Arthur Marques",
-    text: "Demorei para avaliar pq estava ocupado dormindo! Simplesmente curou minha insônia, o que dizer alêm de maravilhoso? Atendimento nota 1000 e médicos super atenciosos, tive uma boa experiência com eles.",
+    text: "Demorei para avaliar pq estava ocupado dormindo! […] Atendimento nota 1000 e médicos super atenciosos, tive uma boa experiência com eles.",
     photo: "https://lh3.googleusercontent.com/a-/ALV-UjXPouVB9i7UvB05rFF5QtGH32AyCz_xxS5MlwQQVHFZYr7bwWwa=s96-c-rp-mo-br100",
     tags: ["Insônia"],
     publishedAt: "2024-08-01",
@@ -71,13 +71,6 @@ export const TEXT_TESTIMONIALS: TextTestimonial[] = [
     publishedAt: "2025-05-26",
   },
   {
-    name: "Didi da Silva",
-    text: "Sofro com insônia, ansiedade e depressão. Recorri a Click Cannabis como forma de deixar o Rivotril e ter uma melhor qualidade de sono. Está sendo uma experiência e tanto, desde que comecei o tratamento, meu sono melhorou consideravelmente, mesmo reduzindo a quantidade de Rivotril. Indico muito. Só tenho a agradecer.",
-    photo: "https://lh3.googleusercontent.com/a/ACg8ocLwAgJQ1Wi9G8EZllSXQehsAArH7hbaLMuq5z26SFnW6PbrRQ=s96-c-rp-mo-br100",
-    tags: ["Insônia", "Ansiedade", "Depressão"],
-    publishedAt: "2025-10-02",
-  },
-  {
     name: "ILZA CRISTIANE CARDOZO",
     text: "Eu conheci a clínica através de uma amiga. Comecei meu tratamento hoje, mas na primeira dose já senti uma melhora. Eu trato depressão há quatro anos. Tenho muita crise de ansiedade. Faz dois meses que faço tratamento, não tive mais crise de ansiedade. Quanto a insônia tenho que testar nao tomar os outros para saber.",
     photo: "https://lh3.googleusercontent.com/a-/ALV-UjVa7AcHRDRvJ3kWbZfpzbI6G5jomWeQwjtE9YS5jgAtG_aCfbWLDA=s96-c-rp-mo-br100",
@@ -97,13 +90,6 @@ export const TEXT_TESTIMONIALS: TextTestimonial[] = [
     photo: "https://lh3.googleusercontent.com/a-/ALV-UjXeUZ6pk_QyGqdRglIrJrRjAMYBvBuagiKhxJx5ClF5hBQ_zYmVUw=s96-c-rp-mo-br100",
     tags: ["Insônia"],
     publishedAt: "2025-11-26",
-  },
-  {
-    name: "Suze Costa",
-    text: "Faz um mês que faço uso da cannabis, posso dizer que minha ansiedade zerou e a insônia que me incomodava muito, hoje não tenho mais. Com 20 dias de uso, aboli o rivotril e o sono é gostoso e satisfatório, quando acordo de madrugada é só fechar os olhos e adormeço novamente. Gratidão a todos da equipe!",
-    photo: "https://lh3.googleusercontent.com/a-/ALV-UjVcfJ0sbQJD50ek-u1bxUpm5H7PlV0rWfrtrepYWplYO5PdOnvSzA=s96-c-rp-mo-br100",
-    tags: ["Insônia", "Ansiedade"],
-    publishedAt: "2025-05-08",
   },
   {
     name: "Rosilda Costa",

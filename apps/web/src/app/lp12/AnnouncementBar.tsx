@@ -19,17 +19,26 @@ const MESSAGES = [
   </>,
 ];
 
-export default function AnnouncementBar() {
+const INICIO_MESSAGES = [
+  <>
+    Consulta <b className="font-semibold">R$50</b> · 1º acompanhamento{" "}
+    <b className="font-semibold">grátis</b>
+  </>,
+  MESSAGES[1],
+];
+
+export default function AnnouncementBar({ variant }: { variant?: "inicio" }) {
   const [index, setIndex] = useState(0);
   const reduceMotion = useReducedMotion();
+  const messages = variant === "inicio" ? INICIO_MESSAGES : MESSAGES;
 
   useEffect(() => {
     const id = setInterval(
-      () => setIndex((i) => (i + 1) % MESSAGES.length),
+      () => setIndex((i) => (i + 1) % messages.length),
       4000,
     );
     return () => clearInterval(id);
-  }, []);
+  }, [messages.length]);
 
   return (
     <div
@@ -47,7 +56,7 @@ export default function AnnouncementBar() {
           transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
           className="truncate text-xs text-white/90"
         >
-          {MESSAGES[index]}
+          {messages[index]}
         </motion.p>
       </AnimatePresence>
     </div>

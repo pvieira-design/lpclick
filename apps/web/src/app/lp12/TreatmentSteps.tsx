@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
+import SectionHeading from "./SectionHeading";
 
 const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -66,23 +67,7 @@ export default function TreatmentSteps() {
     <section className="bg-white py-14 sm:py-20">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-5">
         {/* Header */}
-        <motion.header
-          className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-x-8 sm:gap-y-2"
-          initial={{ opacity: 0, y: reduceMotion ? 0 : 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.6, ease: EASE }}
-        >
-          <span className="inline-flex w-fit items-center rounded-full bg-[#CDE9D1] px-3 py-1 text-xs font-medium text-[#285E31] sm:col-start-2 sm:row-start-1 sm:justify-self-end sm:text-sm">
-            Processos
-          </span>
-          <h2 className="font-display text-[2rem] font-medium leading-[1.05] text-gray-900 sm:col-start-1 sm:row-span-2 sm:row-start-1 sm:text-[3rem]">
-            Tratamento descomplicado
-          </h2>
-          <p className="text-xs text-gray-500 sm:col-start-2 sm:row-start-2 sm:text-right sm:text-sm">
-            Entenda cada uma das nossas etapas.
-          </p>
-        </motion.header>
+        <SectionHeading label="Processos" title="Tratamento descomplicado" description="Entenda cada uma das nossas etapas." />
 
         {/* Cards empilhados */}
         <motion.div
