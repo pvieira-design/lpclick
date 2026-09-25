@@ -257,17 +257,17 @@ export default function ClickLanding() {
                 <span className="relative flex size-2 items-center justify-center" aria-hidden="true"><span className="absolute inset-0 animate-ping rounded-full bg-[#3e8f4a] opacity-60" /><span className="relative size-2 rounded-full bg-[#3e8f4a]" /></span>
                 Médicos online agora · consulta ainda hoje
               </div>
-              <h1 className="mt-4 font-editorial text-[1.82rem] font-medium leading-[1.12] text-[#173126] sm:text-[2.5rem]">Comece o tratamento por apenas <span className="font-bold text-[#3d714b]">R$50,00</span></h1>
-              <p className="mx-auto mt-2 max-w-lg text-[13px] leading-5 text-[#607168] sm:mt-3 sm:text-base sm:leading-6">Converse com médicos prescritores, 100% online e no conforto da sua casa.</p>
+              <h1 className="font-geist mt-4 text-[28px] font-light leading-[1.12] text-[#173126] sm:text-[36px]">Comece o tratamento por apenas <span className="font-semibold text-[#3d714b]">R$50,00</span></h1>
+              <p className="mx-auto mt-2 max-w-lg text-sm leading-5 text-[#607168] sm:mt-3 sm:text-base sm:leading-6">Converse com médicos prescritores, 100% online e no conforto da sua casa.</p>
             </motion.header>
             <motion.div id="click-triage" variants={heroItem} className="w-full scroll-mt-4 sm:px-5">
               <div className="mb-3 sm:mb-4">
-                <h2 className="whitespace-nowrap text-[1.05rem] font-extrabold leading-tight tracking-[-.015em] text-[#214b31] sm:text-[1.25rem]">Qual é o seu objetivo principal?</h2>
+                <h2 className="font-editorial whitespace-nowrap text-[21px] font-semibold leading-tight text-[#214b31]">Qual é o seu objetivo principal?</h2>
               </div>
               <div role="radiogroup" aria-label="Objetivo principal" className="grid gap-2.5">
                 {OBJECTIVES.map((objective) => (
                   <Choice key={objective.label} icon={objective.icon} active={selected.has(objective.label)} onClick={() => selectObjective(objective.label)}>
-                    <span className="min-w-0 flex-1"><span className="block text-[13px] font-extrabold leading-[1.2] sm:text-[15px]">{objective.label}</span><span className="mt-1 block text-[11px] font-medium leading-[1.25] text-[#718078] sm:text-[12.5px]">{objective.description}</span></span>
+                    <span className="min-w-0 flex-1"><span className="block text-sm font-semibold leading-[1.2]">{objective.label}</span><span className="mt-1 block text-[11px] font-normal leading-[1.25] text-[#718078]">{objective.description}</span></span>
                   </Choice>
                 ))}
               </div>
@@ -292,7 +292,7 @@ export default function ClickLanding() {
                     <div><p className="text-sm font-extrabold text-[#173126]">{item.name}</p><p className="mt-0.5 text-[11px] text-[#748078]">{formatReviewDate(item.publishedAt)}</p></div>
                     <span className="text-xs tracking-[.12em] text-[#3e8f4a]" aria-label="5 estrelas">★★★★★</span>
                   </div>
-                  <blockquote className="mt-5 flex-1 font-editorial text-[1.08rem] font-medium leading-[1.48] text-[#263a2d] sm:text-[1.3rem]">{PAGE_REVIEW_EXCERPTS[item.name] ?? item.text}</blockquote>
+                  <blockquote className="mt-5 flex-1 text-base font-normal leading-[1.5] text-[#263a2d] sm:text-lg">{PAGE_REVIEW_EXCERPTS[item.name] ?? item.text}</blockquote>
                 </article>
               ))}
             </div>
@@ -308,7 +308,7 @@ export default function ClickLanding() {
           <div className="mx-auto max-w-[820px]">
             <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-x-8">
               <span className="w-fit rounded-full bg-[#cde9d1] px-3 py-1 text-xs font-bold text-[#285e31] sm:col-start-2 sm:row-start-1 sm:justify-self-end">Processos</span>
-              <h2 className="font-editorial text-[2.25rem] font-medium leading-[1.08] text-[#173126] sm:col-start-1 sm:row-span-2 sm:row-start-1 sm:text-5xl">Tratamento descomplicado</h2>
+              <h2 className="font-editorial text-[32px] font-semibold leading-[1.08] text-[#173126] sm:col-start-1 sm:row-span-2 sm:row-start-1 sm:text-[48px]">Tratamento descomplicado</h2>
               <p className="text-sm text-[#67736c] sm:col-start-2 sm:row-start-2 sm:text-right">Entenda cada uma das nossas etapas.</p>
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:gap-4">
@@ -321,7 +321,7 @@ export default function ClickLanding() {
           <div className="mx-auto max-w-[1180px]">
             <div className="grid max-w-[820px] gap-3 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-x-8">
               <span className="w-fit rounded-full bg-[#cde9d1] px-3 py-1 text-xs font-bold text-[#285e31] sm:col-start-2 sm:row-start-1 sm:justify-self-end">Formatos</span>
-              <h2 className="max-w-2xl font-editorial text-[2.25rem] font-medium leading-[1.08] text-[#173126] sm:col-start-1 sm:row-span-2 sm:row-start-1 sm:text-5xl">O formato certo é uma decisão médica.</h2>
+              <h2 className="max-w-2xl font-editorial text-[32px] font-semibold leading-[1.08] text-[#173126] sm:col-start-1 sm:row-span-2 sm:row-start-1 sm:text-[48px]">O formato certo é uma decisão médica.</h2>
               <p className="text-sm text-[#67736c] sm:col-start-2 sm:row-start-2 sm:max-w-[15rem] sm:text-right">Conheça as formas de consumo que o médico pode avaliar para o seu caso.</p>
             </div>
             <div className="click-horizontal -mx-4 mt-8 grid snap-x snap-mandatory grid-flow-col auto-cols-[84%] gap-3 overflow-x-auto px-4 pb-3 sm:mx-0 sm:mt-12 sm:auto-cols-[48%] sm:gap-5 sm:px-0 md:grid-flow-row md:grid-cols-3 md:overflow-visible md:pb-0">
@@ -339,7 +339,7 @@ export default function ClickLanding() {
 
         <section className="bg-white px-4 py-14 sm:px-8 sm:py-28">
           <div className="mx-auto grid max-w-[1180px] gap-8 sm:gap-12 lg:grid-cols-[.8fr_1.2fr] lg:gap-20">
-            <div><span className="w-fit rounded-full bg-[#cde9d1] px-3 py-1 text-xs font-bold text-[#285e31]">Dúvidas</span><h2 className="mt-3 font-editorial text-[2.3rem] font-medium leading-[1.08] sm:mt-4 sm:text-5xl">Antes de decidir, pergunte tudo.</h2><p className="mt-3 max-w-sm text-sm leading-6 text-[#5c6d63] sm:mt-4 sm:text-base sm:leading-7">A consulta existe para avaliar possibilidades, não para empurrar um tratamento.</p></div>
+            <div><span className="w-fit rounded-full bg-[#cde9d1] px-3 py-1 text-xs font-bold text-[#285e31]">Dúvidas</span><h2 className="mt-3 font-editorial text-[32px] font-semibold leading-[1.08] sm:mt-4 sm:text-[48px]">Antes de decidir, pergunte tudo.</h2><p className="mt-3 max-w-sm text-sm leading-6 text-[#5c6d63] sm:mt-4 sm:text-base sm:leading-7">A consulta existe para avaliar possibilidades, não para empurrar um tratamento.</p></div>
             <div>{FAQS.map(([q, a], index) => <details key={q} open={index === 0} className="group border-b border-[#173126]/12 py-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-bold text-[#173126] [&::-webkit-details-marker]:hidden">{q}<span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-[#173126]/15 text-lg transition group-open:rotate-45">+</span></summary><p className="max-w-2xl pb-2 pt-4 text-sm leading-7 text-[#607168]">{a}</p></details>)}</div>
           </div>
         </section>
@@ -368,14 +368,14 @@ export default function ClickLanding() {
       <dialog ref={dialogRef} aria-labelledby="click-dialog-title" onClose={() => setDialogOpen(false)} onClick={(event) => { if (event.target === dialogRef.current) setDialogOpen(false); }} className="click-dialog w-[calc(100%-2.5rem)] max-w-[420px] overflow-hidden rounded-[1.5rem] border-0 bg-white p-0 shadow-2xl backdrop:bg-[#10261a]/65">
         <div className="max-h-[calc(100dvh-2rem)] overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-6">
           <div className="flex items-center justify-between gap-3"><span className="inline-flex w-fit rounded-full bg-[#cde9d1] px-3 py-1 text-xs font-medium text-[#285e31]">Último passo</span><button onClick={() => setDialogOpen(false)} aria-label="Fechar" className="flex size-8 shrink-0 items-center justify-center rounded-full text-2xl font-light leading-none text-[#6f7d75] transition hover:bg-[#f1f5f2]">×</button></div>
-          <h2 id="click-dialog-title" className="mt-4 whitespace-nowrap text-[clamp(1.28rem,6.5vw,1.65rem)] font-extrabold leading-none tracking-[-.03em] text-[#202a35]">Como você se chama?</h2>
+          <h2 id="click-dialog-title" className="mt-4 whitespace-nowrap font-editorial text-[27px] font-semibold leading-none text-[#202a35] sm:text-[32px]">Como você se chama?</h2>
           <div className="mt-4 border-t border-[#e2e8e3] pt-4">
-            <label htmlFor="click-name" className="block text-sm font-medium text-[#34443a]">Nome <span className="text-[#d33b32]">*</span></label>
+            <label htmlFor="click-name" className="block text-[15px] font-medium text-[#34443a]">Nome <span className="text-[#d33b32]">*</span></label>
             <input ref={nameRef} id="click-name" value={name} onChange={(event) => { setName(event.target.value); if (event.target.value.trim()) setNameError(false); }} onKeyDown={(event) => { if (event.key === "Enter") submitLead(); }} placeholder="Como você se chama?" className="mt-2 min-h-13 w-full rounded-2xl border border-[#d7e2d9] bg-white px-4 text-base outline-none transition focus:border-[#3e8f4a] focus:ring-4 focus:ring-[#3e8f4a]/10" />
           </div>
           {nameError && <p className="mt-2 text-sm font-bold text-[#b33d35]">Digite seu nome para continuar.</p>}
           <div className="mt-4 flex items-center gap-3 rounded-2xl border border-[#cfe3d3] bg-[#f7faf7] px-3 py-2.5 text-[#285e31]"><span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#e5f2e7]"><ObjectiveIcon name={selectedObjective.icon} /></span><div className="min-w-0"><p className="text-[11px] leading-tight text-[#718078]">Seu objetivo principal</p><p className="mt-0.5 text-sm font-extrabold leading-tight">{selectedObjective.label}</p></div></div>
-          <button onClick={submitLead} className="mt-4 flex min-h-14 w-full items-center justify-center rounded-2xl bg-[#3d8f4a] px-6 font-extrabold text-white shadow-[0_8px_22px_rgba(40,94,49,.2)] transition hover:bg-[#337b40] active:scale-[.98]">Continuar pelo WhatsApp</button>
+          <button onClick={submitLead} className="mt-4 flex min-h-14 w-full items-center justify-center rounded-2xl bg-[#3d8f4a] px-6 text-base font-semibold text-white shadow-[0_8px_22px_rgba(40,94,49,.2)] transition hover:bg-[#337b40] active:scale-[.98]">Continuar pelo WhatsApp</button>
           <p className="mt-3 whitespace-nowrap text-center text-[10px] leading-4 text-[#78867e] sm:text-[11px]">Você será direcionado ao WhatsApp da Click Cannabis.</p>
           {relevantReviews.length > 0 && (
             <section className="mt-5 border-t border-[#e5eae6] pt-4" aria-label={`Depoimentos relacionados a ${selectedObjective.label}`}>
@@ -393,7 +393,8 @@ export default function ClickLanding() {
       </dialog>
 
       <style>{`
-        .click-page { font-family: var(--font-geist-sans), system-ui, sans-serif; }
+        .click-page { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        .click-page .font-geist { font-family: var(--font-geist-sans), system-ui, sans-serif; }
         .click-page .font-editorial { font-family: var(--font-click-display), var(--font-geist-sans), system-ui, sans-serif; letter-spacing:-.02em; }
         .click-page .eyebrow { display:inline-flex; align-items:center; gap:.55rem; font-size:.68rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:#3d714b; }
         .click-page .eyebrow::before { content:""; width:1.75rem; height:1px; background:currentColor; }

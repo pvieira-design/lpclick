@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Lexend } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 import ClickLanding from "./ClickLanding";
 
-const lexend = Lexend({
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
   variable: "--font-click-display",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function ClickPage() {
   return (
-    <div className={lexend.variable}>
+    <div className={bricolage.variable}>
       <ClickLanding />
     </div>
   );
