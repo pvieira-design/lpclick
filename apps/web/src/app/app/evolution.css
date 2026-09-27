@@ -1,0 +1,68 @@
+/* Seção de evolução (Evolution.tsx) */
+
+.ev { display: flex; flex-direction: column; gap: 16px; }
+.ev-card { position: relative; padding: 28px; border: 1px solid rgba(15, 36, 24, 0.08); border-radius: 28px; background: #fff; }
+.ev-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.ev-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 32px; margin-bottom: 24px; }
+.ev-head.is-small { margin-bottom: 20px; }
+.ev-eyebrow { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #285E31; }
+.ev-head strong { display: block; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; color: #0F2418; }
+.ev-stats { display: flex; gap: 28px; }
+.ev-stats span { display: block; font-size: 13px; color: #8A948D; }
+.ev-stats strong { margin-top: 4px; font-size: 28px; font-weight: 650; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.ev-stats .is-accent strong { color: #285E31; }
+
+.ev-plot { position: relative; }
+.ev-plot svg { display: block; overflow: visible; touch-action: pan-y; }
+.ev-grid { stroke: rgba(15, 36, 24, 0.08); stroke-dasharray: 3 4; }
+.ev-axis { font-size: 12px; fill: #8A948D; font-variant-numeric: tabular-nums; }
+.ev-raw { fill: #B9DCC0; }
+.ev-raw-on { fill: #9ACCA4; stroke: #fff; stroke-width: 2; }
+.ev-point { fill: #2D6937; stroke: #fff; stroke-width: 2.5; }
+.ev-callout { font-size: 12px; font-weight: 600; fill: #0F2418; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+.ev-cross { stroke: rgba(15, 36, 24, 0.25); stroke-width: 1; }
+.ev-tip { position: absolute; transform: translate(-50%, -100%); display: flex; flex-direction: column; gap: 2px; min-width: 160px; padding: 10px 12px; border-radius: 12px; background: #0F2418; color: #fff; font-size: 13px; pointer-events: none; box-shadow: 0 8px 24px rgba(15, 36, 24, 0.18); }
+.ev-tip strong { font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.7); }
+.ev-tip span { display: flex; justify-content: space-between; gap: 16px; }
+.ev-tip b { font-weight: 650; font-variant-numeric: tabular-nums; }
+.ev-key { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 16px; font-size: 13px; color: #4D5C52; }
+.ev-key span { display: inline-flex; align-items: center; gap: 8px; }
+.ev-key-line { width: 18px; height: 2.5px; border-radius: 2px; background: #2D6937; }
+.ev-key-dot { width: 7px; height: 7px; border-radius: 50%; background: #B9DCC0; }
+
+.ev-cal-wrap, .ev-mood { display: flex; flex-direction: column; gap: 18px; }
+.ev-cal { display: flex; gap: 10px; }
+.ev-cal-days { display: grid; grid-template-rows: repeat(7, 1fr); gap: 4px; font-size: 11px; color: #8A948D; }
+.ev-cal-days span { display: flex; align-items: center; }
+.ev-cal-grid { flex: 1; display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); grid-template-columns: repeat(12, 1fr); gap: 5px; max-width: 420px; }
+.ev-cell { aspect-ratio: 1; border-radius: 6px; transition: box-shadow 120ms ease; }
+.ev-cell.is-on { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #0F2418; }
+.ev-cal-foot, .ev-mood-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.ev-cal-tip { min-height: 20px; font-size: 14px; color: #4D5C52; }
+.ev-cal-tip b { font-weight: 650; color: #0F2418; }
+.ev-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; color: #4D5C52; }
+.ev-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.ev-legend i { width: 10px; height: 10px; border-radius: 3px; }
+
+.ev-mood-bars { display: flex; align-items: stretch; gap: 10px; height: 214px; }
+.ev-mood-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.ev-mood-stack { flex: 1; display: flex; flex-direction: column-reverse; gap: 2px; }
+.ev-seg { display: block; min-height: 4px; transform-origin: bottom; transition: filter 120ms ease; }
+.ev-seg:last-child { border-radius: 4px 4px 0 0; }
+.ev-seg:first-child { border-radius: 0 0 2px 2px; }
+.ev-seg.is-on { filter: brightness(0.9); box-shadow: 0 0 0 2px #0F2418; position: relative; z-index: 1; }
+.ev-mood-label { text-align: center; font-size: 11px; color: #8A948D; }
+.ev-legend.is-wrap { max-width: 100%; }
+
+.ev-note { margin: 20px 0 0; font-size: 13px; color: #8A948D; }
+
+@media (max-width: 900px) {
+  .ev-row { grid-template-columns: 1fr; }
+  .ev-card { padding: 20px; border-radius: 22px; }
+  .ev-stats { width: 100%; display: grid; grid-template-columns: auto auto 1fr; gap: 20px; }
+  .ev-stats strong { font-size: 22px; }
+  .ev-head strong { font-size: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ev-cell, .ev-seg { transition: none; }
+}
