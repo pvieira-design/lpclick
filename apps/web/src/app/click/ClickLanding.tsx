@@ -7,16 +7,17 @@ import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
 import { APPROVED_TESTIMONIALS, type ApprovedTestimonial } from "@/lib/approvedTestimonials";
 import InicioReviewCard from "../lp12/InicioReviewCard";
+import ReviewStars from "../lp12/ReviewStars";
 
 const PHONE = "5521993686082";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 const OBJECTIVES = [
-  { label: "Dormir melhor", description: "Pegar no sono e acordar descansado", icon: "moon" },
-  { label: "Relaxar", description: "Menos tensão no dia a dia", icon: "wave" },
-  { label: "Alívio de dores", description: "Dores crônicas, musculares ou articulares", icon: "heart" },
-  { label: "Melhorar meu humor", description: "Mais ânimo e disposição", icon: "sun" },
-  { label: "Mais foco e concentração", description: "Render melhor no trabalho e nos estudos", icon: "target" },
+  { label: "Dormir melhor", description: "Pegar no sono e acordar descansado", icon: "moon", patologia: "Insônia" },
+  { label: "Relaxar", description: "Menos tensão no dia a dia", icon: "wave", patologia: "Ansiedade" },
+  { label: "Alívio de dores", description: "Dores crônicas, musculares ou articulares", icon: "heart", patologia: "Dores" },
+  { label: "Melhorar meu humor", description: "Mais ânimo e disposição", icon: "sun", patologia: "Depressão" },
+  { label: "Mais foco e concentração", description: "Render melhor no trabalho e nos estudos", icon: "target", patologia: "TDAH" },
 ] as const;
 
 const POPUP_REVIEW_NAMES_BY_OBJECTIVE: Record<string, readonly string[]> = {
@@ -226,7 +227,7 @@ export default function ClickLanding() {
       nameRef.current?.focus();
       return;
     }
-    const pathologies = Array.from(selected);
+    const pathologies = OBJECTIVES.filter((objective) => selected.has(objective.label)).map((objective) => objective.patologia);
     sendLeadToCrm(cleanName, pathologies);
     sendGTMEvent({ event: "buttonWhatsappClicked", category: "Lead", action: "Click", label: "Continuar no WhatsApp - Click", value: pathologies.join(", ") });
     window.open(buildWhatsAppUrl(cleanName, pathologies), "_blank", "noopener,noreferrer");
@@ -288,9 +289,9 @@ export default function ClickLanding() {
             <div className="click-testimonials mt-7 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 sm:mt-9 sm:gap-5 sm:px-8" role="region" aria-label="Depoimentos de pacientes">
               {featuredReviews.map((item) => (
                 <article key={item.name} className="flex min-w-[calc(100vw-2.5rem)] snap-center flex-col rounded-[1.35rem] bg-white p-5 text-[#173126] shadow-[0_18px_45px_rgba(16,47,31,.2)] sm:min-w-[500px] sm:rounded-[1.6rem] sm:p-7 lg:min-w-[560px]">
-                  <div className="flex items-center justify-between gap-4">
-                    <div><p className="text-sm font-extrabold text-[#173126]">{item.name}</p><p className="mt-0.5 text-[11px] text-[#748078]">{formatReviewDate(item.publishedAt)}</p></div>
-                    <span className="text-xs tracking-[.12em] text-[#3e8f4a]" aria-label="5 estrelas">★★★★★</span>
+                  <div className="flex items-start justify-between gap-4">
+                    <div><p className="text-sm font-extrabold text-[#173126]">{item.name}</p><div className="mt-1"><ReviewStars /></div></div>
+                    <p className="shrink-0 pt-0.5 text-[11px] text-[#748078]">{formatReviewDate(item.publishedAt)}</p>
                   </div>
                   <blockquote className="mt-5 flex-1 text-base font-normal leading-[1.5] text-[#263a2d] sm:text-lg">{PAGE_REVIEW_EXCERPTS[item.name] ?? item.text}</blockquote>
                 </article>
