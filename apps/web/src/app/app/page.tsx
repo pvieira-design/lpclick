@@ -8,9 +8,6 @@ const FORMATS = [
   { src: "/produtos/softgel-v3.webp", name: "Softgel", unit: "Em cápsulas." },
 ] as const;
 
-/* TYPE_LABELS de apps/native/lib/medicine-types.ts, sem os três formatos acima */
-const OTHER_TYPES = ["Comprimido", "Gotas", "Líquido", "Spray", "Inalador", "Creme", "Pomada", "Gel", "Adesivo", "Injeção", "Pó"] as const;
-
 export default function AppLandingPage() {
   return (
     <div className="lp">
@@ -143,11 +140,6 @@ export default function AppLandingPage() {
 .format img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 28px; }
 .format strong { display: block; margin-top: 18px; font-size: 20px; font-weight: 600; letter-spacing: -0.015em; }
 .format span { display: block; margin-top: 4px; font-size: 16px; color: var(--ink-2); }
-.other-types { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--line); }
-.other-types > span { font-size: 15px; font-weight: 600; color: var(--ink); }
-.other-types ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.other-types li { padding: 7px 14px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: 15px; color: var(--ink-2); }
-
 /* ── Privacidade ── */
 .privacy { padding: 0 0 120px; }
 .privacy-card { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: end; padding: 48px; border: 1px solid var(--line); border-radius: 28px; background: var(--surface); }
@@ -285,14 +277,6 @@ export default function AppLandingPage() {
                   <span>{f.unit}</span>
                 </div>
               ))}
-            </div>
-            <div className="other-types">
-              <span>E também</span>
-              <ul>
-                {OTHER_TYPES.map((t) => (
-                  <li key={t}>{t}</li>
-                ))}
-              </ul>
             </div>
           </div>
         </section>
