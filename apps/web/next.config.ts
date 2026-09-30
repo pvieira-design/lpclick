@@ -15,6 +15,19 @@ const nextConfig: NextConfig = {
     deviceSizes: [400, 480, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     qualities: [75, 95],
   },
+  // Carteirinha do paciente (BFF do click-app): a página do QR e o link da Apple Wallet
+  // ficam neste domínio, mas quem responde é o BFF. Fora do middleware (ver o matcher).
+  rewrites: async () => ({
+    beforeFiles: [
+      { source: "/c/:token", destination: "https://click-app-pos.runveloz.com/c/:token" },
+      {
+        source: "/api/wallet/:path*",
+        destination: "https://click-app-pos.runveloz.com/api/wallet/:path*",
+      },
+    ],
+    afterFiles: [],
+    fallback: [],
+  }),
   headers: async () => [
     {
       source: "/:all*(svg|jpg|jpeg|png|webp|avif|ico|woff|woff2)",

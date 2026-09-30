@@ -204,8 +204,10 @@ function comContextoDePrimeiraParte(request: NextRequest, event: NextFetchEvent)
   return response;
 }
 
+// As rotas da carteirinha (repassadas ao BFF do click-app) levam uma credencial na URL:
+// nada de tracking, cookie ou cache compartilhado nelas.
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|webp|avif|svg|ico|css|js)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|c/|api/wallet/|.*\\.(?:png|jpg|jpeg|gif|webp|avif|svg|ico|css|js)$).*)",
   ],
 };
