@@ -17,12 +17,16 @@ const nextConfig: NextConfig = {
   },
   // Carteirinha do paciente (BFF do click-app): a página do QR e o link da Apple Wallet
   // ficam neste domínio, mas quem responde é o BFF. Fora do middleware (ver o matcher).
+  // Só os formatos exatos do token e do ticket passam: nada de outro caminho do BFF.
   rewrites: async () => ({
     beforeFiles: [
-      { source: "/c/:token", destination: "https://click-app-pos.runveloz.com/c/:token" },
       {
-        source: "/api/wallet/:path*",
-        destination: "https://click-app-pos.runveloz.com/api/wallet/:path*",
+        source: "/c/:token([A-Za-z0-9_-]{43})",
+        destination: "https://click-app-pos.runveloz.com/c/:token",
+      },
+      {
+        source: "/api/wallet/:kind(add|pass)/:ticket([A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+)",
+        destination: "https://click-app-pos.runveloz.com/api/wallet/:kind/:ticket",
       },
     ],
     afterFiles: [],
