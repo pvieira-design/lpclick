@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { TEXT_TESTIMONIALS, type TextTestimonial } from "../lp5/textTestimonials";
+import { APPROVED_TESTIMONIALS, type ApprovedTestimonial } from "@/lib/approvedTestimonials";
 
 // Carrossel duplicado: mantém o DOM leve usando só os primeiros N depoimentos.
-const MAX_ITEMS = 16;
+const MAX_ITEMS = 32;
 
 function relativeDate(iso: string): string {
   const then = new Date(iso).getTime();
@@ -48,7 +48,7 @@ export default function TestimonialsWall() {
   const dragStartOffsetRef = useRef(0);
   const hoverPausedRef = useRef(false);
 
-  const items = TEXT_TESTIMONIALS.slice(0, MAX_ITEMS);
+  const items = APPROVED_TESTIMONIALS.slice(0, MAX_ITEMS);
 
   // Duplica os itens só depois do primeiro paint pra não inflar o DOM medido
   // pelo Lighthouse no LCP.
@@ -139,8 +139,16 @@ export default function TestimonialsWall() {
   return (
     <section
       id="bem-estar-testimonials-wall"
-      className="relative overflow-hidden bg-white pb-12 sm:pb-20"
+      className="relative overflow-hidden bg-white py-12 sm:py-20"
     >
+      <div className="mx-auto mb-8 max-w-2xl px-5 text-center sm:mb-10">
+        <h2 className="font-display text-3xl font-medium sm:text-4xl" style={{ color: "var(--ink)" }}>
+          Histórias reais de <strong className="font-bold" style={{ color: "var(--green-700)" }}>quem já passou por aqui</strong>
+        </h2>
+        <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+          Relatos pessoais. Resultados variam de pessoa para pessoa.
+        </p>
+      </div>
       <motion.div
         initial={{ opacity: 0, y: reduceMotion ? 0 : 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -169,7 +177,7 @@ export default function TestimonialsWall() {
   );
 }
 
-function ReviewCard({ review }: { review: TextTestimonial }) {
+function ReviewCard({ review }: { review: ApprovedTestimonial & { approximateDate?: { displayLabel: string } } }) {
   return (
     <article
       className="flex shrink-0 flex-col rounded-[var(--radius-card)] border bg-white p-5"
@@ -180,7 +188,8 @@ function ReviewCard({ review }: { review: TextTestimonial }) {
       }}
     >
       <div className="flex items-center gap-3">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {review.photo ? (
+        /* eslint-disable-next-line @next/next/no-img-element */
         <img
           src={review.photo}
           alt=""
@@ -192,6 +201,11 @@ function ReviewCard({ review }: { review: TextTestimonial }) {
           referrerPolicy="no-referrer"
           className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-100 object-cover"
         />
+        ) : (
+          <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#e6f2e9] text-sm font-semibold text-[#2d6e3f]">
+            {review.name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("")}
+          </span>
+        )}
         <div className="flex flex-1 flex-col">
           <span className="text-[0.875rem] font-medium text-gray-900">
             {review.name}
@@ -216,7 +230,7 @@ function ReviewCard({ review }: { review: TextTestimonial }) {
           </div>
         </div>
         <span className="text-[0.75rem] text-gray-400">
-          {relativeDate(review.publishedAt)}
+          {review.approximateDate?.displayLabel ?? relativeDate(review.publishedAt)}
         </span>
       </div>
       <p className="mt-3 flex-1 text-[0.9375rem] leading-relaxed text-gray-700">
