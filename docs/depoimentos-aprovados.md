@@ -6,12 +6,14 @@ Decisão do usuário em 24/09/2026: nas próximas páginas, utilizar exclusivame
 
 Importar `APPROVED_TESTIMONIALS` de `@/lib/approvedTestimonials`.
 
-A base contém 112 relatos: 77 integrais e 35 excertos. Cada registro contém nome, texto final aprovado, foto, tags, data original, versão (`full`/`excerpt`) e ID da avaliação no relatório histórico. Os textos foram copiados e congelados para que alterações na base bruta não reintroduzam trechos excluídos.
+A base contém **174 relatos: 117 integrais e 57 excertos**. Em 25/09/2026, o usuário autorizou adicionar os 40 integrais e as 22 versões com cortes da coleta por vídeo. Os 112 registros anteriores foram preservados; duplicados, excluídos e pendentes da coleta não entraram. Cada registro contém nome, texto final aprovado, foto quando disponível, tags, data exata ou aproximada, versão (`full`/`excerpt`) e ID da avaliação no relatório histórico. Os textos foram copiados e congelados para que alterações na base bruta não reintroduzam trechos excluídos.
 
 ```tsx
 import { APPROVED_TESTIMONIALS } from "@/lib/approvedTestimonials";
 
 const reviews = APPROVED_TESTIMONIALS.slice(0, 10);
+// Ao renderizar novos registros, usar approximateDate.displayLabel se houver.
+// photo vazio: usar iniciais; publishedAt vazio: não passar para new Date().
 ```
 
 - Selecionar um subconjunto conforme a página; não é necessário exibir todos.
@@ -38,3 +40,18 @@ Os vídeos ainda não têm transcrição localizada. Não criar citações a par
 - Dados da triagem: `reports/depoimentos/triagem-122-avaliacoes-2026-09-24.json`.
 - Universo histórico: 122 avaliações no commit `d905917`.
 - A base bruta local continha 120 no momento da análise; os dois ausentes foram recuperados somente para a triagem e a seleção aprovada.
+
+
+## Lote aprovado em 25/09/2026 — avaliações coletadas por vídeo
+
+- 62 adições: 40 versões integrais e 22 com os cortes já aplicados diretamente em `text`. O consumidor não precisa recortar o depoimento.
+- Os 5 duplicados, 4 excluídos, 4 pendências editoriais, 3 incompletos e 33 nomes auxiliares sem original recuperado ficaram fora.
+- `sourceReviewId` continua único; `sourceCollection` e `sourceRecordId` localizam a avaliação no relatório desta coleta. `sourceEvidence` aponta para o quadro usado na conferência, não para uma imagem a exibir na página.
+- `rating` registra as cinco estrelas observadas e `approvedAt` registra a autorização em 25/09/2026.
+- `publishedAt` é vazio nos 62 novos registros porque não temos o dia exato. `approximateDate.month` contém YYYY-MM; `originalLabel` preserva a expressão do Google; `kind` distingue publicação de edição; `displayLabel` já traz mês/ano com “aproximadamente” e “Atualizado em” quando aplicável. Não tratar atualização como prova da primeira publicação em 2026.
+- `photo` é vazio nos novos registros, pois não temos a URL da foto. Quando forem selecionados para uma página, usar iniciais ou apresentação sem foto; nunca fabricar URL nem mostrar o print como card.
+- As tags novas descrevem apenas temas presentes no texto final. “Sono”, por exemplo, não diagnostica insônia; verificar o texto ao selecionar por objetivo.
+- Nenhum componente, seleção de página ou publicação foi alterado. As páginas atuais selecionam nomes específicos; os novos registros foram acrescentados ao final do banco.
+- Antes de selecionar esses novos relatos em uma página futura, o componente deve aceitar data aproximada e foto ausente. Componentes antigos que formatam `publishedAt` sem verificar vazio não devem receber esses registros sem adaptação.
+
+Relatório de origem: [revisão da coleta](../reports/depoimentos/coletas/2026-09-24-video-google/REVISAO.md). Os vídeos mencionados anteriormente como sem transcrição são depoimentos audiovisuais de pacientes; esta coleta foi uma gravação de tela das avaliações escritas do Google.

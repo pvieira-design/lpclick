@@ -1,17 +1,33 @@
 /**
- * Base editorial aprovada pelo usuário em 24/09/2026 para NOVAS páginas.
- * 77 relatos integrais + 35 excertos, com omissões sinalizadas por […].
- * Fonte congelada: triagem-122-avaliacoes-2026-09-24; não puxar texto da base bruta.
+ * Base editorial aprovada para reutilização: 174 relatos (117 integrais + 57 excertos).
+ * Lotes aprovados em 24/09/2026 e 25/09/2026; omissões sinalizadas por […].
+ * Textos finais congelados: não puxar texto da base bruta.
  * Regras e histórico: docs/depoimentos-aprovados.md.
  */
 export type ApprovedTestimonial = {
   name: string;
   text: string;
+  /** URL original; vazio quando a foto não foi obtida. Usar iniciais nesse caso. */
   photo: string;
   tags: string[];
+  /** Data exata YYYY-MM-DD; vazio quando só existe approximateDate. */
   publishedAt: string;
   approvedVersion: "full" | "excerpt";
+  /** Identificador único no banco; os IDs históricos foram preservados. */
   sourceReviewId: number;
+  rating?: number;
+  approvedAt?: string;
+  sourceCollection?: string;
+  /** Identificador correspondente no relatório da coleta. */
+  sourceRecordId?: string;
+  sourceEvidence?: string;
+  approximateDate?: {
+    /** YYYY-MM, estimado. Nunca converter em um dia exato fictício. */
+    month: string;
+    kind: "published" | "edited";
+    originalLabel: string;
+    displayLabel: string;
+  };
 };
 
 export const APPROVED_TESTIMONIALS: ApprovedTestimonial[] = [
@@ -1367,5 +1383,1371 @@ export const APPROVED_TESTIMONIALS: ApprovedTestimonial[] = [
     "text": "Tô gostando e tá auxiliando na qualidade de sono e ansiedade",
     "approvedVersion": "full",
     "sourceReviewId": 122
+  },
+  {
+    "name": "Simone Candido",
+    "text": "\"Gostei muito do atendimento! Fui muito bem atendida, com atenção, respeito e profissionalismo. Recomendo a Click Cannabis!\"",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 123,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-001",
+    "approximateDate": {
+      "month": "2026-09",
+      "kind": "published",
+      "originalLabel": "19 hours ago",
+      "displayLabel": "setembro/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0008.jpg"
+  },
+  {
+    "name": "Allison Matos",
+    "text": "Excelente experiência com a Click Cannabis! O processo desde o agendamento até o atendimento médico foi super simples e humanizado. A equipe de suporte é muito atenciosa e esclareceu todas as minhas dúvidas sobre o tratamento. Recomendo muito para quem busca qualidade de vida de forma segura",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 124,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-002",
+    "approximateDate": {
+      "month": "2026-09",
+      "kind": "published",
+      "originalLabel": "21 hours ago",
+      "displayLabel": "setembro/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0011.jpg"
+  },
+  {
+    "name": "Marcelo Mendes Pinto",
+    "text": "Recomendo, o tratamento esta me fazendo muito bem",
+    "photo": "",
+    "tags": [],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 125,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-005",
+    "approximateDate": {
+      "month": "2026-09",
+      "kind": "published",
+      "originalLabel": "a week ago",
+      "displayLabel": "setembro/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0029.jpg"
+  },
+  {
+    "name": "Adriana Domingues",
+    "text": "Estou em tratamento a apenas 3 dias. Melhora no combate da insônia... dormindo com qualidade de forma profunda e por mais tempo. Nas minhas atividades cotidianas estou mais ativa, disposita com melhor desempenho e humor nas relações de trabalho e pessoais. Fazendo acompanhamento e observações. Obrigada",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Humor"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 126,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-006",
+    "approximateDate": {
+      "month": "2026-09",
+      "kind": "published",
+      "originalLabel": "2 weeks ago",
+      "displayLabel": "setembro/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0031.jpg"
+  },
+  {
+    "name": "Afreu godinho",
+    "text": "Boa tarde pessoal gostei muito, a equipe muito boa atende com muita educação e faz a coisa certa, não tem enrolação. Portanto aprovado",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 127,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-007",
+    "approximateDate": {
+      "month": "2026-09",
+      "kind": "published",
+      "originalLabel": "2 weeks ago",
+      "displayLabel": "setembro/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0039.jpg"
+  },
+  {
+    "name": "Duillyo Andrade",
+    "text": "Quebrando o tabu que ainda existe sobre o uso medicinal de canabis, resolvi começar meu tratamento. Hoje minha qualidade do sono é sem dúvida nenhuma um luxo, melhora na memória e acabei muito com o hábito da procrastinação. Estou muito satisfeito com a terapêutica.",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Foco"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 128,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-009",
+    "approximateDate": {
+      "month": "2026-09",
+      "kind": "published",
+      "originalLabel": "3 weeks ago",
+      "displayLabel": "setembro/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0051.jpg"
+  },
+  {
+    "name": "Petter Kraus",
+    "text": "[…] Me interessei por remédios canabinoides, e apareceu a publicidade da Click. Entrei em contato no whats e ali mesmo marquei a consulta com o médico da click. Pensei que seria parecido com exame periódico de empresa. O médico fez, de maneira remota, uma excelente avaliação das questões que eu sinto e de maneira muito sóbria, ajustou comigo um plano de ação em conjunto com a medicação. Foi uma das melhores consultas que um médico já fez comigo, ainda mais online. Após isso ele passou a receita, Então com auxilio pelo whats eu fiz o pedido de liberação para a ANVISA, que foi bem rápido e depois eu fiz a compra, tudo pelo whatsapp. Depois disso demora um pouco, mas é importante lembrar que o produto vem dos EUA e precisa ser liberado para chegar na casa da gente. Tem que esperar, faz parte. Agora estou tomando e meu sono melhorou significantemente, até agora sem nenhum efeito colateral. :D",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 129,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-012",
+    "approximateDate": {
+      "month": "2026-08",
+      "kind": "published",
+      "originalLabel": "a month ago",
+      "displayLabel": "agosto/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0068.jpg"
+  },
+  {
+    "name": "Felipe Rangel",
+    "text": "Ótima experiência com a CLICK CANNABIS, consulta barata, ótimo atendimento de todos profissionais. Estou muito satisfeito com meu medicamento receitado pelo médico, está me ajudando bastante no controle do sono, na alimentação, estresse e entre outros... […] E só para lembrar que estou fazendo o uso apenas 10 dias..",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Atendimento",
+      "Estresse"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 130,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-013",
+    "approximateDate": {
+      "month": "2026-08",
+      "kind": "published",
+      "originalLabel": "a month ago",
+      "displayLabel": "agosto/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0077.jpg"
+  },
+  {
+    "name": "Andréa Silveira",
+    "text": "Após 4 anos de dores difusas, fadiga, névoa mental e insônia após um tratamento de câncer de mama, várias consultas com médicos de diferentes especialidades, terapias como acumputura, pilates, psicoterapia, hidroginástica e nada disto amenizar as minhas queixas e ver uma luz no fim do túnel após 10 dias de uso do produto, não tem preço 😊",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Dores",
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 131,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-014",
+    "approximateDate": {
+      "month": "2026-08",
+      "kind": "published",
+      "originalLabel": "a month ago",
+      "displayLabel": "agosto/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0082.jpg"
+  },
+  {
+    "name": "Suzana Aparecida Machado Dos Santos",
+    "text": "Olá, minha experiência com a Click foi a melhor! A consulta foi e todo o processo foi rápido. O pessoal é atencioso, responde rápido e tiram todas as dúvidas. O produto é muito bom. Natural e acalma. Recomendo muito. […]",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 132,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-015",
+    "approximateDate": {
+      "month": "2026-08",
+      "kind": "published",
+      "originalLabel": "a month ago",
+      "displayLabel": "agosto/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0087.jpg"
+  },
+  {
+    "name": "Alessandra Carvalho",
+    "text": "[…] o atendimento da equipe médica foi inenarrável, me senti acolhida sem me sentir julgada. E a equipe de vendas também é sensacional....",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 133,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-017",
+    "approximateDate": {
+      "month": "2026-08",
+      "kind": "published",
+      "originalLabel": "a month ago",
+      "displayLabel": "agosto/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0095.jpg"
+  },
+  {
+    "name": "Pedro Guerra",
+    "text": "Suporte e follow-up são os melhores que já vi em qualquer companhia de qualquer setor. Prestativos, solícitos sem serem pegajosos, invasivos ou insistentes. As instruções são bem claras, precisei de ajuda apenas uma vez e fui bem auxiliado. […]",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 134,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-018",
+    "approximateDate": {
+      "month": "2026-08",
+      "kind": "published",
+      "originalLabel": "a month ago",
+      "displayLabel": "agosto/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0103.jpg"
+  },
+  {
+    "name": "Thalita Melo",
+    "text": "O pessoal da click é ótimo, resolveram tudo e acompanharam todas as etapas da consulta até a entrega! Serviço fantástico! Como é um produto que demanda muita burocracia e frete internacional, demora um pouco. Mas, é do processo mesmo. O meu demorou um pouco porque precisei esperar a reposição de estoque da medicação na fábrica. Mas, a click esteve acompanhando tudo.",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 135,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-019",
+    "approximateDate": {
+      "month": "2026-08",
+      "kind": "published",
+      "originalLabel": "a month ago",
+      "displayLabel": "agosto/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0114.jpg"
+  },
+  {
+    "name": "Carol Majewski",
+    "text": "No início estava cheio de dúvidas, mas depois tive certeza que estava tratando com uma e empresa séria. Recebi o produto e estou usando tendo obtido resultados que me entusiasmo a continuar usando.",
+    "photo": "",
+    "tags": [],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 136,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-020",
+    "approximateDate": {
+      "month": "2026-08",
+      "kind": "published",
+      "originalLabel": "a month ago",
+      "displayLabel": "agosto/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0123.jpg"
+  },
+  {
+    "name": "Ruthe Carvalho",
+    "text": "A Click Cannabis tem um atendimento de excelência, na pré venda e no pós venda, os atendentes são muito atenciosos e educados. O médico que me atendeu foi muito simpático e muito eficiente nas explicações. Estou utilizando os medicamentos há pouco tempo, mas já sinto uma melhora nas minhas dores e na qualidade do meu sono. Sei que é um processo, por isso estou muito esperançosa na melhoria da minha qualidade de vida. Obrigada Click❤️",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Dores",
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 137,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-021",
+    "approximateDate": {
+      "month": "2026-08",
+      "kind": "published",
+      "originalLabel": "a month ago",
+      "displayLabel": "agosto/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0127.jpg"
+  },
+  {
+    "name": "jair alves",
+    "text": "O produto é excelente, pensei que iria ter alguma reação, porem foi tranquilo, a unica reação que tive, foi não ter reação...durmir muito...kkkkk",
+    "photo": "",
+    "tags": [],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 138,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-022",
+    "approximateDate": {
+      "month": "2026-07",
+      "kind": "published",
+      "originalLabel": "2 months ago",
+      "displayLabel": "julho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0135.jpg"
+  },
+  {
+    "name": "Chris Ambrosio",
+    "text": "Eu tive bastante resistência ao uso do cannabis, mas desde que comecei a usar, minha vida está mudando pra melhor, […] dormido e mais tranquila...❤️",
+    "photo": "",
+    "tags": [
+      "Sono"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 139,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-024",
+    "approximateDate": {
+      "month": "2026-07",
+      "kind": "published",
+      "originalLabel": "2 months ago",
+      "displayLabel": "julho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0148.jpg"
+  },
+  {
+    "name": "Zenaide Andrade",
+    "text": "Hoje completo cinco dias de uso do óleo de cannabis para o tratamento da insônia. Nesse período, já percebo sinais positivos de melhora na qualidade do meu sono. Embora eu saiba que ainda é um período inicial e que os benefícios podem continuar aumentando nas próximas semanas, estou satisfeita com os primeiros resultados.",
+    "photo": "",
+    "tags": [
+      "Sono"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 140,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-026",
+    "approximateDate": {
+      "month": "2026-07",
+      "kind": "edited",
+      "originalLabel": "Edited 2 months ago",
+      "displayLabel": "Atualizado em julho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0156.jpg"
+  },
+  {
+    "name": "Rafael Nicolay",
+    "text": "No início fiquei desconfiado da consulta ontem line, achei se tratar de golpe mas resolvi arriscar. Valeu muito a pena. Médico muito bom e atencioso, aquisição simples, desculpada da medicação e chegou super rápido. Iniciei o testamento há uma semana e já estou sentido os resultados. Estou muito satisfeito […]",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 141,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-027",
+    "approximateDate": {
+      "month": "2026-07",
+      "kind": "published",
+      "originalLabel": "2 months ago",
+      "displayLabel": "julho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0159.jpg"
+  },
+  {
+    "name": "Antonio",
+    "text": "[…] No terceiro dia, eu já me sentia claramente mais leve e menos ansioso. Com o passar do tempo, as coisas só foram melhorando. […]",
+    "photo": "",
+    "tags": [
+      "Ansiedade"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 142,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-028",
+    "approximateDate": {
+      "month": "2026-07",
+      "kind": "edited",
+      "originalLabel": "Edited 2 months ago",
+      "displayLabel": "Atualizado em julho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0168.jpg"
+  },
+  {
+    "name": "Tania Roseli",
+    "text": "Essa empresa é fantástica, não deixa dúvidas em nenhum momento, recebi meu canabidiol lacrado em perfeito estado e muito rápido, super recomendo para quem está precisando tentar um protocolo diferente e natural para sua vida",
+    "photo": "",
+    "tags": [],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 143,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-029",
+    "approximateDate": {
+      "month": "2026-07",
+      "kind": "published",
+      "originalLabel": "2 months ago",
+      "displayLabel": "julho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0192.jpg"
+  },
+  {
+    "name": "Aline Velascotattoo",
+    "text": "Me surpreendi com a qualidade, proatividade, educação e atendimento do início ao fim. Atendentes sempre dispostos a ajudar. Tiram todas suas dúvidas. Sem contar no valor SUPER acessível. Desde a consulta até a chegada do medicamento. […] Comprarei sempre com eles!",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 144,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-030",
+    "approximateDate": {
+      "month": "2026-07",
+      "kind": "published",
+      "originalLabel": "2 months ago",
+      "displayLabel": "julho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0196.jpg"
+  },
+  {
+    "name": "Giovanna Pavani Veronesi",
+    "text": "Minha experiência tem sido excelente. Desde que comecei a usar o óleo, estou me sentindo muito melhor e percebi uma melhora significativa na minha qualidade de vida. Além disso, o atendimento é impecável: toda a equipe é extremamente atenciosa, acolhedora e sempre pronta para esclarecer dúvidas e oferecer todo o suporte necessário. Recomendo de coração pela qualidade do tratamento e pelo cuidado com cada paciente.",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 145,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-031",
+    "approximateDate": {
+      "month": "2026-07",
+      "kind": "published",
+      "originalLabel": "2 months ago",
+      "displayLabel": "julho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0204.jpg"
+  },
+  {
+    "name": "Jennifer Lemos",
+    "text": "Excelente atendimento e consulta, assim como todo o suporte para a documentação da exportação e licença para tratamento. Compra e envio feito por eles, em 15 dias já comecei meu tratamento. Tem 10 dias que iniciei com a dose mínima, e já começando a nova dosagem, posso dizer que já senti melhoras no sono e redução de picos de ansiedade. Recomendo!",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Ansiedade",
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 146,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-032",
+    "approximateDate": {
+      "month": "2026-07",
+      "kind": "published",
+      "originalLabel": "2 months ago",
+      "displayLabel": "julho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0207.jpg"
+  },
+  {
+    "name": "Gui Mont",
+    "text": "Muito bom! Estou a 6 meses me tratando e percebo umaótima melhora!",
+    "photo": "",
+    "tags": [],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 147,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-033",
+    "approximateDate": {
+      "month": "2026-06",
+      "kind": "published",
+      "originalLabel": "3 months ago",
+      "displayLabel": "junho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0210.jpg"
+  },
+  {
+    "name": "Cláudia Gruber",
+    "text": "Pesquisei muito até chegar aqui e valeu a pena. O processo foi rápido e o atendimento médico bem tranquilo. Aquisição do produto também foi rápida e fácil. Já comecei a sentir algumas mudanças no sono e na ansiedade (segunda semana de uso).",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Ansiedade",
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 148,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-034",
+    "approximateDate": {
+      "month": "2026-06",
+      "kind": "published",
+      "originalLabel": "3 months ago",
+      "displayLabel": "junho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0213.jpg"
+  },
+  {
+    "name": "Maria Berzoini",
+    "text": "Sempre me interessei por terapias naturais e pesquisei a respeito do tratamento com cannabis. Estou no início do tratamento, mas já sinto melhoras na qualidade do sono e nos sintomas da ansiedade!",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Ansiedade"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 149,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-035",
+    "approximateDate": {
+      "month": "2026-06",
+      "kind": "published",
+      "originalLabel": "3 months ago",
+      "displayLabel": "junho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0216.jpg"
+  },
+  {
+    "name": "Wilma Torquato Vicente",
+    "text": "foi a melhor decisão que tomei na minha vida,estou me sentindo muito bem ,cada dia melhor seguindo as instruções que médico me receitou ,muito satisfeita obrigado Click cannabis.",
+    "photo": "",
+    "tags": [],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 150,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-036",
+    "approximateDate": {
+      "month": "2026-06",
+      "kind": "published",
+      "originalLabel": "3 months ago",
+      "displayLabel": "junho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0220.jpg"
+  },
+  {
+    "name": "Jorge Júnior",
+    "text": "Estou muito satisfeito com o resultado em apenas 15 dias, me sinto menos acelerado, irritado e meu sono está bem tranquilo além de pegar no sono muito rápido. […]",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Estresse"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 151,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-037",
+    "approximateDate": {
+      "month": "2026-06",
+      "kind": "published",
+      "originalLabel": "3 months ago",
+      "displayLabel": "junho/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0223.jpg"
+  },
+  {
+    "name": "Anderson oliveira",
+    "text": "Eu me sinto melhor ao usar o medicamento. […] Me sinto melhor a cada dia e pretendo continuar o tratamento.",
+    "photo": "",
+    "tags": [],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 152,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-038",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0226.jpg"
+  },
+  {
+    "name": "E. T. - Eduardo Terencio",
+    "text": "O medicamento é para o meu filho autista. Resolvi comprar por indicação de uma amigo. Fiquei ansioso pelo uso, porém os resultados estão começando a aparecer. Está no período inicial de adaptação, mas os resultados já estão começando a aparecer. Ele está dormindo mais cedo e melhor e ficando mais calmo, com mais atenção. Espero que melhore cada dia mais.",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Ansiedade",
+      "TEA"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 153,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-039",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0231.jpg"
+  },
+  {
+    "name": "Leonan Mozer",
+    "text": "Era a minha ultima tentativa para dormir melhor , finalmente eu encontrei a click canabis, agora durmo bem , acordo bem, nao atrapalhou em nada na minha rotina. Continuo conseguindo acordar cedo, consegui evoluir na academia pois agora eu tenho um sono reparador. Muito obrigado!!!",
+    "photo": "",
+    "tags": [
+      "Sono"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 154,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-040",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0233.jpg"
+  },
+  {
+    "name": "Kleiton Goncalves",
+    "text": "A medicação ten me deixado ben tranquilo mediante de como eu me sentia , eu era muito extressado a alto nível e após o início do tratamento con uma semana ja senti resultados.",
+    "photo": "",
+    "tags": [],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 155,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-041",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0237.jpg"
+  },
+  {
+    "name": "Lucia Fátima Paes Machado",
+    "text": "Tive um imprevisto com documentos mas consegui resolver. O atendimento é de ótima qualidade e não foi nada demorado para ser entregue. Indico a Click Cannabis pelo excelênte trabalho que fazem.",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 156,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-042",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "edited",
+      "originalLabel": "Edited 4 months ago",
+      "displayLabel": "Atualizado em maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0240.jpg"
+  },
+  {
+    "name": "KOFM",
+    "text": "Não imaginava que me faria tão bem! Foi tudo muito fácil e rápido, me adaptei rápido e estou amando! Sou outra pessoa!",
+    "photo": "",
+    "tags": [],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 157,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-043",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0242.jpg"
+  },
+  {
+    "name": "Raini C.Farnezi",
+    "text": "São muito atenciosos, direcionam todo o processo, chegou rapido e o tratamento ja esta surtindo efeito. Estou bem satisfeita.",
+    "photo": "",
+    "tags": [],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 158,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-044",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0259.jpg"
+  },
+  {
+    "name": "Lu Mourão",
+    "text": "Estou fazendo o tratamento há 15 dias e desde os primeiros ja percebi melhora significativa na qualidade do meu sono e, consequentemente, da minha disposição pela manhã. Acordar parou de ser um sacrifício!",
+    "photo": "",
+    "tags": [
+      "Sono"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 159,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-045",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0262.jpg"
+  },
+  {
+    "name": "Anailton Salles",
+    "text": "Atendimento maravilhoso, excepcional! A Click Cannabis cuida de todo, absolutamente todo o processo. Segurança na consulta, garantia na compra e acompanhamento até a chegada do medicamento. Super indico! A mim está fazendo muito bem!",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 160,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-047",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0269.jpg"
+  },
+  {
+    "name": "bhavaraja bhava",
+    "text": "O medicamento a base de CDB é simplesmente maravilhoso. Consigo organizar minha vida, meu sono melhorou, menos ansiedade, pensamentos reduzidos. Enfim. Qualidade de vida!",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Ansiedade"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 161,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-048",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0270.jpg"
+  },
+  {
+    "name": "Juliana Santos",
+    "text": "[…] A consulta é um valor super acessivel, agendamento rapido, o medico foi super atencioso. […]",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 162,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-049",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0275.jpg"
+  },
+  {
+    "name": "João Guilherme",
+    "text": "Eu comprei com muita inseguranca por se tratar de um produto importado, Mas a empresa é seria e cumpre com o prometido, sem falar do pos venda e tambem no acompanhamento, eles acompanham o tratamento dia apos dia, oque e surreal. Quanto ao medicamento faz 20 dias que estou tomando e ja senti mais clareza e organizacao dos pensamentos. […]",
+    "photo": "",
+    "tags": [
+      "Foco"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 163,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-050",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0279.jpg"
+  },
+  {
+    "name": "marco giacomo Braga",
+    "text": "É segunda vez que sou atendido (muito bem !!) pela Click. Empresa séria e honesta tem me atendido com muita cortesia e profissionalismo. Recomento muito a quem precisar !!!",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 164,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-051",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0281.jpg"
+  },
+  {
+    "name": "Gabriela Ferruchi",
+    "text": "CBD é vida! Voltei a dormir a noite toda, não acordo cansada, humor melhorou muito! […] O atendimento é muito bom, são todos muito prestativos.",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Atendimento",
+      "Humor"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 165,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-052",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "edited",
+      "originalLabel": "Edited 4 months ago",
+      "displayLabel": "Atualizado em maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0284.jpg"
+  },
+  {
+    "name": "Luciana Boeira",
+    "text": "[…] A marcação da minha consulta foi rápida e fui muito bem orientada em toda a tramitação da compra do meu óleo, e confesso, me arrependi porque não comecei antes!! […]",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 166,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-053",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0292.jpg"
+  },
+  {
+    "name": "Candida cardoso",
+    "text": "Muito boa, recebi todos o suporte, e estão sempre a disposição. […]",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 167,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-054",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0297.jpg"
+  },
+  {
+    "name": "Cássio Martins",
+    "text": "A Click Cannabis foi mais do que parceira em toda jornada. Desde a consulta com os profissionais da saúde até a hora do recebimento do óleo de maconha medicinal. Sempre rápida nas respostas de algumas dúvidas que podem surgir. Recomendo fortemente.",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 168,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-055",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "edited",
+      "originalLabel": "Edited 4 months ago",
+      "displayLabel": "Atualizado em maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0299.jpg"
+  },
+  {
+    "name": "Pedro Henrique Reis",
+    "text": "Foi muito positivo para mim o tratamento, estou mais calmo, concentrado !",
+    "photo": "",
+    "tags": [
+      "Foco"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 169,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-056",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0301.jpg"
+  },
+  {
+    "name": "Antonio Cunha",
+    "text": "Estava já a alguns anos com dificuldade para dormir e acordava no dia seguinte com muita indisposição e cansado. Procurei a Clickcanabis, fiz consulta e eles me deram todo o suporte para a importação da medicação. […] meu sono melhorou muito e acordo nas manhã com energia e disposição. Alinhado ao remédio tenho também feito ajustes na minha rotina , o que faz toda a diferença no tratamento.",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 170,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-057",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0306.jpg"
+  },
+  {
+    "name": "Lucas Barbosa Lustosa",
+    "text": "[…] minhas noites de sonos tá sendo maravilhosa demais muito obrigado click cabanis toppppp",
+    "photo": "",
+    "tags": [
+      "Sono"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 171,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-058",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0311.jpg"
+  },
+  {
+    "name": "Emerson Nunes | Hogrid",
+    "text": "Fiquei positivamente surpreso com a simplicidade do processo, que é conduzido com profissionalismo. O atendimento é guiado e há suporte disponível. Recomendo para todos que precisam desse tratamento.",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 172,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-061",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0333.jpg"
+  },
+  {
+    "name": "Sandro Griffo",
+    "text": "Excelente atendimento. Trabalho sério respeitando a legislação vigente. A empresa é muito atenciosa, enviando mensagens de tempos em tempos para verificar o andamento e resultado do tratamento. Recomendo a todos que precisarem desse tipo de tratamento.",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 173,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-062",
+    "approximateDate": {
+      "month": "2026-04",
+      "kind": "published",
+      "originalLabel": "5 months ago",
+      "displayLabel": "abril/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0334.jpg"
+  },
+  {
+    "name": "Patrick Junqueira",
+    "text": "Comecei a usar o canabidiol a uns trinta dias pelo click Canabis,fiz a consulta e foi tudo ótimo desde a consulta on line até a importação dos produtos,eles resolvem tudo sobre a compra do produto me senti bem seguro com esse novo tratamento […] a minha melhora foi visível! obrigado a todos os responsáveis pelo ótimo tratamento que estou recebendo do click Canabis!🙏",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 174,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-063",
+    "approximateDate": {
+      "month": "2026-04",
+      "kind": "published",
+      "originalLabel": "5 months ago",
+      "displayLabel": "abril/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0340.jpg"
+  },
+  {
+    "name": "Evangelista Moraes",
+    "text": "Gratidão por tudo mesmo. Vocês me ajudaram em todo processo. Chegou certinho. Gratidão mesmo. Continuarei com vocês sempre. Apoiarei sempre.",
+    "photo": "",
+    "tags": [],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 175,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-065",
+    "approximateDate": {
+      "month": "2026-04",
+      "kind": "edited",
+      "originalLabel": "Edited 5 months ago",
+      "displayLabel": "Atualizado em abril/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0350.jpg"
+  },
+  {
+    "name": "Luisa Magliano",
+    "text": "Foi super descomplicado do inicio ao fim. A médica super atenciosa, o pessoal do atendimento no whatsapp também. Eles ajudam com todo o processo da anvisa e da importação. 10/10",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 176,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-068",
+    "approximateDate": {
+      "month": "2026-04",
+      "kind": "published",
+      "originalLabel": "5 months ago",
+      "displayLabel": "abril/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0361.jpg"
+  },
+  {
+    "name": "Carla Bocks",
+    "text": "Estou outra pessoa, na terceira semana com tratamento é nitidamente a mudança na ansiedade, depressão, disposição física e mental […]",
+    "photo": "",
+    "tags": [
+      "Ansiedade",
+      "Depressão"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 177,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-069",
+    "approximateDate": {
+      "month": "2026-04",
+      "kind": "published",
+      "originalLabel": "5 months ago",
+      "displayLabel": "abril/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0364.jpg"
+  },
+  {
+    "name": "sueli riffel",
+    "text": "Atendimento excelente! […] Click Canabis tem me acompanhado, pedindo como estou no tratamento, estou muito feliz!",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 178,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-070",
+    "approximateDate": {
+      "month": "2026-04",
+      "kind": "published",
+      "originalLabel": "5 months ago",
+      "displayLabel": "abril/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0368.jpg"
+  },
+  {
+    "name": "Sheilla Pascoal",
+    "text": "Minha experiência superou totalmente minhas expectativas. Médico super atencioso a cada detalhe da consulta. A indicação da dosagem p meu caso foi bem acertiva. Em pouco tempo de tratamento já senti excelentes resultados. Super recomendo.",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 179,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-071",
+    "approximateDate": {
+      "month": "2026-04",
+      "kind": "published",
+      "originalLabel": "5 months ago",
+      "displayLabel": "abril/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0370.jpg"
+  },
+  {
+    "name": "Enio Eduardo Guedes Jr",
+    "text": "Boa consulta, bem orientado até sobre como autorizar e importar o medicamento. Resultado muito satisfatório.",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 180,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-073",
+    "approximateDate": {
+      "month": "2026-03",
+      "kind": "published",
+      "originalLabel": "6 months ago",
+      "displayLabel": "março/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0375.jpg"
+  },
+  {
+    "name": "Joyce Nascimento",
+    "text": "A Click tem sido fundamental no meu tratamento. Equipe nota 10. Descobri o TEA já na fase adulta, o que trouxe diversas consequências difíceis de lidar. Eu vinha de um tratamento muito pesado, com alta medicação e, ainda assim, sem conseguir os resultados que precisava. Quando me sugeriram buscar alternativas, como o uso do CBD, fui orientada a procurar a Click. Desde o início, encontrei um suporte completo: atendimento médico qualificado, acompanhamento próximo e humanizado, além de um processo de entrega ágil e eficiente. Hoje, me sinto mais assistida, respeitada e confiante no meu tratamento — e também percebo uma melhora significativa nos meus sintomas.",
+    "photo": "",
+    "tags": [
+      "Atendimento",
+      "TEA"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 181,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-074",
+    "approximateDate": {
+      "month": "2026-03",
+      "kind": "published",
+      "originalLabel": "6 months ago",
+      "displayLabel": "março/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0380.jpg"
+  },
+  {
+    "name": "Iasmin Alvarenga Gil",
+    "text": "Comecei a tomar CBD há dois dias e já percebi uma leve melhora: estou mais relaxada e dormindo melhor. No início, fiquei receosa por ter conhecido a Click por um anúncio no Instagram, mas pesquisei a empresa, confirmei que é regularizada e entendi o processo. Apesar de exigir atenção em etapas como a autorização no gov.br para importação, é mais simples do que parece, depois de 26 dias após eu tê-lo encomendado, chegou! Decidi usar o canabidiol para ajudar na ansiedade, irritação, pensamentos compulsivos e no sono — e, até agora, está funcionando. Até o momento eu recomendo o uso do Cbd.",
+    "photo": "",
+    "tags": [
+      "Sono",
+      "Ansiedade"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 182,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-075",
+    "approximateDate": {
+      "month": "2026-03",
+      "kind": "published",
+      "originalLabel": "6 months ago",
+      "displayLabel": "março/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0385.jpg"
+  },
+  {
+    "name": "G. Braga Junior",
+    "text": "Estou maravilhado com toda a potencialidade do serviço e do tratamento. Mais pessoas precisam saber sobre os benefícios de ter a Clik Cannabis como aliada em algum tratamento de saúde. Parabéns a toda equipe.",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "full",
+    "sourceReviewId": 183,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-076",
+    "approximateDate": {
+      "month": "2026-03",
+      "kind": "edited",
+      "originalLabel": "Edited 6 months ago",
+      "displayLabel": "Atualizado em março/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0393.jpg"
+  },
+  {
+    "name": "Alexandre Oliveira",
+    "text": "[…] A equipe da empresa é educada, atenciosa, prestativa. Gostei muito do resultado. Eu aprovo.",
+    "photo": "",
+    "tags": [
+      "Atendimento"
+    ],
+    "publishedAt": "",
+    "approvedVersion": "excerpt",
+    "sourceReviewId": 184,
+    "rating": 5,
+    "approvedAt": "2026-09-25",
+    "sourceCollection": "google-video-2026-09-24",
+    "sourceRecordId": "GV20260924-077",
+    "approximateDate": {
+      "month": "2026-05",
+      "kind": "published",
+      "originalLabel": "4 months ago",
+      "displayLabel": "maio/2026 (aproximadamente)"
+    },
+    "sourceEvidence": "reports/depoimentos/coletas/2026-09-24-video-google/evidencias/frame-0321.jpg"
   }
 ];
