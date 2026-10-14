@@ -15,6 +15,7 @@ const deliver =
     ? createHttpSinkTransport({
         url: destino.url,
         timeoutMs: 4000,
+        requireObservationId: true,
         headers: { authorization: `Bearer ${token}` },
       })
     : null;

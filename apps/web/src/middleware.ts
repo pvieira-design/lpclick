@@ -32,6 +32,7 @@ const deliver =
     ? createHttpSinkTransport({
         url: DESTINO.url,
         timeoutMs: 2000,
+        requireObservationId: true,
         headers: { authorization: `Bearer ${TOKEN}` },
       })
     : null;
