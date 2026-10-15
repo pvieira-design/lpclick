@@ -5,6 +5,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
+import {
+  captureLeadObservation,
+  sendCorrelatedLeadEvent,
+} from "@/lib/lead-observation";
 import { APPROVED_TESTIMONIALS, type ApprovedTestimonial } from "@/lib/approvedTestimonials";
 import InicioReviewCard from "../lp12/InicioReviewCard";
 import ReviewStars from "../lp12/ReviewStars";
@@ -228,8 +232,19 @@ export default function ClickLanding() {
       return;
     }
     const pathologies = OBJECTIVES.filter((objective) => selected.has(objective.label)).map((objective) => objective.patologia);
+    const leadObservationId = captureLeadObservation();
+
     sendLeadToCrm(cleanName, pathologies);
-    sendGTMEvent({ event: "buttonWhatsappClicked", category: "Lead", action: "Click", label: "Continuar no WhatsApp - Click", value: pathologies.join(", ") });
+    sendCorrelatedLeadEvent(
+      {
+        event: "buttonWhatsappClicked",
+        category: "Lead",
+        action: "Click",
+        label: "Continuar no WhatsApp - Click",
+        value: pathologies.join(", "),
+      },
+      leadObservationId,
+    );
     window.open(buildWhatsAppUrl(cleanName, pathologies), "_blank", "noopener,noreferrer");
   };
 

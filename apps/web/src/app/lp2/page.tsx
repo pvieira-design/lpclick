@@ -3,6 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
+import {
+  captureLeadObservation,
+  sendCorrelatedLeadEvent,
+} from "@/lib/lead-observation";
 
 const PATOLOGIAS = [
   "Ansiedade",
@@ -64,7 +68,7 @@ export default function LandingPage() {
     inactivityTimer.current = setTimeout(() => {
       if (hasSubmitted.current) return;
       if (!dialogRef.current?.open && currentSelected.size > 0) {
-    
+
         dialogRef.current?.showModal();
         setTimeout(() => inputRef.current?.focus(), 100);
         sendGTMEvent({
@@ -127,28 +131,33 @@ export default function LandingPage() {
     const params = new URLSearchParams(window.location.search);
     const fbclid = document.cookie.match(/(?:^|;\s*)fbclid=([^;]*)/)?.[1] || "";
 
-    sendGTMEvent({
-      event: "buttonWhatsappClicked",
-      category: "Lead",
-      action: "Click",
-      label: "Falar com o médico - LP2",
-      value: patologias.join(", "),
-      leadData: {
-        name: trimmed,
-        patologies: patologias,
-        referrer: document.referrer,
-        userAgent: navigator.userAgent,
-        language: navigator.language,
-        platform: navigator.platform,
-        src: params.get("src") || "",
-        utm_source: params.get("utm_source") || "",
-        utm_medium: params.get("utm_medium") || "",
-        utm_content: params.get("utm_content") || "",
-        utm_campaign: params.get("utm_campaign") || "",
-        utm_term: params.get("utm_term") || "",
-        fbclid,
+    const leadObservationId = captureLeadObservation();
+
+    sendCorrelatedLeadEvent(
+      {
+        event: "buttonWhatsappClicked",
+        category: "Lead",
+        action: "Click",
+        label: "Falar com o médico - LP2",
+        value: patologias.join(", "),
+        leadData: {
+          name: trimmed,
+          patologies: patologias,
+          referrer: document.referrer,
+          userAgent: navigator.userAgent,
+          language: navigator.language,
+          platform: navigator.platform,
+          src: params.get("src") || "",
+          utm_source: params.get("utm_source") || "",
+          utm_medium: params.get("utm_medium") || "",
+          utm_content: params.get("utm_content") || "",
+          utm_campaign: params.get("utm_campaign") || "",
+          utm_term: params.get("utm_term") || "",
+          fbclid,
+        },
       },
-    });
+      leadObservationId,
+    );
 
     sendLeadToCrm(trimmed, patologias);
 
