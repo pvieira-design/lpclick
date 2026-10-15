@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "npm run dev --workspace web",
     "build": "npm run build --workspace web",
-    "start": "npm run start --workspace web"
+    "start": "npm run start --workspace web",
+    "test:tracking-receipts": "node --test scripts/test-tracking-receipts.mjs"
   },
   "devDependencies": {
     "@lpclick/config": "*",
