@@ -89,12 +89,15 @@ keeps its existing contract, endpoint and payload; its duplicate SDK capture was
 removed. Persistence of this ID in RunVeloz has **not** been verified and requires
 the CRM's confirmed field mapping before any new field is sent there.
 
-The dependency manifest and lockfile remain unchanged. SDK 0.4.0 and 0.4.1 return
-`void`, so correlation remains unavailable with those versions. Activation requires
-publication of the verified 0.4.2 candidate, followed by the dependency update and
-validation. Merge, package publication and application release require the owner's
-explicit approval. No SDK code is copied into the application and no fallback ID
-is generated.
+SDK 0.4.2 is published, and the dependency manifest and native npm lockfile pin
+`@click-cannabis/tracking-edge` to exactly `0.4.2`, with
+`@click-cannabis/tracking-contracts` unchanged at `1.6.0`. SDK 0.4.0 and 0.4.1 return
+`void`; the published 0.4.2 exposes the observation ID used by the existing helper.
+This application change is **not activated in production**. Application release
+still requires validation and the owner's explicit approval. No SDK code is copied
+into the application and no fallback ID is generated. Raw GA4 receipt, ID
+persistence in the new CRM, and schedule confirmation remain unverified; local
+checks do not establish those outcomes.
 
 Run the local suite with installed TypeScript and Node:
 
