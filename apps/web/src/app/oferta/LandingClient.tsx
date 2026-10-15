@@ -11,6 +11,10 @@ import {
 } from "framer-motion";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
+import {
+  captureLeadObservation,
+  sendCorrelatedLeadEvent,
+} from "@/lib/lead-observation";
 
 /* ============================ CONFIGURAÇÃO ============================ */
 
@@ -494,19 +498,24 @@ function ResultForm({
         return;
       }
 
-      sendGTMEvent({
-        event: "buttonWhatsappClicked",
-        category: "Lead",
-        action: "Click",
-        label: "Agendar consulta - Oferta Cashback",
-        value: sintomas.join(", "),
-        leadData: {
-          name: trimmed,
-          patologies: sintomas,
-          premio: "Cashback de R$50",
-          cupom: CUPOM,
+      const leadObservationId = captureLeadObservation();
+
+      sendCorrelatedLeadEvent(
+        {
+          event: "buttonWhatsappClicked",
+          category: "Lead",
+          action: "Click",
+          label: "Agendar consulta - Oferta Cashback",
+          value: sintomas.join(", "),
+          leadData: {
+            name: trimmed,
+            patologies: sintomas,
+            premio: "Cashback de R$50",
+            cupom: CUPOM,
+          },
         },
-      });
+        leadObservationId,
+      );
 
       sendLeadToCrm(trimmed, sintomas);
       const url = buildWhatsAppUrl(trimmed, sintomas);

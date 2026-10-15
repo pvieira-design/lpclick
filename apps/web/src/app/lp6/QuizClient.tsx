@@ -3,6 +3,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
+import {
+  captureLeadObservation,
+  sendCorrelatedLeadEvent,
+  withLeadObservation,
+} from "@/lib/lead-observation";
 import { QUESTIONS, type Question } from "./questions";
 import type { Testimonial } from "./page";
 import TestimonialsSlider from "../lp5/TestimonialsSlider";
@@ -50,7 +55,11 @@ function readFbclid(): string {
   return parts.length >= 4 ? parts.slice(3).join(".") : "";
 }
 
-function sendLeadToApi(name: string, patologies: string[]): void {
+function sendLeadToApi(
+  name: string,
+  patologies: string[],
+  leadObservationId?: string,
+): void {
   const params = new URLSearchParams(window.location.search);
   const n = navigator as unknown as { appVersion: string; platform: string };
   const payload = {
@@ -73,12 +82,17 @@ function sendLeadToApi(name: string, patologies: string[]): void {
       utm_campaign: params.get("utm_campaign") ?? "",
     },
   };
-  const body = JSON.stringify(payload);
+  const body = JSON.stringify(withLeadObservation(payload, leadObservationId));
   if (typeof navigator.sendBeacon === "function") {
     const blob = new Blob([body], { type: "application/json" });
     if (navigator.sendBeacon("/api/leads", blob)) return;
   }
-  fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(() => {});
+  fetch("/api/leads", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
 }
 
 function shuffle<T>(arr: readonly T[]): T[] {
@@ -970,16 +984,22 @@ function WonLeadModal({ onClose, mode }: { onClose: () => void; mode: "won" | "l
 
     const patologias = Array.from(selected);
 
-    sendLeadToApi(trimmed, patologias);
+    const leadObservationId = captureLeadObservation();
+
+    sendLeadToApi(trimmed, patologias, leadObservationId);
     sendLeadToCrm(trimmed, patologias);
 
-    sendGTMEvent({
-      event: "buttonWhatsappClicked",
-      category: "Lead",
-      action: "Click",
-      label: mode === "won" ? "Resgatar consulta - LP6" : "Iniciar tratamento - LP6",
-      value: patologias.join(", "),
-    });
+    sendCorrelatedLeadEvent(
+      {
+        event: "buttonWhatsappClicked",
+        category: "Lead",
+        action: "Click",
+        label:
+          mode === "won" ? "Resgatar consulta - LP6" : "Iniciar tratamento - LP6",
+        value: patologias.join(", "),
+      },
+      leadObservationId,
+    );
 
     const url = mode === "won"
       ? buildWonWhatsAppUrl(trimmed, patologias)
