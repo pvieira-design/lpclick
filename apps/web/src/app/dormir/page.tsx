@@ -3,6 +3,8 @@ import { Lexend } from "next/font/google";
 import LandingClient from "./LandingClient";
 import SleepScience from "./SleepScience";
 import StickyContactCTA from "./StickyContactCTA";
+import TreatmentSteps from "../lp12/TreatmentSteps";
+import Faq from "../lp12/Faq";
 
 const lexend = Lexend({
   subsets: ["latin"],
@@ -52,6 +54,10 @@ export default function DormirPage() {
       <main className="flex min-h-svh flex-col bg-white">
         <LandingClient />
         <SleepScience />
+        <div id="dormir-treatment-steps">
+          <TreatmentSteps startEvent="dormir:treatment:open" />
+        </div>
+        <Faq />
       </main>
       <footer className="border-t border-[var(--line)] bg-white px-5 pb-[calc(15rem+env(safe-area-inset-bottom))] pt-9 text-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}

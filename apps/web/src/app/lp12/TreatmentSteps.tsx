@@ -46,12 +46,12 @@ const STEPS = [
   },
 ];
 
-export default function TreatmentSteps() {
+export default function TreatmentSteps({ startEvent = "treatment:open" }: { startEvent?: string }) {
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
   const reduceMotion = useReducedMotion();
 
   const openTreatmentModal = () => {
-    window.dispatchEvent(new CustomEvent("treatment:open"));
+    window.dispatchEvent(new CustomEvent(startEvent));
   };
 
   const list: Variants = {

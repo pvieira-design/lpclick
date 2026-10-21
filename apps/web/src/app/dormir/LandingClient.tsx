@@ -311,14 +311,15 @@ export default function LandingClient() {
 
             <motion.h1
               variants={heroItem}
-              className="font-display text-[25px] font-medium leading-[1.3] min-[375px]:text-[27px] sm:text-[34px]"
-              style={{ color: "var(--ink)" }}
+              className="text-[1.75rem] leading-tight tracking-tight text-gray-900 sm:text-4xl"
+              style={{ fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}
             >
-              Um cuidado a mais
-              <span className="block" style={{ color: "var(--green-700)" }}>com o seu sono</span>
+              <span className="font-light">Comece seu tratamento com</span>{" "}
+              <span className="font-semibold" style={{ color: "var(--green-700)" }}>orientação médica</span>
             </motion.h1>
-            <motion.p variants={heroItem} className="mt-2 text-sm leading-relaxed sm:mt-3 sm:text-base" style={{ color: "var(--muted)" }}>
-              Consulta médica online por <strong className="font-semibold whitespace-nowrap">R$50</strong>.
+            <motion.p variants={heroItem} className="mt-3 text-sm text-gray-500 sm:text-base">
+              Consulta online por <span className="whitespace-nowrap">R$50</span>. Escolha o que mais te incomoda
+              <span className="block">para iniciar o seu atendimento.</span>
             </motion.p>
           </header>
 
@@ -366,27 +367,27 @@ export default function LandingClient() {
                           role="radio"
                           aria-checked={isSelected}
                           onClick={() => chooseGoal(g)}
-                          className="group flex min-h-[70px] w-full cursor-pointer items-center gap-2.5 rounded-2xl border px-3 py-3 text-left shadow-[0_2px_10px_rgba(28,68,35,0.035)] select-none transition-[border-color,background-color,box-shadow] duration-150 hover:bg-[var(--green-50)] hover:shadow-[0_4px_16px_rgba(28,68,35,0.07)] sm:gap-3 sm:px-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a7a4f] focus-visible:ring-offset-2"
+                          className="group flex min-h-16 w-full cursor-pointer items-center gap-2.5 rounded-[var(--radius-card)] border-2 px-3 py-2.5 sm:gap-3.5 sm:px-4 sm:py-3 text-left select-none transition-[border-color,background-color,box-shadow] duration-150 hover:bg-[var(--green-50)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a7a4f] focus-visible:ring-offset-2"
                           style={{
                             borderColor: isSelected ? "var(--green-500)" : "var(--line)",
                             backgroundColor: isSelected ? "var(--green-50)" : "white",
                           }}
                         >
                           <span
-                            className="flex size-8 shrink-0 items-center min-[375px]:size-9 sm:size-10 justify-center rounded-xl transition-colors duration-150 group-hover:bg-[var(--green-100)]"
+                            className="flex size-8 shrink-0 items-center sm:size-11 justify-center rounded-full transition-colors duration-150 group-hover:bg-[var(--green-100)]"
                             style={{ backgroundColor: isSelected ? "var(--green-100)" : "var(--green-50)", color: "var(--green-700)" }}
                           >
                             {g.icon}
                           </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block text-[14px] font-semibold leading-5 min-[375px]:text-[15px] sm:text-base" style={{ color: "var(--ink)" }}>
+                          <span className="min-w-0 flex-1 font-sans">
+                            <span className="block text-[14px] font-semibold leading-tight text-[#263d2d]">
                               {g.label}
                             </span>
-                            <span className="mt-0.5 block text-xs leading-[18px] sm:text-[13px]" style={{ color: "var(--muted)" }}>
+                            <span className="mt-1 block text-[11px] leading-tight text-[#69766d]">
                               {g.hint}
                             </span>
                           </span>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="hidden size-6 shrink-0 rounded-full min-[375px]:block bg-[var(--green-50)] p-1 text-[var(--green-700)] transition-transform duration-150 group-hover:translate-x-0.5 sm:size-7">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="hidden shrink-0 text-[#9CA89F] transition-transform duration-150 group-hover:translate-x-0.5 min-[375px]:block">
                             <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </motion.button>
@@ -512,48 +513,29 @@ export default function LandingClient() {
           </motion.div>
 
           {step === 1 && (
-            <>
-              {/* Micro-garantias sob o formulário (SVG, sem emoji) */}
-              <motion.ul variants={heroItem} className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs font-medium sm:mt-5 sm:gap-x-5 sm:text-[13px]" style={{ color: "var(--muted)" }}>
-                {[
-                  "100% online",
-                  "1º retorno grátis",
-                  "Atendimento 24h",
-                ].map((t) => (
-                  <li key={t} className="flex items-center gap-1.5">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0" style={{ color: "var(--green-500)" }}>
-                      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.75" />
-                      <path d="M8.5 12l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    {t}
-                  </li>
-                ))}
-              </motion.ul>
-
-              <motion.div
-                variants={heroItem}
-                role="group"
-                aria-label="Selos de reputação da Click"
-                className="mt-5 flex items-center justify-center gap-4 sm:mt-6 sm:gap-6"
-              >
-                {[
-                  { src: "/2.webp", alt: "Certificado RA1000 - Reclame Aqui" },
-                  { src: "/3.webp", alt: "Avaliação 4,9 no Google" },
-                ].map((badge) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={badge.src}
-                    src={badge.src}
-                    alt={badge.alt}
-                    width={120}
-                    height={59}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-12 w-auto object-contain mix-blend-multiply"
-                  />
-                ))}
-              </motion.div>
-            </>
+            <motion.div
+              variants={heroItem}
+              role="group"
+              aria-label="Selos de reputação da Click"
+              className="mt-10 flex items-center justify-center gap-4 sm:mt-12 sm:gap-6"
+            >
+              {[
+                { src: "/2.webp", alt: "Certificado RA1000 - Reclame Aqui" },
+                { src: "/3.webp", alt: "Avaliação 4,9 no Google" },
+              ].map((badge) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={badge.src}
+                  src={badge.src}
+                  alt={badge.alt}
+                  width={120}
+                  height={59}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-12 w-auto object-contain mix-blend-multiply"
+                />
+              ))}
+            </motion.div>
           )}
         </div>
       </motion.section>

@@ -31,24 +31,16 @@ export default function TestimonialsWall({ compact = false }: { compact?: boolea
         {REVIEWS.map((review) => (
           <article
             key={review.sourceReviewId}
-            className="flex w-[calc(100%-1.5rem)] max-w-[340px] shrink-0 snap-start flex-col rounded-2xl border border-[var(--line)] bg-white p-5 shadow-[var(--shadow-card)] sm:w-[340px]"
+            className="flex min-h-[320px] w-[calc(100%-1.5rem)] max-w-[320px] shrink-0 snap-start flex-col rounded-2xl border border-[#e3ece5] bg-[#f8fbf8] p-5 sm:w-[320px]"
           >
-            <div className="flex items-center gap-3">
-              {review.photo ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={review.photo} alt="" width={36} height={36} loading="lazy" decoding="async" referrerPolicy="no-referrer" className="size-9 shrink-0 rounded-full bg-[var(--green-50)] object-cover" />
-              ) : (
-                <span aria-hidden="true" className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--green-50)] text-xs font-semibold text-[var(--green-700)]">
-                  {review.name.split(/\s+/).map((part) => part[0]).slice(0, 2).join("")}
-                </span>
-              )}
+            <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-sm font-medium text-[var(--ink)]">{review.name}</p>
-                <span role="img" aria-label="5 estrelas" className="text-sm tracking-wider text-[#e9a126]">★★★★★</span>
+                <p className="text-sm font-semibold text-[#253b2b]">{review.name}</p>
+                <span role="img" aria-label="5 estrelas" className="mt-1 block text-sm tracking-wider text-[#f5a623]">★★★★★</span>
               </div>
+              <p className="max-w-[48%] shrink-0 pt-0.5 text-right text-xs leading-snug text-[#748278]">{displayDate(review)}</p>
             </div>
-            <p className="mt-1 pl-12 text-[11px] leading-snug text-[var(--muted)]">{displayDate(review)}</p>
-            <p className="mt-4 text-sm leading-6 text-[#46544b]">“{review.text}”</p>
+            <p className="mt-3 text-[15px] leading-relaxed text-[#334439]">“{review.text}”</p>
           </article>
         ))}
       </CardCarousel>
