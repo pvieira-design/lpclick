@@ -3,12 +3,14 @@
 import { APPROVED_TESTIMONIALS, type ApprovedTestimonial } from "@/lib/approvedTestimonials";
 import CardCarousel from "./CardCarousel";
 
-const SLEEP_REVIEW_IDS = new Set([1, 3, 9, 12, 18, 34, 46, 72, 140, 146, 148, 165]);
+const SLEEP_REVIEW_IDS = new Set([
+  1, 3, 9, 12, 13, 18, 24, 25, 34, 39, 41, 46, 48, 49, 53, 71,
+  72, 77, 81, 82, 90, 97, 104, 105, 106, 108, 109, 117, 140, 146, 148, 165,
+]);
 const REVIEWS = APPROVED_TESTIMONIALS.filter((review) => SLEEP_REVIEW_IDS.has(review.sourceReviewId));
 
-function displayDate(review: ApprovedTestimonial & { approximateDate?: { displayLabel: string } }) {
-  if (review.approximateDate) return review.approximateDate.displayLabel;
-  if (!review.publishedAt) return "";
+function displayDate(review: ApprovedTestimonial) {
+  if (review.approximateDate || !review.publishedAt) return null;
   const [year, month, day] = review.publishedAt.split("-");
   return `${day}/${month}/${year}`;
 }
@@ -38,7 +40,7 @@ export default function TestimonialsWall({ compact = false }: { compact?: boolea
                 <p className="text-sm font-semibold text-[#253b2b]">{review.name}</p>
                 <span role="img" aria-label="5 estrelas" className="mt-1 block text-sm tracking-wider text-[#f5a623]">★★★★★</span>
               </div>
-              <p className="max-w-[48%] shrink-0 pt-0.5 text-right text-xs leading-snug text-[#748278]">{displayDate(review)}</p>
+              {displayDate(review) && <p className="max-w-[48%] shrink-0 pt-0.5 text-right text-xs leading-snug text-[#748278]">{displayDate(review)}</p>}
             </div>
             <p className="mt-3 text-[15px] leading-relaxed text-[#334439]">“{review.text}”</p>
           </article>
