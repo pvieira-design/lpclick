@@ -3,7 +3,6 @@ import { Lexend } from "next/font/google";
 import LandingClient from "./LandingClient";
 import Footer from "./Footer";
 import StickyContactCTA from "./StickyContactCTA";
-import TestimonialsWall from "./TestimonialsWall";
 import SleepScience from "./SleepScience";
 
 // Réplica de /primeiro-passo com foco em dormir melhor.
@@ -88,7 +87,6 @@ export default function LandingPage() {
 
       <main className="flex min-h-svh flex-col bg-white">
         <LandingClient />
-        <TestimonialsWall />
         <SleepScience />
       </main>
       <Footer />

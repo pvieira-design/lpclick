@@ -30,7 +30,7 @@ const TAG_STYLES: Record<string, string> = {
 };
 const tagStyle = (t: string) => TAG_STYLES[t] ?? "bg-gray-100 text-gray-600";
 
-export default function TestimonialsWall() {
+export default function TestimonialsWall({ compact = false }: { compact?: boolean }) {
   const reduceMotion = useReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
   const [doubled, setDoubled] = useState(false);
@@ -49,12 +49,12 @@ export default function TestimonialsWall() {
   // Duplica os itens só depois do primeiro paint pra não inflar o DOM medido
   // pelo Lighthouse no LCP.
   useEffect(() => {
-    setDoubled(true);
-  }, []);
+    if (!compact) setDoubled(true);
+  }, [compact]);
 
   // Loop de auto-scroll + render do offset (compartilhado com drag)
   useEffect(() => {
-    if (!doubled) return;
+    if (compact || !doubled) return;
     const SPEED_PX_PER_S = reduceMotion ? 0 : 32;
     let raf = 0;
     let lastTs = 0;
@@ -87,7 +87,7 @@ export default function TestimonialsWall() {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", measure);
     };
-  }, [doubled, reduceMotion]);
+  }, [compact, doubled, reduceMotion]);
 
   const wrapOffset = (off: number) => {
     const half = halfWidthRef.current;
@@ -131,6 +131,26 @@ export default function TestimonialsWall() {
   };
 
   const loop = doubled ? [...items, ...items] : items;
+
+  if (compact) {
+    return (
+      <section
+        id="primeiro-passo-sono-testimonials-wall"
+        aria-labelledby="primeiro-passo-sono-testimonials-title"
+        className="mx-auto w-full max-w-lg px-4 pb-6 sm:px-5 sm:pb-12"
+      >
+        <h2 id="primeiro-passo-sono-testimonials-title" className="mb-4 text-lg font-semibold" style={{ color: "var(--ink)" }}>
+          Depoimentos
+        </h2>
+        <div className="flex items-stretch gap-3 overflow-x-auto pb-3" tabIndex={0} role="group" aria-label="Relatos de quem buscou cuidar do sono">
+          {items.map((review) => <ReviewCard key={review.sourceReviewId} review={review} />)}
+        </div>
+        <p className="mt-1 text-xs" style={{ color: "var(--muted)" }}>
+          Relatos pessoais. Resultados variam de pessoa para pessoa.
+        </p>
+      </section>
+    );
+  }
 
   return (
     <section

@@ -10,6 +10,7 @@ import {
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
 import AnimatedLogo from "./AnimatedLogo";
+import TestimonialsWall from "./TestimonialsWall";
 
 // As queixas de sono mantêm a classificação "Insônia" reconhecida pelo CRM.
 type Goal = {
@@ -279,6 +280,7 @@ export default function LandingClient() {
   };
 
   return (
+    <>
     <motion.section
       ref={sectionRef}
       id="primeiro-passo-sono-treatment-form"
@@ -509,47 +511,53 @@ export default function LandingClient() {
           </div>
         </motion.div>
 
-        {/* Micro-garantias sob o formulário (SVG, sem emoji) */}
-        <motion.ul variants={heroItem} className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs font-medium sm:mt-5 sm:gap-x-5 sm:text-[13px]" style={{ color: "var(--muted)" }}>
-          {[
-            "100% online",
-            "1º retorno grátis",
-            "Atendimento 24h",
-          ].map((t) => (
-            <li key={t} className="flex items-center gap-1.5">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0" style={{ color: "var(--green-500)" }}>
-                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.75" />
-                <path d="M8.5 12l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              {t}
-            </li>
-          ))}
-        </motion.ul>
+        {step === 1 && (
+          <>
+            {/* Micro-garantias sob o formulário (SVG, sem emoji) */}
+            <motion.ul variants={heroItem} className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs font-medium sm:mt-5 sm:gap-x-5 sm:text-[13px]" style={{ color: "var(--muted)" }}>
+              {[
+                "100% online",
+                "1º retorno grátis",
+                "Atendimento 24h",
+              ].map((t) => (
+                <li key={t} className="flex items-center gap-1.5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0" style={{ color: "var(--green-500)" }}>
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.75" />
+                    <path d="M8.5 12l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  {t}
+                </li>
+              ))}
+            </motion.ul>
 
-        <motion.div
-          variants={heroItem}
-          role="group"
-          aria-label="Selos de reputação da Click"
-          className="mt-5 flex items-center justify-center gap-4 sm:mt-6 sm:gap-6"
-        >
-          {[
-            { src: "/2.webp", alt: "Certificado RA1000 - Reclame Aqui" },
-            { src: "/3.webp", alt: "Avaliação 4,9 no Google" },
-          ].map((badge) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={badge.src}
-              src={badge.src}
-              alt={badge.alt}
-              width={120}
-              height={59}
-              loading="lazy"
-              decoding="async"
-              className="h-12 w-auto object-contain mix-blend-multiply"
-            />
-          ))}
-        </motion.div>
+            <motion.div
+              variants={heroItem}
+              role="group"
+              aria-label="Selos de reputação da Click"
+              className="mt-5 flex items-center justify-center gap-4 sm:mt-6 sm:gap-6"
+            >
+              {[
+                { src: "/2.webp", alt: "Certificado RA1000 - Reclame Aqui" },
+                { src: "/3.webp", alt: "Avaliação 4,9 no Google" },
+              ].map((badge) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={badge.src}
+                  src={badge.src}
+                  alt={badge.alt}
+                  width={120}
+                  height={59}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-12 w-auto object-contain mix-blend-multiply"
+                />
+              ))}
+            </motion.div>
+          </>
+        )}
       </div>
     </motion.section>
+    <TestimonialsWall compact={step === 2} />
+    </>
   );
 }
