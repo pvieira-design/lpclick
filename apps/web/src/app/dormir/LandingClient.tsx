@@ -16,6 +16,7 @@ type Goal = {
   id: string;
   label: string;
   hint: string;
+  whatsAppConcern: string | null;
   patologia: string;
   icon: React.ReactNode;
 };
@@ -27,6 +28,7 @@ const GOALS: Goal[] = [
     id: "pegar-no-sono",
     label: "Demoro a pegar no sono",
     hint: "Deito, mas o sono não vem",
+    whatsAppConcern: "demoro a pegar no sono",
     patologia: "Insônia",
     icon: <svg {...ICON} aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>,
   },
@@ -34,6 +36,7 @@ const GOALS: Goal[] = [
     id: "despertares",
     label: "Acordo de madrugada",
     hint: "Desperto várias vezes à noite",
+    whatsAppConcern: "acordo durante a madrugada",
     patologia: "Insônia",
     icon: <svg {...ICON} aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>,
   },
@@ -41,6 +44,7 @@ const GOALS: Goal[] = [
     id: "mente-acelerada",
     label: "Minha mente não desliga",
     hint: "Penso demais ao deitar",
+    whatsAppConcern: "tenho dificuldade de desligar a mente",
     patologia: "Insônia",
     icon: <svg {...ICON} aria-hidden="true"><path d="M9 18v3h6v-3M9 18a7 7 0 1 1 6 0" /><path d="M9 10h6M10 13h4" /></svg>,
   },
@@ -48,6 +52,7 @@ const GOALS: Goal[] = [
     id: "acordar-descansado",
     label: "Acordo cansado",
     hint: "Durmo, mas não descanso",
+    whatsAppConcern: "durmo, mas acordo cansado",
     patologia: "Insônia",
     icon: <svg {...ICON} aria-hidden="true"><path d="M3 17h18M6 14a6 6 0 0 1 12 0M12 2v2M4.9 6.9l1.4 1.4M17.7 8.3l1.4-1.4M2 12h2M20 12h2M6 21h12" /></svg>,
   },
@@ -55,6 +60,7 @@ const GOALS: Goal[] = [
     id: "qualidade-do-sono",
     label: "Quero dormir melhor",
     hint: "Orientação para dormir melhor",
+    whatsAppConcern: null,
     patologia: "Insônia",
     icon: <svg {...ICON} aria-hidden="true"><path d="M3 18V7M21 18v-7H3M7 11V7h10v4M3 15h18" /></svg>,
   },
@@ -153,8 +159,11 @@ function sendLeadToApi(payload: LeadPayload): void {
   }).catch(() => {});
 }
 
-function buildWhatsAppUrl(name: string, selectedOption: string) {
-  const text = `Olá, me chamo ${name}.\n\nO que mais me incomoda é: ${selectedOption}.`;
+function buildWhatsAppUrl(name: string, goal: Goal) {
+  const intro = `Olá, me chamo ${name}. Quero melhorar a qualidade do meu sono.`;
+  const text = goal.whatsAppConcern
+    ? `${intro}\n\nAtualmente, o que mais me incomoda é que ${goal.whatsAppConcern}.`
+    : intro;
   return `https://api.whatsapp.com/send/?phone=${PHONE}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
 }
 
@@ -249,7 +258,7 @@ export default function LandingClient() {
       leadData,
     });
 
-    const url = buildWhatsAppUrl(trimmed, goal.label);
+    const url = buildWhatsAppUrl(trimmed, goal);
     // Guarda a URL pra oferecer um link de fallback caso o popup seja bloqueado.
     setWaUrl(url);
     window.open(url, "_blank", "noopener,noreferrer");
