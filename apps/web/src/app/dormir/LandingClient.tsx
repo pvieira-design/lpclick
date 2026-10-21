@@ -153,9 +153,8 @@ function sendLeadToApi(payload: LeadPayload): void {
   }).catch(() => {});
 }
 
-function buildWhatsAppUrl(name: string, patologias: string[]) {
-  const list = patologias.map((p, i) => `${i + 1}. ${p}`).join("\n");
-  const text = `Olá, me chamo ${name}.\n\nPatologias selecionadas:\n${list}`;
+function buildWhatsAppUrl(name: string, selectedOption: string) {
+  const text = `Olá, me chamo ${name}.\n\nO que mais me incomoda é: ${selectedOption}.`;
   return `https://api.whatsapp.com/send/?phone=${PHONE}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
 }
 
@@ -250,7 +249,7 @@ export default function LandingClient() {
       leadData,
     });
 
-    const url = buildWhatsAppUrl(trimmed, patologias);
+    const url = buildWhatsAppUrl(trimmed, goal.label);
     // Guarda a URL pra oferecer um link de fallback caso o popup seja bloqueado.
     setWaUrl(url);
     window.open(url, "_blank", "noopener,noreferrer");
