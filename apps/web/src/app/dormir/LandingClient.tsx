@@ -318,7 +318,8 @@ export default function LandingClient() {
               <span className="font-semibold" style={{ color: "var(--green-700)" }}>orientação médica</span>
             </motion.h1>
             <motion.p variants={heroItem} className="mt-3 text-sm text-gray-500 sm:text-base">
-              Consulta online por <span className="whitespace-nowrap">R$50</span>. Escolha o que mais te incomoda
+              Consulta online por <span className="whitespace-nowrap">R$50</span>.{" "}
+              <span className="block sm:inline">Escolha o que mais te incomoda</span>
               <span className="block">para iniciar o seu atendimento.</span>
             </motion.p>
           </header>
