@@ -319,7 +319,7 @@ export default function LandingClient() {
             </motion.h1>
             <motion.p variants={heroItem} className="mt-3 text-balance text-[13px] leading-5 text-gray-500 min-[375px]:text-sm sm:text-base sm:leading-6">
               Consulta online por <span className="whitespace-nowrap">R$50</span>.{" "}
-              Escolha o que mais te incomoda para continuar.
+              Selecione uma das opções para continuar.
             </motion.p>
           </header>
 
