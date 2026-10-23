@@ -68,6 +68,23 @@ const GOALS: Goal[] = [
 
 const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
+function StepDots({ step }: { step: 1 | 2 }) {
+  return (
+    <div className="ml-3 flex shrink-0 items-center gap-1.5" aria-label={`Etapa ${step} de 2`}>
+      {[1, 2].map((n) => (
+        <span
+          key={n}
+          className="h-1.5 rounded-full transition-all duration-300"
+          style={{
+            width: n === step ? 20 : 8,
+            backgroundColor: n <= step ? "var(--green-500)" : "#d9e3dc",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function LandingClient({ onGoalChange, goalReviews }: {
   onGoalChange: (goal: GoalId | null) => void;
   goalReviews: ApprovedTestimonial[];
@@ -89,14 +106,20 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
     });
   }, [reduceMotion]);
 
-  // Etapa 1 → 2: clicar no objetivo já define a patologia e troca o painel
-  // pelo campo de nome (crossfade no mesmo container, sem modal e sem lista
-  // duplicada).
+  // Etapa 2 abre em tela cheia e entra no histórico: o "voltar" do celular
+  // fecha a tela e devolve pra escolha, em vez de sair da LP.
+  const openStep2 = useCallback(() => {
+    setStep(2);
+    window.history.pushState({ onlineStep: 2 }, "");
+  }, []);
+
+  // Etapa 1 → 2: clicar no objetivo já define a patologia e abre a tela do
+  // nome com os depoimentos daquele objetivo.
   const chooseGoal = useCallback((g: Goal) => {
     setGoal(g);
     onGoalChange(g.id);
     setShowError(false);
-    setStep(2);
+    openStep2();
     setTimeout(() => {
       sendGTMEvent({
         event: "buttonClick",
@@ -106,13 +129,31 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
         value: g.patologia,
       });
     }, 0);
-  }, [onGoalChange]);
+  }, [onGoalChange, openStep2]);
 
-  const backToGoals = useCallback(() => {
-    setStep(1);
-    setShowError(false);
-    onGoalChange(null);
-  }, [onGoalChange]);
+  // Os botões de voltar passam pelo histórico; o popstate é quem fecha.
+  const backToGoals = useCallback(() => window.history.back(), []);
+
+  useEffect(() => {
+    if (step !== 2) return;
+    const close = () => {
+      setStep(1);
+      setShowError(false);
+      onGoalChange(null);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") window.history.back();
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("popstate", close);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("popstate", close);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [step, onGoalChange]);
 
   // Foco no input quando a etapa 2 monta (após a animação de entrada).
   useEffect(() => {
@@ -126,8 +167,8 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
     const handler = () => {
       scrollToHero();
       if (goal) {
-        setStep(2);
         onGoalChange(goal.id);
+        openStep2();
       }
       setTimeout(() => {
         sendGTMEvent({
@@ -141,7 +182,7 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
     };
     window.addEventListener("treatment:open", handler);
     return () => window.removeEventListener("treatment:open", handler);
-  }, [goal, scrollToHero, onGoalChange]);
+  }, [goal, scrollToHero, onGoalChange, openStep2]);
 
   const handleSubmit = useCallback(() => {
     if (!goal) return;
@@ -189,11 +230,6 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
     hidden: { opacity: 0, y: reduceMotion ? 0 : 14 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } },
   };
-  const panel: Variants = {
-    enter: { opacity: 0, x: reduceMotion ? 0 : 24 },
-    center: { opacity: 1, x: 0, transition: { duration: 0.3, ease: EASE } },
-    exit: { opacity: 0, x: reduceMotion ? 0 : -24, transition: { duration: 0.2, ease: EASE } },
-  };
 
   return (
     <motion.section
@@ -226,214 +262,56 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
 
         </header>
 
-        {/* Card do fluxo em 2 etapas */}
-        <motion.div
-          variants={heroItem}
-          className="rounded-[var(--radius-panel)] border bg-white p-4 sm:p-7"
-          style={{ borderColor: "var(--line)", boxShadow: "var(--shadow-card)" }}
-        >
-          {/* Indicador de etapa */}
+        {/* Etapa 1: escolha do objetivo */}
+        <motion.div variants={heroItem}>
           <div className="mb-4 flex items-center justify-between">
             <p className="font-display text-[1.15rem] font-semibold leading-snug sm:text-xl" style={{ color: "var(--ink)" }}>
-              {step === 1 ? "O que você está buscando?" : "Como você se chama?"}
+              O que você está buscando?
             </p>
-            <div className="ml-3 flex shrink-0 items-center gap-1.5" aria-label={`Etapa ${step} de 2`}>
-              {[1, 2].map((n) => (
-                <span
-                  key={n}
-                  className="h-1.5 rounded-full transition-all duration-300"
-                  style={{
-                    width: n === step ? 20 : 8,
-                    backgroundColor: n <= step ? "var(--green-500)" : "#d9e3dc",
-                  }}
-                />
-              ))}
-            </div>
+            <StepDots step={1} />
           </div>
 
-          <div className="relative overflow-hidden">
-            <AnimatePresence mode="wait" initial={false}>
-              {step === 1 ? (
-                <motion.div
-                  key="step-goals"
-                  variants={panel}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  role="radiogroup"
-                  aria-label="Objetivo principal"
-                  className="flex flex-col gap-2.5"
+          <div role="radiogroup" aria-label="Objetivo principal" className="flex flex-col gap-2.5">
+            {GOALS.map((g) => {
+              const isSelected = goal?.id === g.id;
+              return (
+                <motion.button
+                  key={g.id}
+                  whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                  type="button"
+                  role="radio"
+                  aria-checked={isSelected}
+                  onClick={() => chooseGoal(g)}
+                  className="group flex min-h-[64px] w-full cursor-pointer items-center gap-2 rounded-[var(--radius-card)] border-2 px-2 py-3 sm:gap-3.5 sm:px-4 text-left select-none transition-[border-color,background-color,box-shadow] duration-150 hover:bg-[var(--green-50)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a7a4f] focus-visible:ring-offset-2"
+                  style={{
+                    borderColor: isSelected ? "var(--green-500)" : "var(--line)",
+                    backgroundColor: isSelected ? "var(--green-50)" : "white",
+                  }}
                 >
-                  {GOALS.map((g) => {
-                    const isSelected = goal?.id === g.id;
-                    return (
-                      <motion.button
-                        key={g.id}
-                        whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-                        type="button"
-                        role="radio"
-                        aria-checked={isSelected}
-                        onClick={() => chooseGoal(g)}
-                        className="group flex min-h-[64px] w-full cursor-pointer items-center gap-2 rounded-[var(--radius-card)] border-2 px-2 py-3 sm:gap-3.5 sm:px-4 text-left select-none transition-[border-color,background-color,box-shadow] duration-150 hover:bg-[var(--green-50)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a7a4f] focus-visible:ring-offset-2"
-                        style={{
-                          borderColor: isSelected ? "var(--green-500)" : "var(--line)",
-                          backgroundColor: isSelected ? "var(--green-50)" : "white",
-                        }}
-                      >
-                        <span
-                          className="flex size-8 shrink-0 items-center sm:size-11 justify-center rounded-full transition-colors duration-150 group-hover:bg-[var(--green-100)]"
-                          style={{ backgroundColor: isSelected ? "var(--green-100)" : "var(--green-50)", color: "var(--green-700)" }}
-                        >
-                          {g.icon}
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="block whitespace-nowrap text-[13px] font-semibold leading-tight min-[375px]:text-[14px] sm:text-base" style={{ color: "var(--ink)" }}>
-                            {g.label}
-                          </span>
-                          <span className="mt-0.5 block text-[12.5px] leading-tight sm:text-[13px]" style={{ color: "var(--muted)" }}>
-                            {g.hint}
-                          </span>
-                        </span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="hidden shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 min-[375px]:block" style={{ color: "#9CA89F" }}>
-                          <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </motion.button>
-                    );
-                  })}
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="step-name"
-                  variants={panel}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                >
-                  {/* Resumo do objetivo escolhido, com troca rápida */}
-                  {goal && (
-                    <button
-                      type="button"
-                      onClick={backToGoals}
-                      className="flex w-full cursor-pointer items-center gap-3 rounded-[var(--radius-card)] border px-3.5 py-2.5 text-left transition-colors hover:bg-[var(--green-50)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a7a4f]"
-                      style={{ borderColor: "var(--line)" }}
-                    >
-                      <span className="flex size-9 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: "var(--green-100)", color: "var(--green-700)" }}>
-                        {goal.icon}
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-[11px] font-medium uppercase tracking-[0.06em]" style={{ color: "var(--muted)" }}>
-                          Você busca
-                        </span>
-                        <span className="block truncate text-[15px] font-semibold" style={{ color: "var(--ink)" }}>
-                          {goal.label}
-                        </span>
-                      </span>
-                      <span className="shrink-0 text-[13px] font-semibold underline-offset-2 hover:underline" style={{ color: "var(--green-700)" }}>
-                        Trocar
-                      </span>
-                    </button>
-                  )}
-
-                  <label htmlFor="primeiro-passo-name" className="mt-5 block text-[15px]" style={{ color: "var(--ink)" }}>
-                    Nome <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="primeiro-passo-name"
-                    ref={inputRef}
-                    type="text"
-                    autoComplete="given-name"
-                    enterKeyHint="send"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      if (showError && e.target.value.trim()) setShowError(false);
-                    }}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Seu primeiro nome"
-                    aria-invalid={showError}
-                    aria-describedby={showError ? "primeiro-passo-name-error" : undefined}
-                    className="mt-2 h-12 w-full rounded-lg border bg-white px-4 text-base outline-none transition-colors duration-150 placeholder:text-gray-400 focus:border-[#3a7a4f]"
-                    style={{ fontSize: "16px", borderColor: showError ? "#ef4444" : "#d1d5db", color: "var(--ink)" }}
-                  />
-                  <AnimatePresence>
-                    {showError && (
-                      <motion.p
-                        id="primeiro-passo-name-error"
-                        role="alert"
-                        initial={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2, ease: EASE }}
-                        className="mt-2 text-sm font-medium text-red-500"
-                      >
-                        Escreva o seu nome para continuar
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
-
-                  <motion.button
-                    whileHover={reduceMotion ? undefined : { y: -2, scale: 1.01 }}
-                    whileTap={reduceMotion ? undefined : { scale: 0.97 }}
-                    type="button"
-                    onClick={handleSubmit}
-                    className="cta-pulse mt-4 flex h-14 w-full cursor-pointer items-center justify-center gap-2.5 rounded-full text-base font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a7a4f] focus-visible:ring-offset-2 sm:text-lg"
-                    style={{ backgroundColor: "var(--green-500)", boxShadow: "var(--shadow-float)" }}
+                  <span
+                    className="flex size-8 shrink-0 items-center sm:size-11 justify-center rounded-full transition-colors duration-150 group-hover:bg-[var(--green-100)]"
+                    style={{ backgroundColor: isSelected ? "var(--green-100)" : "var(--green-50)", color: "var(--green-700)" }}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3.9 2.6 1.1 2.8.1.2 1.9 2.9 4.6 4 1.7.7 2.3.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z" />
-                    </svg>
-                    Falar com um especialista
-                  </motion.button>
-
-                  <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[12.5px]" style={{ color: "var(--muted)" }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ color: "var(--green-500)" }}>
-                      <path d="M12 2l7 3v6c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V5l7-3z" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" />
-                      <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    Sem compromisso. Você conversa primeiro e decide depois.
-                  </p>
-
-                  {/* Fallback se o navegador bloquear o popup do WhatsApp */}
-                  <AnimatePresence>
-                    {waUrl && (
-                      <motion.div
-                        initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.25, ease: EASE }}
-                        role="status"
-                        aria-live="polite"
-                        className="mt-4 rounded-[var(--radius-card)] px-4 py-3 text-center text-sm"
-                        style={{ backgroundColor: "var(--green-50)", color: "var(--green-900)" }}
-                      >
-                        Abrindo o WhatsApp...{" "}
-                        <a href={waUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline underline-offset-2" style={{ color: "var(--green-700)" }}>
-                          Não abriu? Toque aqui
-                        </a>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                    {g.icon}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block whitespace-nowrap text-[13px] font-semibold leading-tight min-[375px]:text-[14px] sm:text-base" style={{ color: "var(--ink)" }}>
+                      {g.label}
+                    </span>
+                    <span className="mt-0.5 block text-[12.5px] leading-tight sm:text-[13px]" style={{ color: "var(--muted)" }}>
+                      {g.hint}
+                    </span>
+                  </span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="hidden shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 min-[375px]:block" style={{ color: "#9CA89F" }}>
+                    <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </motion.button>
+              );
+            })}
           </div>
         </motion.div>
 
-        {step === 2 && goal && (
-          <section aria-label={`Depoimentos: ${goal.label}`} className="min-w-0">
-            <h2 className="font-display text-lg font-semibold" style={{ color: "var(--ink)" }}>
-              Depoimentos
-            </h2>
-            <div tabIndex={0} aria-label="Depoimentos relacionados; deslize para ver mais" className="mt-4 flex gap-3 overflow-x-auto pb-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3a7a4f]">
-              {goalReviews.slice(0, 3).map((review) => <ReviewCard key={review.sourceReviewId} review={review} />)}
-            </div>
-            <p className="mt-1 text-xs" style={{ color: "var(--muted)" }}>
-              Relatos pessoais. Resultados variam de pessoa para pessoa.
-            </p>
-          </section>
-        )}
-
-        {/* Micro-garantias sob o card (SVG, sem emoji) */}
+        {/* Micro-garantias sob as opções (SVG, sem emoji) */}
         <motion.ul variants={heroItem} className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12.5px] font-medium sm:text-[13px]" style={{ color: "var(--muted)" }}>
           {[
             "100% online",
@@ -450,6 +328,159 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
           ))}
         </motion.ul>
       </div>
+
+      {/* Etapa 2: tela cheia por cima da LP, como uma página à parte — só nome
+          + depoimentos do objetivo escolhido. */}
+      <AnimatePresence>
+        {step === 2 && goal && (
+          <motion.div
+            key="step-name"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Falar com um especialista"
+            initial={{ opacity: 0, y: reduceMotion ? 0 : 24 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE } }}
+            exit={{ opacity: 0, y: reduceMotion ? 0 : 24, transition: { duration: 0.2, ease: EASE } }}
+            className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-white"
+          >
+            <div className="mx-auto flex w-full max-w-xl flex-col gap-6 px-5 py-6 sm:px-8 sm:py-10">
+              <div>
+                <button
+                  type="button"
+                  onClick={backToGoals}
+                  className="mb-5 inline-flex cursor-pointer items-center gap-1.5 text-[14px] font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a7a4f]"
+                  style={{ color: "var(--green-700)" }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M15 6l-6 6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  Voltar
+                </button>
+                <div className="mb-4 flex items-center justify-between">
+                  <p className="font-display text-[1.15rem] font-semibold leading-snug sm:text-xl" style={{ color: "var(--ink)" }}>
+                    Como você se chama?
+                  </p>
+                  <StepDots step={2} />
+                </div>
+                {/* Resumo do objetivo escolhido, com troca rápida */}
+                <button
+                  type="button"
+                  onClick={backToGoals}
+                  className="flex w-full cursor-pointer items-center gap-3 rounded-[var(--radius-card)] border px-3.5 py-2.5 text-left transition-colors hover:bg-[var(--green-50)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a7a4f]"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: "var(--green-100)", color: "var(--green-700)" }}>
+                    {goal.icon}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[11px] font-medium uppercase tracking-[0.06em]" style={{ color: "var(--muted)" }}>
+                      Você busca
+                    </span>
+                    <span className="block truncate text-[15px] font-semibold" style={{ color: "var(--ink)" }}>
+                      {goal.label}
+                    </span>
+                  </span>
+                  <span className="shrink-0 text-[13px] font-semibold underline-offset-2 hover:underline" style={{ color: "var(--green-700)" }}>
+                    Trocar
+                  </span>
+                </button>
+
+                <label htmlFor="primeiro-passo-name" className="mt-5 block text-[15px]" style={{ color: "var(--ink)" }}>
+                  Nome <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="primeiro-passo-name"
+                  ref={inputRef}
+                  type="text"
+                  autoComplete="given-name"
+                  enterKeyHint="send"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (showError && e.target.value.trim()) setShowError(false);
+                  }}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Seu primeiro nome"
+                  aria-invalid={showError}
+                  aria-describedby={showError ? "primeiro-passo-name-error" : undefined}
+                  className="mt-2 h-12 w-full rounded-lg border bg-white px-4 text-base outline-none transition-colors duration-150 placeholder:text-gray-400 focus:border-[#3a7a4f]"
+                  style={{ fontSize: "16px", borderColor: showError ? "#ef4444" : "#d1d5db", color: "var(--ink)" }}
+                />
+                <AnimatePresence>
+                  {showError && (
+                    <motion.p
+                      id="primeiro-passo-name-error"
+                      role="alert"
+                      initial={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2, ease: EASE }}
+                      className="mt-2 text-sm font-medium text-red-500"
+                    >
+                      Escreva o seu nome para continuar
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+
+                <motion.button
+                  whileHover={reduceMotion ? undefined : { y: -2, scale: 1.01 }}
+                  whileTap={reduceMotion ? undefined : { scale: 0.97 }}
+                  type="button"
+                  onClick={handleSubmit}
+                  className="cta-pulse mt-4 flex h-14 w-full cursor-pointer items-center justify-center gap-2.5 rounded-full text-base font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a7a4f] focus-visible:ring-offset-2 sm:text-lg"
+                  style={{ backgroundColor: "var(--green-500)", boxShadow: "var(--shadow-float)" }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3.9 2.6 1.1 2.8.1.2 1.9 2.9 4.6 4 1.7.7 2.3.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z" />
+                  </svg>
+                  Falar com um especialista
+                </motion.button>
+
+                <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[12.5px]" style={{ color: "var(--muted)" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ color: "var(--green-500)" }}>
+                    <path d="M12 2l7 3v6c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V5l7-3z" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" />
+                    <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  Sem compromisso. Você conversa primeiro e decide depois.
+                </p>
+
+                {/* Fallback se o navegador bloquear o popup do WhatsApp */}
+                <AnimatePresence>
+                  {waUrl && (
+                    <motion.div
+                      initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25, ease: EASE }}
+                      role="status"
+                      aria-live="polite"
+                      className="mt-4 rounded-[var(--radius-card)] px-4 py-3 text-center text-sm"
+                      style={{ backgroundColor: "var(--green-50)", color: "var(--green-900)" }}
+                    >
+                      Abrindo o WhatsApp...{" "}
+                      <a href={waUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline underline-offset-2" style={{ color: "var(--green-700)" }}>
+                        Não abriu? Toque aqui
+                      </a>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <section aria-label={`Depoimentos: ${goal.label}`} className="min-w-0">
+                <h2 className="font-display text-lg font-semibold" style={{ color: "var(--ink)" }}>
+                  Depoimentos
+                </h2>
+                <div tabIndex={0} aria-label="Depoimentos relacionados; deslize para ver mais" className="mt-4 flex gap-3 overflow-x-auto pb-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3a7a4f]">
+                  {goalReviews.slice(0, 3).map((review) => <ReviewCard key={review.sourceReviewId} review={review} />)}
+                </div>
+                <p className="mt-1 text-xs" style={{ color: "var(--muted)" }}>
+                  Relatos pessoais. Resultados variam de pessoa para pessoa.
+                </p>
+              </section>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.section>
   );
 }
