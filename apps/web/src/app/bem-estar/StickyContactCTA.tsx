@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from "framer-motion";
 
 export default function StickyContactCTA() {
   const [visible, setVisible] = useState(false);
-  const [pulsing, setPulsing] = useState(false);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -18,27 +17,6 @@ export default function StickyContactCTA() {
       { threshold: 0 },
     );
     observer.observe(anchor);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const ids = ["bem-estar-testimonials-wall"];
-    const targets = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
-    if (targets.length === 0) return;
-    const intersecting = new Set<Element>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) intersecting.add(entry.target);
-          else intersecting.delete(entry.target);
-        }
-        setPulsing(intersecting.size > 0);
-      },
-      { threshold: 0 },
-    );
-    targets.forEach((t) => observer.observe(t));
     return () => observer.disconnect();
   }, []);
 
@@ -66,12 +44,12 @@ export default function StickyContactCTA() {
       >
         <div className="mx-auto w-full max-w-xl">
           <div
-            aria-hidden={!(pulsing && visible)}
+            aria-hidden={!visible}
             className="overflow-hidden text-left transition-all duration-300 ease-out"
             style={{
-              maxHeight: pulsing && visible ? "120px" : "0px",
-              opacity: pulsing && visible ? 1 : 0,
-              marginBottom: pulsing && visible ? "0.625rem" : "0",
+              maxHeight: visible ? "120px" : "0px",
+              opacity: visible ? 1 : 0,
+              marginBottom: visible ? "0.625rem" : "0",
             }}
           >
             <p className="text-left text-[1.25rem] leading-snug text-gray-800">
