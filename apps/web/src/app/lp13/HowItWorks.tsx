@@ -1,14 +1,14 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { ATENDIMENTO, openSchedule } from "./config";
+import { openSchedule } from "./config";
 
 const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 const PASSOS = [
   {
     titulo: "Você marca em 1 minuto",
-    texto: `Diz o que quer tratar e o nosso time agenda o melhor horário para você, das ${ATENDIMENTO.rotuloInicio} às ${ATENDIMENTO.rotuloFim}.`,
+    texto: "Diz o que você busca e escolhe o melhor horário. Atendimento online 24 horas.",
   },
   {
     titulo: "Consulta online com médico especialista",

@@ -60,7 +60,7 @@ export default function Image() {
 
         {/* Prova social */}
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          {["4,9 no Google", "+50 mil pacientes", "100% online"].map((t) => (
+          {["4,9 no Google", "+150 mil pacientes", "100% online"].map((t) => (
             <div
               key={t}
               style={{

@@ -30,6 +30,8 @@ const reviews = APPROVED_TESTIMONIALS.slice(0, 10);
 
 Esta regra vale para as próximas páginas. Não migra automaticamente páginas existentes nem muda as seleções já publicadas da bio/LP13. A base bruta histórica continua separada para referência.
 
+A `/lp13` foi migrada a pedido do usuário em 23/10/2026: usa a mesma seleção da `/primeiro-passo` (`APPROVED_TESTIMONIALS.slice(0, 16)`), sem tags e sem foto de perfil nos cards.
+
 A `/inicio` foi ligada explicitamente a esta base em 24/09/2026. Sua seleção foi ampliada para 32 relatos na página: oito sobre sono e seis para cada um dos outros quatro objetivos. O pop-up mostra até quatro relatos do objetivo escolhido. Os cards da página e do pop-up leem os mesmos textos congelados daqui. Didi da Silva e Suze Costa seguem fora da seleção da `/inicio`, conforme decisão anterior do usuário.
 
 Os vídeos ainda não têm transcrição localizada. Não criar citações a partir de resumos ou metadados; seguir o plano de transcrição e revisão antes de aprovar conteúdo derivado de vídeo. Não atribuir a esses futuros trechos origem Google ou estrelas inventadas.
