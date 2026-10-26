@@ -75,8 +75,9 @@ export default function StickyContactCTA() {
             }}
           >
             <p className="text-left text-[1.25rem] leading-snug text-gray-800">
-              Atendimento com especialista por apenas{" "}
-              <span className="whitespace-nowrap font-bold text-[#285E31]">R$50</span>
+              Atendimento com especialista de{" "}
+              <span className="text-[#9ba39e] line-through">R$120,00</span>{" "}
+              por apenas <span className="whitespace-nowrap font-bold text-[#285E31]">R$50,00</span>
             </p>
             <div className="mt-2.5 flex items-center justify-start gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#cfe3d3] bg-gradient-to-b from-white to-[#f5faf6] px-3 py-1.5 text-[11px] font-semibold tracking-[0.01em] text-[#1f4f2a] shadow-[0_1px_2px_rgba(40,94,49,0.06)] sm:text-xs">
