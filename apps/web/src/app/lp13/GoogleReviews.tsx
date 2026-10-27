@@ -1,23 +1,10 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import type { TextTestimonial } from "../lp5/textTestimonials";
-import { SELECTED_TESTIMONIALS } from "../bio/selectedTestimonials";
+import { APPROVED_TESTIMONIALS, type ApprovedTestimonial } from "@/lib/approvedTestimonials";
 import { LINKS } from "./config";
 
 const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
-
-const TAG_STYLES: Record<string, string> = {
-  Insônia: "bg-[#e6f2e9] text-[#2d6e3f]",
-  Ansiedade: "bg-[#eef2ff] text-[#4f46e5]",
-  Dor: "bg-[#fee7e6] text-[#b1382e]",
-  Pânico: "bg-[#f3e8ff] text-[#7c3aed]",
-  Depressão: "bg-[#e0e7ef] text-[#475569]",
-  Foco: "bg-[#fef3c7] text-[#92400e]",
-  Estresse: "bg-[#ffedd5] text-[#9a3412]",
-  Artrite: "bg-[#fce7f3] text-[#9d174d]",
-};
-const tagStyle = (t: string) => TAG_STYLES[t] ?? "bg-gray-100 text-gray-600";
 
 function relativeDate(iso: string): string {
   const then = new Date(iso).getTime();
@@ -62,7 +49,8 @@ export default function GoogleReviews() {
 
   // Scroll nativo horizontal, o mesmo padrão dos depoimentos em vídeo:
   // toque com snap, sem arraste manual ou movimento automático.
-  const items = SELECTED_TESTIMONIALS;
+  // Mesma seleção da /primeiro-passo: base aprovada (docs/depoimentos-aprovados.md).
+  const items = APPROVED_TESTIMONIALS.slice(0, 16);
 
   return (
     <motion.section
@@ -133,7 +121,7 @@ export default function GoogleReviews() {
   );
 }
 
-function ReviewCard({ review }: { review: TextTestimonial }) {
+function ReviewCard({ review }: { review: ApprovedTestimonial }) {
   return (
     <article
       className="flex shrink-0 snap-start flex-col rounded-[var(--radius-card)] border bg-white p-4"
@@ -144,18 +132,6 @@ function ReviewCard({ review }: { review: TextTestimonial }) {
       }}
     >
       <div className="flex items-center gap-2.5">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={review.photo}
-          alt=""
-          width={36}
-          height={36}
-          loading="lazy"
-          decoding="async"
-          draggable={false}
-          referrerPolicy="no-referrer"
-          className="size-9 shrink-0 rounded-full bg-gray-100 object-cover"
-        />
         <div className="flex min-w-0 flex-1 flex-col">
           <span className="truncate text-[13.5px] font-medium text-[color:var(--ink)]">
             {review.name}
@@ -164,26 +140,15 @@ function ReviewCard({ review }: { review: TextTestimonial }) {
             <Stars size={11} />
           </span>
         </div>
-        <span className="shrink-0 text-[11px] text-gray-400">{relativeDate(review.publishedAt)}</span>
+        <span className="shrink-0 text-[11px] text-gray-400">
+          {review.approximateDate?.displayLabel ?? (review.publishedAt ? relativeDate(review.publishedAt) : "")}
+        </span>
         <GoogleG size={14} />
       </div>
 
       <p className="mt-2.5 flex-1 text-[13.5px] leading-relaxed text-[color:var(--muted)]">
         “{review.text}”
       </p>
-
-      {review.tags.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {review.tags.map((t) => (
-            <span
-              key={t}
-              className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${tagStyle(t)}`}
-            >
-              {t}
-            </span>
-          ))}
-        </div>
-      )}
     </article>
   );
 }

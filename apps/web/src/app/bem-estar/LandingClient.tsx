@@ -323,12 +323,8 @@ export default function LandingClient() {
           </motion.p>
         </header>
 
-        {/* Card do fluxo em 2 etapas */}
-        <motion.div
-          variants={heroItem}
-          className="rounded-[var(--radius-panel)] border bg-white p-4 sm:p-6"
-          style={{ borderColor: "var(--line)", boxShadow: "var(--shadow-card)" }}
-        >
+        {/* Fluxo em 2 etapas */}
+        <motion.div variants={heroItem}>
           {/* Indicador de etapa */}
           <div className="mb-4 flex items-center justify-between">
             <p className="font-display text-[1.15rem] font-semibold leading-snug sm:text-xl" style={{ color: "var(--ink)" }}>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { ATENDIMENTO, PATOLOGIAS, isAtendimentoAberto, openSchedule } from "./config";
+import { OBJETIVOS, openSchedule } from "./config";
 import ScheduleDialog from "./ScheduleDialog";
 import StickyCta from "./StickyCta";
 
@@ -10,23 +10,26 @@ const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 const STATS = [
   { valor: "4,9", rotulo: "nota no Google", estrela: true },
-  { valor: "+50 mil", rotulo: "pacientes atendidos", estrela: false },
+  { valor: "+150 mil", rotulo: "pacientes atendidos", estrela: false },
 ];
 
 // Etapas do tratamento — a Click acompanha todas, mas não executa todas.
 const ETAPAS = ["Consulta", "Receita", "ANVISA", "Entrega", "Retorno"];
 
-export default function LandingClient() {
-  const [aberto, setAberto] = useState<boolean | null>(null);
-  const reduceMotion = useReducedMotion();
+// Atalhos da primeira dobra, em 2 colunas na ordem pedida; "Outros" fica sozinho
+// na última linha. O popup mostra a lista completa de OBJETIVOS.
+const ATALHOS: (typeof OBJETIVOS)[number]["label"][] = [
+  "Dormir melhor",
+  "Reduzir o estresse",
+  "Aliviar dores",
+  "Mais disposição",
+  "Melhorar o foco",
+  "Ajuda na recuperação",
+  "Outros",
+];
 
-  // Estado do atendimento só no cliente — evita mismatch de hidratação.
-  useEffect(() => {
-    const update = () => setAberto(isAtendimentoAberto());
-    update();
-    const id = setInterval(update, 60_000);
-    return () => clearInterval(id);
-  }, []);
+export default function LandingClient() {
+  const reduceMotion = useReducedMotion();
 
   // Deep link: /lp13#agendar abre o popup direto (usado em stories e anúncios).
   useEffect(() => {
@@ -81,8 +84,8 @@ export default function LandingClient() {
           {/* Cada frase em sua própria linha; a 14px a primeira cabe sem quebrar
               até ~360px de largura. Sem text-balance, que forçava duas linhas. */}
           <span className="block">
-            Consulta online com médico especialista por{" "}
-            <strong className="font-semibold text-[color:var(--ink)]">R$50</strong>.
+            Consulta online com especialista por{" "}
+            <strong className="font-semibold text-[color:var(--ink)]">3x de R$17</strong>.
           </span>
           <span className="mt-1 block">A Click está com você em cada etapa:</span>
         </motion.p>
@@ -163,25 +166,19 @@ export default function LandingClient() {
           ))}
         </motion.div>
 
-        {/* Status do atendimento — muda ao vivo conforme o horário de Brasília */}
+        {/* Status do atendimento — online 24 horas */}
         <motion.div
           variants={item}
           className="mt-4 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5"
-          style={{
-            borderColor: aberto === false ? "#e7e2d6" : "#cfe3d3",
-            backgroundColor: aberto === false ? "#FCF9F0" : "#fff",
-          }}
-          aria-live="polite"
+          style={{ borderColor: "#cfe3d3", backgroundColor: "#fff" }}
         >
           <span
-            className={`relative size-2 rounded-full ${aberto === false ? "" : "live-dot"}`}
-            style={{ backgroundColor: aberto === false ? "#C99A2E" : "var(--green-500)" }}
+            className="live-dot relative size-2 rounded-full"
+            style={{ backgroundColor: "var(--green-500)" }}
             aria-hidden="true"
           />
           <span className="text-[12.5px] font-medium text-[color:var(--ink)]">
-            {aberto === false
-              ? `Fora do horário · atendemos das ${ATENDIMENTO.rotuloInicio} às ${ATENDIMENTO.rotuloFim}`
-              : `Médicos atendendo agora · até ${ATENDIMENTO.rotuloFim}`}
+            Atendimento online · 24 horas
           </span>
         </motion.div>
 
@@ -208,7 +205,7 @@ export default function LandingClient() {
         </motion.p>
       </motion.header>
 
-      {/* Atalho por sintoma — cada chip abre o popup já com a marcação feita */}
+      {/* Atalho por objetivo — cada chip abre o popup já com a marcação feita */}
       <motion.section
         className="mt-9"
         initial={{ opacity: 0, y: reduceMotion ? 0 : 18 }}
@@ -217,17 +214,17 @@ export default function LandingClient() {
         transition={{ duration: 0.55, ease: EASE }}
       >
         <h2 className="text-center text-[12px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-          O que você quer tratar?
+          O que você busca?
         </h2>
-        <div className="mt-3.5 flex flex-wrap justify-center gap-2">
-          {PATOLOGIAS.map((p) => (
+        <div className="mt-3.5 grid grid-cols-2 gap-2">
+          {ATALHOS.map((p) => (
             <motion.button
               key={p}
               type="button"
-              onClick={() => openSchedule({ patologia: p, origem: `chip:${p}` })}
+              onClick={() => openSchedule({ objetivo: p, origem: `chip:${p}` })}
               whileHover={reduceMotion ? undefined : { y: -2 }}
               whileTap={reduceMotion ? undefined : { scale: 0.96 }}
-              className="rounded-full border bg-white px-4 py-2.5 text-[13.5px] font-medium text-[color:var(--ink)] transition-colors hover:border-[color:var(--green-500)] hover:text-[color:var(--green-700)]"
+              className="rounded-full border bg-white px-2 py-2.5 text-[clamp(12px,3.4vw,13.5px)] font-medium text-[color:var(--ink)] transition-colors last:odd:col-span-2 last:odd:mx-auto last:odd:w-[calc(50%-0.25rem)] hover:border-[color:var(--green-500)] hover:text-[color:var(--green-700)]"
               style={{ borderColor: "var(--line)", boxShadow: "0 1px 2px rgba(23,27,24,.04)" }}
             >
               {p}
