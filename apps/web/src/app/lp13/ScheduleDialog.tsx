@@ -4,6 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
+import {
+  captureLeadObservation,
+  sendCorrelatedLeadEvent,
+  withLeadObservation,
+} from "@/lib/lead-observation";
 import { OBJETIVOS, OPEN_EVENT, patologiasDe, type OpenDetail } from "./config";
 import { buildPatientUrl, buildWhatsAppUrl, collectLeadData, sendLeadToApi } from "./lead";
 
@@ -133,18 +138,23 @@ export default function ScheduleDialog() {
     const patologias = patologiasDe(selected);
     const leadData = collectLeadData(trimmed, patologias);
 
-    sendLeadToApi(leadData);
+    const leadObservationId = captureLeadObservation();
+
+    sendLeadToApi(withLeadObservation(leadData, leadObservationId));
     sendLeadToCrm(trimmed, patologias);
 
-    sendGTMEvent({
-      event: "buttonWhatsappClicked",
-      category: "Lead",
-      action: "Click",
-      label: `Agendar consulta (${originRef.current}) - LP13`,
-      value: patologias.join(", "),
-      outroTexto: selected.has("Outros") ? outroTexto.trim() : "",
-      leadData,
-    });
+    sendCorrelatedLeadEvent(
+      {
+        event: "buttonWhatsappClicked",
+        category: "Lead",
+        action: "Click",
+        label: `Agendar consulta (${originRef.current}) - LP13`,
+        value: patologias.join(", "),
+        outroTexto: selected.has("Outros") ? outroTexto.trim() : "",
+        leadData,
+      },
+      leadObservationId,
+    );
 
     // Só manda o texto de "Outros" se a opção continuar marcada no envio.
     const outro = selected.has("Outros") ? outroTexto.trim() : "";

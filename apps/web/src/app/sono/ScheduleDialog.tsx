@@ -4,6 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
+import {
+  captureLeadObservation,
+  sendCorrelatedLeadEvent,
+  withLeadObservation,
+} from "@/lib/lead-observation";
 import { ATENDIMENTO, OPEN_EVENT, PATOLOGIAS, isAtendimentoAberto, type OpenDetail } from "./config";
 import { buildWhatsAppUrl, collectLeadData, sendLeadToApi } from "./lead";
 
@@ -282,17 +287,22 @@ export default function ScheduleDialog() {
     const patologias = Array.from(selected);
     const leadData = collectLeadData(trimmed, patologias);
 
-    sendLeadToApi(leadData);
+    const leadObservationId = captureLeadObservation();
+
+    sendLeadToApi(withLeadObservation(leadData, leadObservationId));
     sendLeadToCrm(trimmed, patologias);
 
-    sendGTMEvent({
-      event: "buttonWhatsappClicked",
-      category: "Lead",
-      action: "Click",
-      label: `Agendar consulta (${originRef.current}) - LP16`,
-      value: patologias.join(", "),
-      leadData,
-    });
+    sendCorrelatedLeadEvent(
+      {
+        event: "buttonWhatsappClicked",
+        category: "Lead",
+        action: "Click",
+        label: `Agendar consulta (${originRef.current}) - LP16`,
+        value: patologias.join(", "),
+        leadData,
+      },
+      leadObservationId,
+    );
 
     const url = buildWhatsAppUrl(trimmed, patologias);
     setFallbackUrl(url);

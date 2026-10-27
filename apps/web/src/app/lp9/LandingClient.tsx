@@ -9,6 +9,10 @@ import {
 } from "framer-motion";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
+import {
+  captureLeadObservation,
+  sendCorrelatedLeadEvent,
+} from "@/lib/lead-observation";
 import TestimonialsSlider, { type VideoTestimonial } from "./TestimonialsSlider";
 
 const PATOLOGIAS = [
@@ -441,28 +445,33 @@ export default function LandingClient({
     const params = new URLSearchParams(window.location.search);
     const fbclid = document.cookie.match(/(?:^|;\s*)fbclid=([^;]*)/)?.[1] || "";
 
-    sendGTMEvent({
-      event: "buttonWhatsappClicked",
-      category: "Lead",
-      action: "Click",
-      label: "Iniciar tratamento - LP9",
-      value: patologias.join(", "),
-      leadData: {
-        name: trimmed,
-        patologies: patologias,
-        referrer: document.referrer,
-        userAgent: navigator.userAgent,
-        language: navigator.language,
-        platform: navigator.platform,
-        src: params.get("src") || "",
-        utm_source: params.get("utm_source") || "",
-        utm_medium: params.get("utm_medium") || "",
-        utm_content: params.get("utm_content") || "",
-        utm_campaign: params.get("utm_campaign") || "",
-        utm_term: params.get("utm_term") || "",
-        fbclid,
+    const leadObservationId = captureLeadObservation();
+
+    sendCorrelatedLeadEvent(
+      {
+        event: "buttonWhatsappClicked",
+        category: "Lead",
+        action: "Click",
+        label: "Iniciar tratamento - LP9",
+        value: patologias.join(", "),
+        leadData: {
+          name: trimmed,
+          patologies: patologias,
+          referrer: document.referrer,
+          userAgent: navigator.userAgent,
+          language: navigator.language,
+          platform: navigator.platform,
+          src: params.get("src") || "",
+          utm_source: params.get("utm_source") || "",
+          utm_medium: params.get("utm_medium") || "",
+          utm_content: params.get("utm_content") || "",
+          utm_campaign: params.get("utm_campaign") || "",
+          utm_term: params.get("utm_term") || "",
+          fbclid,
+        },
       },
-    });
+      leadObservationId,
+    );
 
     sendLeadToCrm(trimmed, patologias);
 
