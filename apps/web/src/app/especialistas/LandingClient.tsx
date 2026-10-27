@@ -9,6 +9,11 @@ import {
 } from "framer-motion";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
+import {
+  captureLeadObservation,
+  sendCorrelatedLeadEvent,
+  withLeadObservation,
+} from "@/lib/lead-observation";
 import { collectLeadData, sendLeadToApi, buildWhatsAppUrl } from "./lead";
 import AnimatedLogo from "./AnimatedLogo";
 import { ReviewCard } from "./TestimonialsWall";
@@ -134,17 +139,22 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
 
     const leadData = collectLeadData(trimmed, patologias);
 
-    sendLeadToApi(leadData);
+    const leadObservationId = captureLeadObservation();
+
+    sendLeadToApi(withLeadObservation(leadData, leadObservationId));
     sendLeadToCrm(trimmed, patologias);
 
-    sendGTMEvent({
-      event: "buttonWhatsappClicked",
-      category: "Lead",
-      action: "Click",
-      label: "Falar com especialista - Especialistas",
-      value: patologias.join(", "),
-      leadData,
-    });
+    sendCorrelatedLeadEvent(
+      {
+        event: "buttonWhatsappClicked",
+        category: "Lead",
+        action: "Click",
+        label: "Falar com especialista - Especialistas",
+        value: patologias.join(", "),
+        leadData,
+      },
+      leadObservationId,
+    );
 
     const url = buildWhatsAppUrl(trimmed, chosen.map((g) => g.label));
     // Guarda a URL pra oferecer um link de fallback caso o popup seja bloqueado.

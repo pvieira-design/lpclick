@@ -34,6 +34,10 @@ const forms = [
   "lp12/LandingClient.tsx",
   "bio/ScheduleDialog.tsx",
   "online/LandingClient.tsx",
+  "ajuda/LandingClient.tsx",
+  "dormir/LandingClient.tsx",
+  "especialistas/LandingClient.tsx",
+  "primeiro-passo-sono/LandingClient.tsx",
 ];
 const withoutLegacy = new Set([
   "lp2/page.tsx",
