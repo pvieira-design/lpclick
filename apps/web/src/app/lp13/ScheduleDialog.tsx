@@ -9,28 +9,26 @@ import {
   sendCorrelatedLeadEvent,
   withLeadObservation,
 } from "@/lib/lead-observation";
-import { ATENDIMENTO, OPEN_EVENT, PATOLOGIAS, isAtendimentoAberto, type OpenDetail } from "./config";
-import { buildWhatsAppUrl, collectLeadData, sendLeadToApi } from "./lead";
+import { OBJETIVOS, OPEN_EVENT, patologiasDe, type OpenDetail } from "./config";
+import { buildPatientUrl, buildWhatsAppUrl, collectLeadData, sendLeadToApi } from "./lead";
 
 const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 export default function ScheduleDialog() {
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
   const [name, setName] = useState("");
+  const [outroTexto, setOutroTexto] = useState("");
   const [showError, setShowError] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
-  const [aberto, setAberto] = useState(true);
+  // Toda abertura começa pela pergunta; só quem marca "primeira consulta" vê o formulário.
+  const [etapa, setEtapa] = useState<"pergunta" | "form">("pergunta");
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const originRef = useRef("desconhecida");
 
   const reduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    setAberto(isAtendimentoAberto());
-  }, []);
 
   const lockScroll = useCallback((lock: boolean) => {
     document.body.style.overflow = lock ? "hidden" : "";
@@ -52,23 +50,19 @@ export default function ScheduleDialog() {
       const detail = (e as CustomEvent<OpenDetail>).detail ?? { origem: "desconhecida" };
       originRef.current = detail.origem;
 
-      if (detail.patologia) {
+      if (detail.objetivo) {
         setSelected((prev) => {
           const next = new Set(prev);
-          next.add(detail.patologia!);
+          next.add(detail.objetivo!);
           return next;
         });
       }
 
       const dialog = dialogRef.current;
       if (!dialog || dialog.open) return;
+      setEtapa("pergunta");
       dialog.showModal();
       lockScroll(true);
-
-      // Foco no nome só no desktop — no mobile o teclado subindo tapa o formulário.
-      if (window.matchMedia("(min-width: 640px)").matches) {
-        requestAnimationFrame(() => inputRef.current?.focus());
-      }
 
       setTimeout(() => {
         sendGTMEvent({
@@ -76,7 +70,7 @@ export default function ScheduleDialog() {
           category: "Lead",
           action: "Click",
           label: `Abrir agendamento (${detail.origem}) - LP13`,
-          value: detail.patologia ?? "",
+          value: detail.objetivo ?? "",
         });
       }, 0);
     };
@@ -87,14 +81,42 @@ export default function ScheduleDialog() {
 
   useEffect(() => () => lockScroll(false), [lockScroll]);
 
-  const toggle = useCallback((patologia: string) => {
+  const toggle = useCallback((objetivo: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(patologia)) next.delete(patologia);
-      else next.add(patologia);
+      if (next.has(objetivo)) next.delete(objetivo);
+      else next.add(objetivo);
       return next;
     });
   }, []);
+
+  const irParaForm = useCallback(() => {
+    setEtapa("form");
+    sendGTMEvent({
+      event: "buttonClick",
+      category: "Lead",
+      action: "Click",
+      label: `Primeira consulta (${originRef.current}) - LP13`,
+    });
+    // Foco no nome só no desktop — no mobile o teclado subindo tapa o formulário.
+    if (window.matchMedia("(min-width: 640px)").matches) {
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, []);
+
+  // Já é paciente: não vira lead, vai direto pro WhatsApp com a mensagem pronta.
+  const irParaWhatsPaciente = useCallback(() => {
+    sendGTMEvent({
+      event: "buttonClick",
+      category: "Paciente",
+      action: "Click",
+      label: `Já sou paciente (${originRef.current}) - LP13`,
+    });
+    const url = buildPatientUrl();
+    const aba = window.open(url, "_blank", "noopener,noreferrer");
+    if (!aba) window.location.href = url;
+    close();
+  }, [close]);
 
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent<HTMLDialogElement>) => {
@@ -113,7 +135,7 @@ export default function ScheduleDialog() {
 
     setSubmitted(true);
 
-    const patologias = Array.from(selected);
+    const patologias = patologiasDe(selected);
     const leadData = collectLeadData(trimmed, patologias);
 
     const leadObservationId = captureLeadObservation();
@@ -128,12 +150,15 @@ export default function ScheduleDialog() {
         action: "Click",
         label: `Agendar consulta (${originRef.current}) - LP13`,
         value: patologias.join(", "),
+        outroTexto: selected.has("Outros") ? outroTexto.trim() : "",
         leadData,
       },
       leadObservationId,
     );
 
-    const url = buildWhatsAppUrl(trimmed, patologias);
+    // Só manda o texto de "Outros" se a opção continuar marcada no envio.
+    const outro = selected.has("Outros") ? outroTexto.trim() : "";
+    const url = buildWhatsAppUrl(trimmed, patologias, outro);
     setFallbackUrl(url);
     const aba = window.open(url, "_blank", "noopener,noreferrer");
     // Popup bloqueado (comum em navegador in-app do Instagram): navega na própria aba.
@@ -141,7 +166,7 @@ export default function ScheduleDialog() {
     // Ao voltar da aba do WhatsApp o botão retém o foco e o navegador desenha
     // o anel; tiramos o foco para não deixar contorno residual.
     (document.activeElement as HTMLElement | null)?.blur();
-  }, [name, selected]);
+  }, [name, selected, outroTexto]);
 
   // O botão só esmaece sem nenhum sintoma marcado — o nome é cobrado na validação,
   // para não deixar cinza (e menos clicável) quem já chegou marcado pelo chip.
@@ -178,25 +203,52 @@ export default function ScheduleDialog() {
             </button>
 
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--green-600)]">
-              Passo único
+              {etapa === "pergunta" ? "Antes de começar" : "Primeira consulta"}
             </p>
             <h2
               id="lp13-sheet-title"
               className="font-display mt-1.5 text-[1.6rem] leading-[1.15] text-[color:var(--green-900)]"
             >
-              O que você quer tratar?
+              {etapa === "pergunta" ? "É sua primeira consulta com a Click?" : "O que você busca?"}
             </h2>
-            <p className="mt-1.5 text-[13.5px] leading-snug text-[color:var(--muted)]">
-              {aberto
-                ? "Marque seus sintomas, deixe seu nome e um médico te atende agora no WhatsApp."
-                : `Marque seus sintomas e deixe seu nome. Respondemos assim que o atendimento abrir, às ${ATENDIMENTO.rotuloInicio}.`}
-            </p>
+            {etapa === "form" && (
+              <p className="mt-1.5 text-[13.5px] leading-snug text-[color:var(--muted)]">
+                Selecione a opção que você busca e deixe seu nome para ser atendido.
+              </p>
+            )}
           </div>
+
+          {etapa === "pergunta" ? (
+            <div className="flex flex-col gap-2.5 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+              {[
+                { rotulo: "Minha primeira consulta", detalhe: "Quero agendar com um especialista", onClick: irParaForm },
+                { rotulo: "Já sou paciente Click", detalhe: "Falar com a equipe no WhatsApp", onClick: irParaWhatsPaciente },
+              ].map((op) => (
+                <motion.button
+                  key={op.rotulo}
+                  type="button"
+                  onClick={op.onClick}
+                  whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                  className="flex w-full items-center gap-3 rounded-2xl border bg-white px-4 py-4 text-left transition-colors hover:border-[color:var(--green-500)]"
+                  style={{ borderColor: "var(--line)", boxShadow: "0 1px 2px rgba(23,27,24,.04)" }}
+                >
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="text-[15.5px] font-semibold text-[color:var(--ink)]">{op.rotulo}</span>
+                    <span className="mt-0.5 text-[13px] text-[color:var(--muted)]">{op.detalhe}</span>
+                  </span>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0 text-[color:var(--green-600)]" aria-hidden="true">
+                    <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </motion.button>
+              ))}
+            </div>
+          ) : (
+          <>
 
           {/* Corpo rolável */}
           <div className="flex-1 overflow-y-auto overscroll-contain px-6 pb-5">
-            <div className="grid grid-cols-2 gap-2" role="group" aria-label="Sintomas">
-              {PATOLOGIAS.map((p) => {
+            <div className="-mx-1 grid grid-cols-2 gap-x-1.5 gap-y-2" role="group" aria-label="O que você busca">
+              {OBJETIVOS.map(({ label: p }) => {
                 const isSelected = selected.has(p);
                 return (
                   <motion.button
@@ -209,40 +261,18 @@ export default function ScheduleDialog() {
                       if (showError) setShowError(false);
                     }}
                     whileTap={reduceMotion ? undefined : { scale: 0.97 }}
-                    className="flex min-w-0 items-center gap-2.5 rounded-2xl border px-3.5 py-3 text-left text-[14px] font-medium select-none"
+                    // Mesmo formato de pílula dos atalhos da primeira dobra: uma linha por
+                    // opção; a marcação aparece só na cor da borda, do fundo e do texto.
+                    className="rounded-full border px-1.5 py-2.5 leading-tight text-center text-[clamp(11.5px,3.2vw,13.5px)] font-medium select-none"
                     style={{
                       borderColor: isSelected ? "var(--green-500)" : "var(--line)",
                       backgroundColor: isSelected ? "var(--green-50)" : "#fff",
-                      color: isSelected ? "var(--green-800)" : "#3f4a44",
-                      transition: "border-color .15s ease, background-color .15s ease, color .15s ease",
+                      color: isSelected ? "var(--green-800)" : "var(--ink)",
+                      boxShadow: isSelected ? "inset 0 0 0 1px var(--green-500)" : "0 1px 2px rgba(23,27,24,.04)",
+                      transition: "border-color .15s ease, background-color .15s ease, color .15s ease, box-shadow .15s ease",
                     }}
                   >
-                    <span
-                      className="flex size-[18px] shrink-0 items-center justify-center rounded-full border-2 transition-colors"
-                      style={{
-                        borderColor: isSelected ? "var(--green-500)" : "#d5dad7",
-                        backgroundColor: isSelected ? "var(--green-500)" : "transparent",
-                      }}
-                      aria-hidden="true"
-                    >
-                      <AnimatePresence>
-                        {isSelected && (
-                          <motion.svg
-                            width="11"
-                            height="11"
-                            viewBox="0 0 12 12"
-                            fill="none"
-                            initial={{ scale: reduceMotion ? 1 : 0.4, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: reduceMotion ? 1 : 0.4, opacity: 0 }}
-                            transition={{ type: "spring", stiffness: 420, damping: 26 }}
-                          >
-                            <path d="M3 6l2 2 4-4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                          </motion.svg>
-                        )}
-                      </AnimatePresence>
-                    </span>
-                    <span className="min-w-0 flex-1 truncate">{p}</span>
+                    {p}
                   </motion.button>
                 );
               })}
@@ -279,11 +309,30 @@ export default function ScheduleDialog() {
                   className="mt-2 text-[13px] font-medium text-red-500"
                 >
                   {selected.size === 0
-                    ? "Marque pelo menos um sintoma para continuar"
+                    ? "Marque pelo menos uma opção para continuar"
                     : "Escreva seu nome para continuar"}
                 </motion.p>
               )}
             </AnimatePresence>
+
+            {/* Só com "Outros" marcado: campo livre e opcional */}
+            {selected.has("Outros") && (
+              <>
+                <label htmlFor="lp13-outro" className="mt-4 block text-[13.5px] font-medium text-[color:var(--ink)]">
+                  Escreva o que você busca{" "}
+                  <span className="font-normal text-[color:var(--muted)]">(opcional)</span>
+                </label>
+                <input
+                  id="lp13-outro"
+                  type="text"
+                  value={outroTexto}
+                  onChange={(e) => setOutroTexto(e.target.value)}
+                  placeholder="Ex.: parar de fumar, perder peso…"
+                  className="mt-2 w-full rounded-2xl border bg-white px-4 py-3.5 text-[color:var(--ink)] outline-none transition-colors placeholder:text-gray-400 focus:border-[color:var(--green-500)]"
+                  style={{ borderColor: "var(--line)", fontSize: "16px" }}
+                />
+              </>
+            )}
           </div>
 
           {/* Ação fixa */}
@@ -325,6 +374,8 @@ export default function ScheduleDialog() {
               </p>
             )}
           </div>
+          </>
+          )}
         </div>
       </dialog>
 
