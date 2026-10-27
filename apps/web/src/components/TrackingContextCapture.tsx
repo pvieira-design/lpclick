@@ -20,7 +20,7 @@ export default function TrackingContextCapture({
     if (!enabled) return;
     try {
       tracker.current = startBrowserTracking({
-        endpoint: "/api/tracking/observations/",
+        endpoint: "/api/tracking/observations",
         contextCookie: COOKIE_CONTEXTO,
         cookieDomain,
         onDiagnostic: code => console.warn("[tracking-context]", code),
