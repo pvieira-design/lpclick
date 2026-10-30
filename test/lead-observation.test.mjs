@@ -38,6 +38,7 @@ const forms = [
   "dormir/LandingClient.tsx",
   "especialistas/LandingClient.tsx",
   "primeiro-passo-sono/LandingClient.tsx",
+  "avaliacao/AvaliacaoClient.tsx",
 ];
 const withoutLegacy = new Set([
   "lp2/page.tsx",
