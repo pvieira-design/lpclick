@@ -104,6 +104,8 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
 
   const girar = useCallback(() => {
     if (girando) return;
+    const salvo = premioSalvo();
+    if (salvo) return onResultado(salvo);
     setGirando(true);
     setStatus("Girando a roleta…");
     vibrate(20);
@@ -113,6 +115,12 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
     const i = opcoes[Math.floor(Math.random() * opcoes.length)];
     const centro = i * SEG + SEG / 2;
     const target = 360 * VOLTAS + ((360 - centro) % 360);
+    // Salva antes de animar: recarregar no meio do giro não libera outro sorteio.
+    try {
+      localStorage.setItem(STORAGE_KEY, premio);
+    } catch {
+      /* storage bloqueado não pode impedir o prêmio */
+    }
 
     sendGTMEvent({ event: "roletaGirou", category: "Roleta", action: "Spin", label: "Girar roleta - Avaliacao" });
 
@@ -140,11 +148,6 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
         if (wheelRef.current) wheelRef.current.style.transform = `rotate(${target}deg)`;
         setStatus("É seu!");
         vibrate([80, 50, 80, 50, 180]);
-        try {
-          localStorage.setItem(STORAGE_KEY, premio);
-        } catch {
-          /* storage bloqueado não pode impedir o prêmio */
-        }
         sendGTMEvent({ event: "roletaResultado", category: "Roleta", action: "Result", label: PREMIOS[premio].titulo });
         timeouts.current.push(setTimeout(() => onResultado(premio), 1100));
       },

@@ -99,6 +99,8 @@ export default function AvaliacaoClient() {
   }, [step]);
 
   const ir = useCallback((proximo: StepId) => setHistorico((h) => [...h, proximo]), []);
+  // Troca o passo atual em vez de empilhar: voltar do prêmio não reabre a roleta.
+  const trocarPor = useCallback((proximo: StepId) => setHistorico((h) => [...h.slice(0, -1), proximo]), []);
   const voltar = useCallback(() => setHistorico((h) => (h.length > 1 ? h.slice(0, -1) : h)), []);
   const responder = useCallback(
     (patch: Partial<Respostas>, proximo: StepId) => {
@@ -317,7 +319,7 @@ export default function AvaliacaoClient() {
                   "Consulta online com médico especialista, de segunda a domingo.",
                   "Se o médico indicar o tratamento, nossa equipe cuida da autorização e da documentação, sem custo adicional.",
                   "O medicamento é enviado direto para a sua casa, em qualquer lugar do Brasil.",
-                  "Acompanhamento do início ao fim, com consulta de retorno gratuita.",
+                  "Acompanhamento do início ao fim, com consulta de retorno.",
                 ].map((t) => (
                   <li key={t} className="flex gap-3 text-[15px] leading-snug" style={{ color: "var(--ink)" }}>
                     <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full" style={{ background: "var(--green-500)" }} aria-hidden="true">
@@ -368,7 +370,7 @@ export default function AvaliacaoClient() {
 
           {step === "roleta" && (
             <Tela titulo={<>Gire e <b>descubra seu benefício</b></>}>
-              <Roleta onResultado={(p) => { setR((prev) => ({ ...prev, premio: p })); ir("premio"); }} />
+              <Roleta onResultado={(p) => { setR((prev) => ({ ...prev, premio: p })); trocarPor("premio"); }} />
             </Tela>
           )}
 
