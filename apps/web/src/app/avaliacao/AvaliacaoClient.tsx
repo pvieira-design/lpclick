@@ -316,8 +316,8 @@ export default function AvaliacaoClient() {
                 {[
                   "Consulta online com médico especialista, de segunda a domingo.",
                   "Se o médico indicar o tratamento, nossa equipe cuida da autorização e da documentação, sem custo adicional.",
-                  "O medicamento é enviado direto para a sua casa.",
-                  "Acompanhamento do início ao fim, com consulta de retorno.",
+                  "O medicamento é enviado direto para a sua casa, em qualquer lugar do Brasil.",
+                  "Acompanhamento do início ao fim, com consulta de retorno gratuita.",
                 ].map((t) => (
                   <li key={t} className="flex gap-3 text-[15px] leading-snug" style={{ color: "var(--ink)" }}>
                     <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full" style={{ background: "var(--green-500)" }} aria-hidden="true">
