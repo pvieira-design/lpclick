@@ -425,7 +425,6 @@ export default function AvaliacaoClient() {
 
       <footer className="mt-8 text-center text-[11px] leading-relaxed" style={{ color: "var(--muted)" }}>
         Click Cannabis · A maior plataforma de telemedicina canábica do Brasil
-        <br />O uso de cannabis requer avaliação e prescrição médica.
       </footer>
     </div>
   );
