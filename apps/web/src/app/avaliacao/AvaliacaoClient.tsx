@@ -304,7 +304,13 @@ export default function AvaliacaoClient() {
 
           {step === "acolhimento" && (
             <Tela
-              titulo={<>Obrigado por compartilhar. <b>Você não está sozinho.</b></>}
+              titulo={
+                <span className="block whitespace-nowrap text-[clamp(1.125rem,5.6vw,1.5rem)]">
+                  Obrigado por compartilhar.
+                  <br />
+                  <b>Você não está sozinho.</b>
+                </span>
+              }
               sub="Muita gente chega até a gente depois de tentar resolver isso por conta própria. A Click já realizou mais de 150 mil consultas, e cada caso é avaliado com calma por um médico especialista."
               cena={["medita", "coracao"]}
             >
