@@ -322,6 +322,7 @@ export default function AvaliacaoClient() {
             <Tela titulo={<>Como funciona <b>na Click</b></>} cena={["medico", "calendario"]} compact>
               <ul className="flex flex-col gap-3">
                 {[
+                  "Você é direcionado para o WhatsApp para conversar com a equipe de atendimento da Click e marcar sua consulta.",
                   "Consulta online com médico especialista, de segunda a domingo.",
                   "Se o médico indicar o tratamento, nossa equipe cuida da autorização e da documentação, sem custo adicional.",
                   "O medicamento é enviado direto para a sua casa, em qualquer lugar do Brasil.",
