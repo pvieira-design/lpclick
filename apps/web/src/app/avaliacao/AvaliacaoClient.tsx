@@ -41,7 +41,6 @@ type StepId =
   | "tempo"
   | "acolhimento"
   | "como-funciona"
-  | "custo"
   | "duvida"
   | "condicao"
   | "roleta"
@@ -49,7 +48,7 @@ type StepId =
   | "nome";
 
 // Total aproximado de telas por ramo, só pra barra de progresso.
-const TOTAL_LEAD = 12;
+const TOTAL_LEAD = 11;
 const TOTAL_PACIENTE = 4;
 
 type Respostas = {
@@ -320,35 +319,22 @@ export default function AvaliacaoClient() {
 
           {step === "como-funciona" && (
             <Tela titulo={<>Como funciona <b>na Click</b></>} cena={["medico", "calendario"]} compact>
-              <ul className="flex flex-col gap-3">
+              <ol className="flex flex-col gap-2.5">
                 {[
-                  "Você é direcionado para o WhatsApp para conversar com a equipe de atendimento da Click e marcar sua consulta.",
-                  "Consulta online com médico especialista, de segunda a domingo.",
-                  "Se o médico indicar o tratamento, nossa equipe cuida da autorização e da documentação, sem custo adicional.",
-                  "O medicamento é enviado direto para a sua casa, em qualquer lugar do Brasil.",
-                  "Acompanhamento do início ao fim, com consulta de retorno.",
-                ].map((t) => (
-                  <li key={t} className="flex gap-3 text-[15px] leading-snug" style={{ color: "var(--ink)" }}>
-                    <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full" style={{ background: "var(--green-500)" }} aria-hidden="true">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5 9-10" /></svg>
+                  <>Você agenda sua consulta no WhatsApp com a equipe da Click.</>,
+                  <>Consulta online com médico especialista por <b style={{ color: "var(--green-700)" }}>apenas R$50.</b></>,
+                  <>A equipe te orienta na autorização e na documentação, sem custo adicional.</>,
+                  <>O medicamento chega na sua casa, em qualquer lugar do Brasil.</>,
+                  <>Acompanhamento do início ao fim, com consulta de retorno.</>,
+                ].map((t, i) => (
+                  <li key={i} className="flex items-center gap-3 rounded-2xl border bg-white px-4 py-3 text-[15px] leading-snug" style={{ borderColor: "var(--line)", color: "var(--ink)" }}>
+                    <span className="font-display flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white" style={{ background: "var(--green-500)" }} aria-hidden="true">
+                      {i + 1}
                     </span>
-                    {t}
+                    <span>{t}</span>
                   </li>
                 ))}
-              </ul>
-              <Cta onClick={() => ir("custo")}>Continuar</Cta>
-            </Tela>
-          )}
-
-          {step === "custo" && (
-            <Tela titulo={<>Quanto custa <b>a consulta?</b></>} cena={["acena", "celular"]} compact>
-              <div className="rounded-2xl border bg-white p-5" style={{ borderColor: "var(--line)" }}>
-                <p className="text-sm font-semibold uppercase tracking-wide" style={{ color: "var(--muted)" }}>Consulta online</p>
-                <p className="font-display mt-1 text-4xl font-bold" style={{ color: "var(--green-700)" }}>R$50</p>
-                <p className="mt-2 text-[15px] leading-snug" style={{ color: "var(--ink)" }}>
-                  Com médico especialista e receita inclusa, se o médico indicar o tratamento. Você escolhe o horário depois do pagamento.
-                </p>
-              </div>
+              </ol>
               <Cta onClick={() => ir("duvida")}>Continuar</Cta>
             </Tela>
           )}
