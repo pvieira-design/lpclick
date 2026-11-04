@@ -290,7 +290,7 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
         {status}
       </p>
       <button type="button" onClick={girar} disabled={girando} className="btn-cta mt-3 w-full max-w-xs disabled:opacity-70">
-        {girando ? "Roleta girando…" : "Girar a roleta"}
+        {vencedora !== null ? "Benefício garantido!" : girando ? "Roleta girando…" : "Girar a roleta"}
       </button>
     </div>
   );

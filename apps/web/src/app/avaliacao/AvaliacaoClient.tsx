@@ -334,7 +334,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
                 </div>
                 <span className="h-8 w-px" style={{ background: "var(--line)" }} aria-hidden="true" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/2.webp" alt="Certificado RA1000 do Reclame Aqui" width={96} height={47} loading="lazy" decoding="async" />
+                <img src="/2.webp" alt="Certificado RA1000 do Reclame Aqui" width={96} height={47} loading="lazy" decoding="async" style={{ mixBlendMode: "multiply" }} />
               </div>
             </Tela>
           )}
