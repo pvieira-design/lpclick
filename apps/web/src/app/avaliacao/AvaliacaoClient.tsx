@@ -206,7 +206,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
               <Opcoes
                 opcoes={[
                   { label: "Quero minha primeira consulta", onClick: () => responder({ paciente: false }, "para-quem") },
-                  { label: "Sim, já fiz uma consulta", onClick: () => responder({ paciente: true }, "tratamento") },
+                  { label: "Já fiz uma consulta", onClick: () => responder({ paciente: true }, "tratamento") },
                 ]}
               />
             </Tela>
