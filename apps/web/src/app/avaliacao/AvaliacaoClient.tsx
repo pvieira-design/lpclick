@@ -21,17 +21,14 @@ import type { Depoimento, GoalId } from "./testimonialSelection";
 
 // Objetivo, nunca doença, na tela; a patologia só existe no payload do CRM.
 const GOALS = [
-  { id: "sono", label: "Dormir melhor", patologia: "Insônia", tentou: "dormir melhor" },
-  { id: "relaxar", label: "Relaxar e ter menos ansiedade", patologia: "Ansiedade", tentou: "relaxar" },
-  { id: "dores", label: "Aliviar dores", patologia: "Dores", tentou: "aliviar as dores" },
-  { id: "humor", label: "Melhorar meu humor", patologia: "Depressão", tentou: "melhorar o humor" },
-  { id: "foco", label: "Ter mais foco", patologia: "TDAH", tentou: "ter mais foco" },
+  { id: "sono", label: "Dormir melhor", patologia: "Insônia" },
+  { id: "relaxar", label: "Relaxar e ter menos ansiedade", patologia: "Ansiedade" },
+  { id: "dores", label: "Aliviar dores", patologia: "Dores" },
+  { id: "humor", label: "Melhorar meu humor", patologia: "Depressão" },
+  { id: "foco", label: "Ter mais foco", patologia: "TDAH" },
 ] as const;
 
 const TEMPOS = ["Menos de 6 meses", "De 6 meses a 1 ano", "De 1 a 3 anos", "Mais de 3 anos"];
-
-const NADA = "Ainda não tentei nada";
-const TENTATIVAS = ["Remédios", "Chás e fitoterápicos", "Terapia ou psicólogo", "Exercícios ou meditação", NADA];
 
 type StepId =
   | "inicio"
@@ -44,7 +41,6 @@ type StepId =
   | "objetivo"
   | "prova"
   | "tempo"
-  | "tentou"
   | "acolhimento"
   | "como-funciona"
   | "duvida"
@@ -54,7 +50,7 @@ type StepId =
   | "nome";
 
 // Total aproximado de telas por ramo, só pra barra de progresso.
-const TOTAL_LEAD = 13;
+const TOTAL_LEAD = 12;
 const TOTAL_PACIENTE = 4;
 
 type Respostas = {
@@ -62,7 +58,6 @@ type Respostas = {
   paraQuem?: string;
   objetivos: string[];
   tempo?: string;
-  tentou: string[];
   querAgendar?: boolean;
   premio?: PremioId;
   // Fecho da mensagem dos ramos de paciente.
@@ -82,7 +77,6 @@ function montarMensagem(nome: string, r: Respostas): string {
     "",
     `Consulta para: ${r.paraQuem === "familiar" ? "Outra pessoa" : "Mim"}`,
     `Há quanto tempo: ${r.tempo?.toLowerCase()}`,
-    `Já tentou: ${r.tentou.includes(NADA) ? "nada ainda" : r.tentou.join(", ").toLowerCase()}`,
     "",
     r.querAgendar ? "Já entendi como funciona e quero agendar minha consulta." : "Tenho uma dúvida antes de agendar minha consulta.",
   ];
@@ -93,7 +87,7 @@ function montarMensagem(nome: string, r: Respostas): string {
 export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<GoalId, Depoimento[]> }) {
   const reduce = useReducedMotion();
   const [historico, setHistorico] = useState<StepId[]>(["inicio"]);
-  const [r, setR] = useState<Respostas>({ objetivos: [], tentou: [] });
+  const [r, setR] = useState<Respostas>({ objetivos: [] });
   const [nome, setNome] = useState("");
   const [erroNome, setErroNome] = useState(false);
   const [waUrl, setWaUrl] = useState<string | null>(null);
@@ -313,6 +307,18 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
                 <p className="font-display text-4xl font-bold" style={{ color: "var(--green-700)" }}>+150 mil</p>
                 <p className="mt-1 text-[15px]" style={{ color: "var(--ink)" }}>consultas realizadas pela Click</p>
               </div>
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="flex flex-col items-center justify-center rounded-2xl border bg-white p-3 text-center" style={{ borderColor: "var(--line)" }}>
+                  <p className="font-display text-2xl font-bold leading-none" style={{ color: "var(--green-700)" }}>
+                    4,9 <span className="text-xl" style={{ color: "#E8A317" }} aria-hidden="true">★</span>
+                  </p>
+                  <p className="mt-1.5 text-[13px]" style={{ color: "var(--ink)" }}>nota no Google</p>
+                </div>
+                <div className="flex items-center justify-center rounded-2xl border bg-white p-2" style={{ borderColor: "var(--line)" }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/2.webp" alt="Certificado RA1000 do Reclame Aqui" width={120} height={58} loading="lazy" decoding="async" />
+                </div>
+              </div>
               <div className="flex flex-col gap-2.5">
                 {depoimentos[(r.objetivos[0] ?? "sono") as GoalId].map((d) => (
                   <figure key={d.nome + d.iniciais} className="rounded-2xl border bg-white p-4" style={{ borderColor: "var(--line)" }}>
@@ -333,42 +339,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
 
           {step === "tempo" && (
             <Tela titulo={<>Há quanto tempo você <b>convive com isso?</b></>}>
-              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "tentou") }))} />
-            </Tela>
-          )}
-
-          {step === "tentou" && (
-            <Tela
-              titulo={<>O que você já tentou pra <b>{r.objetivos.length === 1 ? GOALS.find((g) => g.id === r.objetivos[0])?.tentou : "se sentir melhor"}?</b></>}
-              sub="Pode escolher mais de uma opção."
-            >
-              <div className="flex flex-col gap-2.5">
-                {TENTATIVAS.map((t) => {
-                  const on = r.tentou.includes(t);
-                  return (
-                    <button
-                      key={t}
-                      type="button"
-                      aria-pressed={on}
-                      onClick={() =>
-                        setR((prev) => ({
-                          ...prev,
-                          // "Ainda não tentei nada" não combina com as outras opções.
-                          tentou: on ? prev.tentou.filter((x) => x !== t) : t === NADA ? [NADA] : [...prev.tentou.filter((x) => x !== NADA), t],
-                        }))
-                      }
-                      className="opcao flex items-center justify-between"
-                      data-on={on}
-                    >
-                      <span>{t}</span>
-                      <span className="check" aria-hidden="true">
-                        {on && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5 9-10" /></svg>}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-              <Cta onClick={() => ir("acolhimento")} disabled={r.tentou.length === 0}>Continuar</Cta>
+              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "acolhimento") }))} />
             </Tela>
           )}
 
