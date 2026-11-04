@@ -72,12 +72,12 @@ const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 function montarMensagem(nome: string, r: Respostas): string {
   if (r.paciente) return `Olá, me chamo ${nome}.\n\n${r.pedido}`;
-  const patologias = GOALS.filter((g) => r.objetivos.includes(g.id)).map((g) => g.patologia);
+  const objetivos = GOALS.filter((g) => r.objetivos.includes(g.id)).map((g) => g.label);
   const linhas = [
     `Olá, me chamo ${nome}.`,
     "",
     "Eu busco:",
-    ...[...patologias, ...(r.outro?.trim() ? [r.outro.trim()] : [])].map((p, i) => `${i + 1}. ${p}`),
+    ...[...objetivos, ...(r.outro?.trim() ? [r.outro.trim()] : [])].map((p, i) => `${i + 1}. ${p}`),
     "",
     `Consulta para: ${r.paraQuem === "familiar" ? "Outra pessoa" : "Mim"}`,
     `Há quanto tempo: ${r.tempo?.toLowerCase()}`,
@@ -202,7 +202,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
                 Leva menos de 1 minuto
               </p>
-              <Pergunta texto="Você já fez consulta com a Click?" />
+              <Pergunta texto="Como podemos te ajudar?" />
               <Opcoes
                 opcoes={[
                   { label: "Quero agendar uma primeira consulta", onClick: () => responder({ paciente: false }, "para-quem") },
@@ -379,7 +379,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
           )}
 
           {step === "contato" && (
-            <Tela titulo={<>Você já teve contato com <b>CBD ou algum tratamento à base de cannabis?</b></>}>
+            <Tela titulo={<>{r.paraQuem === "familiar" ? "A pessoa" : "Você"} já teve contato com <b>CBD ou algum tratamento à base de cannabis?</b></>}>
               <Opcoes
                 opcoes={[
                   { label: "Sim", onClick: () => responder({ jaUsou: true }, "acolhimento") },
