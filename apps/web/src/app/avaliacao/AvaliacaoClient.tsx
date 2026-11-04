@@ -190,7 +190,7 @@ export default function AvaliacaoClient() {
           exit={{ opacity: 0, x: reduce ? 0 : -24, transition: { duration: 0.18, ease: EASE } }}
         >
           {step === "inicio" && (
-            <Tela titulo={<>Seu cuidado começa <b>com um clique.</b></>} sub="Responda algumas perguntas rápidas e saia daqui com sua consulta encaminhada pelo WhatsApp." cena={["acena", "conversa"]}>
+            <Tela titulo={<>Seu cuidado começa <b>com um clique.</b></>} sub="Responda algumas perguntas rápidas e saia daqui com sua consulta encaminhada." cena={["acena", "conversa"]}>
               <Pergunta texto="Você já fez consulta com a Click?" />
               <Opcoes
                 opcoes={[
@@ -327,7 +327,7 @@ export default function AvaliacaoClient() {
                   <>O medicamento chega na sua casa, em qualquer lugar do Brasil.</>,
                   <>Acompanhamento do início ao fim, com consulta de retorno.</>,
                 ].map((t, i) => (
-                  <li key={i} className="flex items-center gap-3 rounded-2xl border bg-white px-4 py-3 text-[15px] leading-snug" style={{ borderColor: "var(--line)", color: "var(--ink)" }}>
+                  <li key={i} className="flex items-center gap-3 rounded-2xl border bg-white px-3.5 py-3 text-[clamp(13px,3.9vw,15px)] leading-snug" style={{ borderColor: "var(--line)", color: "var(--ink)" }}>
                     <span className="font-display flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white" style={{ background: "var(--green-500)" }} aria-hidden="true">
                       {i + 1}
                     </span>
