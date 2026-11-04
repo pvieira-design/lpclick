@@ -55,6 +55,67 @@ function sortearPremio(): PremioId {
   return "retorno";
 }
 
+// Som sintetizado da /oferta, sem assets: estalo de catraca e arpejo de vitória.
+const clickBuffers = new WeakMap<AudioContext, AudioBuffer>();
+
+function playTick(ctx: AudioContext, strength = 1) {
+  if (ctx.state !== "running") return;
+  let buffer = clickBuffers.get(ctx);
+  if (!buffer) {
+    buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * 0.025), ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+    clickBuffers.set(ctx, buffer);
+  }
+  const t = ctx.currentTime;
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = "bandpass";
+  filter.frequency.value = 1700;
+  filter.Q.value = 0.7;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.16 * strength, t);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.025);
+  noise.connect(filter).connect(gain).connect(ctx.destination);
+  noise.start(t);
+  noise.onended = () => { noise.disconnect(); filter.disconnect(); gain.disconnect(); };
+
+  const body = ctx.createOscillator();
+  const bodyGain = ctx.createGain();
+  body.type = "sine";
+  body.frequency.setValueAtTime(440, t);
+  body.frequency.exponentialRampToValueAtTime(180, t + 0.035);
+  bodyGain.gain.setValueAtTime(0.09 * strength, t);
+  bodyGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
+  body.connect(bodyGain).connect(ctx.destination);
+  body.start(t);
+  body.stop(t + 0.05);
+  body.onended = () => { body.disconnect(); bodyGain.disconnect(); };
+}
+
+function playWin(ctx: AudioContext) {
+  if (ctx.state !== "running") return;
+  [523.25, 659.25, 783.99, 1046.5].forEach((frequency, i) => {
+    [1, 2].forEach((harmonic) => {
+      const t = ctx.currentTime + i * 0.13;
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequency * harmonic;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(harmonic === 1 ? 0.065 : 0.012, t + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.85);
+      oscillator.connect(gain).connect(ctx.destination);
+      oscillator.start(t);
+      oscillator.stop(t + 0.9);
+      oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
+    });
+  });
+}
+
+const LUZES = 18;
+
 // Mesma curva da /oferta: aceleração, embalo e frenagem longa.
 function spinEase(t: number) {
   const acceleration = 0.14;
@@ -83,6 +144,10 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
   const reduce = useReducedMotion();
   const [girando, setGirando] = useState(false);
   const [status, setStatus] = useState("Toque no botão e descubra seu benefício.");
+  const [vencedora, setVencedora] = useState<number | null>(null);
+  const [mudo, setMudo] = useState(false);
+  const mudoRef = useRef(false);
+  const audioRef = useRef<AudioContext | null>(null);
   const wheelRef = useRef<SVGGElement>(null);
   const pointerRef = useRef<SVGGElement>(null);
   const ctrl = useRef<AnimationPlaybackControls | null>(null);
@@ -92,6 +157,7 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
     () => () => {
       ctrl.current?.stop();
       timeouts.current.forEach(clearTimeout);
+      audioRef.current?.close().catch(() => {});
     },
     [],
   );
@@ -111,6 +177,19 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
     setGirando(true);
     setStatus("Girando a roleta…");
     vibrate(20);
+
+    // O AudioContext precisa nascer no toque do botão (política de autoplay).
+    let ctx: AudioContext | null = null;
+    try {
+      if (!audioRef.current) {
+        const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        if (AC) audioRef.current = new AC();
+      }
+      audioRef.current?.resume().catch(() => {});
+      ctx = audioRef.current;
+    } catch {
+      /* som é opcional */
+    }
 
     const premio = sortearPremio();
     const opcoes = FATIAS.flatMap((f, i) => (f.id === premio ? [i] : []));
@@ -138,6 +217,7 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
         if (seg !== lastSeg) {
           lastSeg = seg;
           vibrate(5);
+          if (ctx && !mudoRef.current) playTick(ctx, 0.7 + 0.3 * (r / target));
           const ptr = pointerRef.current;
           if (ptr) {
             ptr.classList.add("nudge");
@@ -149,7 +229,9 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
       onComplete: () => {
         if (wheelRef.current) wheelRef.current.style.transform = `rotate(${target}deg)`;
         setStatus("É seu!");
+        setVencedora(i);
         vibrate([80, 50, 80, 50, 180]);
+        if (ctx && !mudoRef.current) playWin(ctx);
         sendGTMEvent({ event: "roletaResultado", category: "Roleta", action: "Result", label: PREMIOS[premio].titulo });
         timeouts.current.push(setTimeout(() => onResultado(premio), 1100));
       },
@@ -158,7 +240,18 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
 
   return (
     <div className="flex flex-col items-center">
-      <svg viewBox="0 0 420 430" className="roleta-svg w-[min(84vw,340px)]" role="img" aria-label="Roleta Click: consulta com retorno, 2 consultas por 1 e cashback">
+      <button
+        type="button"
+        onClick={() => setMudo((m) => { mudoRef.current = !m; return !m; })}
+        aria-pressed={!mudo}
+        aria-label={mudo ? "Ativar som" : "Desativar som"}
+        className="mb-2 flex items-center gap-1.5 self-end rounded-full border bg-white px-3 py-1.5 text-xs font-medium"
+        style={{ borderColor: "var(--line)", color: "var(--muted)" }}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z" />{mudo ? <path d="m16 9 6 6m0-6-6 6" /> : <><path d="M15 8a6 6 0 0 1 0 8" /><path d="M18 5a10 10 0 0 1 0 14" /></>}</svg>
+        Som {mudo ? "desligado" : "ligado"}
+      </button>
+      <svg viewBox="0 0 420 430" className={`roleta-svg w-[min(84vw,340px)]${girando && vencedora === null ? " girando" : ""}${vencedora !== null ? " ganhou" : ""}`} role="img" aria-label="Roleta Click: consulta com retorno, 2 consultas por 1 e cashback">
         <circle cx="210" cy="214" r="199" fill="#1C4423" />
         <circle cx="210" cy="210" r="199" fill="#2B6B35" />
         <circle cx="210" cy="210" r="190" fill="#F4F1E6" />
@@ -171,7 +264,7 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
             };
             const escura = i % 2 === 0;
             return (
-              <g key={i}>
+              <g key={i} className="roleta-fatia" style={{ opacity: vencedora === null || vencedora === i ? 1 : 0.35 }}>
                 <path d={`M210 210 L${pt(i * SEG)} A${radius} ${radius} 0 0 1 ${pt((i + 1) * SEG)} Z`} fill={escura ? "#2B6B35" : "#CFE5C3"} stroke="#F4F1E6" strokeWidth="2" />
                 <g transform={`rotate(${i * SEG + SEG / 2} 210 210)`}>
                   <text x="210" y="74" textAnchor="middle" fill={escura ? "#F4F1E6" : "#1C4423"} className="roleta-txt">
@@ -183,6 +276,10 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
             );
           })}
         </g>
+        {Array.from({ length: LUZES }).map((_, k) => {
+          const a = ((k * 360) / LUZES - 90) * (Math.PI / 180);
+          return <circle key={k} className={`roleta-luz ${k % 2 ? "impar" : "par"}`} cx={210 + 194.5 * Math.cos(a)} cy={210 + 194.5 * Math.sin(a)} r="3.2" />;
+        })}
         <circle cx="210" cy="210" r="50" fill="#F4F1E6" stroke="#1C4423" strokeWidth="4" />
         <image href="/click-symbol.svg" x="184" y="184" width="52" height="52" />
         <g ref={pointerRef} className="roleta-ponteiro">

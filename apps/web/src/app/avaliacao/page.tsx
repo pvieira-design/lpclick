@@ -93,6 +93,13 @@ export default function AvaliacaoPage() {
         .avaliacao .roleta-txt { font-family: var(--font-display), system-ui, sans-serif; font-size: 19px; font-weight: 700; }
         .avaliacao .roleta-ponteiro { transform-origin: 210px 12px; transition: transform .07s ease-out; }
         .avaliacao .roleta-ponteiro.nudge { transform: rotate(-12deg); }
+        .avaliacao .roleta-fatia { transition: opacity .5s ease; }
+        .avaliacao .roleta-luz { fill: #F4F1E6; opacity: .45; }
+        .avaliacao .girando .roleta-luz { animation: roleta-pisca .36s steps(1) infinite; }
+        .avaliacao .girando .roleta-luz.impar { animation-delay: .18s; }
+        .avaliacao .ganhou .roleta-luz { fill: #F2C94C; opacity: 1; animation: roleta-pisca .5s steps(1) 4; }
+        @keyframes roleta-pisca { 0% { opacity: 1; fill: #F2C94C; } 50% { opacity: .45; fill: #F4F1E6; } }
+        @media (prefers-reduced-motion: reduce) { .avaliacao .roleta-luz { animation: none !important; } }
       `}</style>
       <AvaliacaoClient depoimentos={DEPOIMENTOS} />
     </div>
