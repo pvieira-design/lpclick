@@ -28,7 +28,7 @@ const GOALS = [
   { id: "foco", label: "Ter mais foco", patologia: "TDAH" },
 ] as const;
 
-const TEMPOS = ["Menos de 6 meses", "De 6 meses a 1 ano", "De 1 a 3 anos", "Mais de 3 anos"];
+const TEMPOS = ["Menos de 6 meses", "De 6 meses a 1 ano", "De 1 a 3 anos", "Mais de 3 anos", "Não sei ao certo"];
 
 type StepId =
   | "inicio"
@@ -58,6 +58,8 @@ type Respostas = {
   paciente?: boolean;
   paraQuem?: string;
   objetivos: string[];
+  // Texto livre do "Outro"; vai só na mensagem, não no CRM.
+  outro?: string;
   tempo?: string;
   jaUsou?: boolean;
   querAgendar?: boolean;
@@ -74,8 +76,8 @@ function montarMensagem(nome: string, r: Respostas): string {
   const linhas = [
     `Olá, me chamo ${nome}.`,
     "",
-    "Patologias selecionadas:",
-    ...patologias.map((p, i) => `${i + 1}. ${p}`),
+    "Eu busco:",
+    ...[...patologias, ...(r.outro?.trim() ? [r.outro.trim()] : [])].map((p, i) => `${i + 1}. ${p}`),
     "",
     `Consulta para: ${r.paraQuem === "familiar" ? "Outra pessoa" : "Mim"}`,
     `Há quanto tempo: ${r.tempo?.toLowerCase()}`,
@@ -299,8 +301,36 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
                     </button>
                   );
                 })}
+                <button
+                  type="button"
+                  aria-pressed={r.outro !== undefined}
+                  onClick={() => setR((prev) => ({ ...prev, outro: prev.outro === undefined ? "" : undefined }))}
+                  className="opcao flex items-center justify-between"
+                  data-on={r.outro !== undefined}
+                >
+                  <span>Outro objetivo</span>
+                  <span className="check" aria-hidden="true">
+                    {r.outro !== undefined && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5 9-10" /></svg>}
+                  </span>
+                </button>
+                {r.outro !== undefined && (
+                  <>
+                    <label htmlFor="avaliacao-outro" className="sr-only">Qual outro objetivo?</label>
+                    <input
+                      id="avaliacao-outro"
+                      type="text"
+                      autoFocus
+                      maxLength={120}
+                      placeholder="Conte o que você busca melhorar"
+                      value={r.outro}
+                      onChange={(e) => setR((prev) => ({ ...prev, outro: e.target.value }))}
+                      className="w-full rounded-2xl border-2 bg-white px-4 py-3.5 text-base outline-none transition-colors focus:border-[var(--green-500)]"
+                      style={{ borderColor: "var(--line)", color: "var(--ink)" }}
+                    />
+                  </>
+                )}
               </div>
-              <Cta onClick={() => ir("prova")} disabled={r.objetivos.length === 0}>Continuar</Cta>
+              <Cta onClick={() => ir("prova")} disabled={r.objetivos.length === 0 && !r.outro?.trim()}>Continuar</Cta>
             </Tela>
           )}
 
