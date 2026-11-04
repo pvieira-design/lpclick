@@ -80,7 +80,7 @@ function montarMensagem(nome: string, r: Respostas): string {
     "Patologias selecionadas:",
     ...patologias.map((p, i) => `${i + 1}. ${p}`),
     "",
-    `Para: ${r.paraQuem === "familiar" ? "um familiar" : "mim"}`,
+    `Consulta para: ${r.paraQuem === "familiar" ? "Outra pessoa" : "Mim"}`,
     `Há quanto tempo: ${r.tempo?.toLowerCase()}`,
     `Já tentou: ${r.tentou.includes(NADA) ? "nada ainda" : r.tentou.join(", ").toLowerCase()}`,
     "",
