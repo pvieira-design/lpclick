@@ -12,6 +12,7 @@ import {
 import { buildWhatsAppUrl, collectLeadData, sendLeadToApi } from "./lead";
 import { Cena, SimboloClick, type Pose, type Prop } from "./Ilustra";
 import Roleta, { PREMIOS, premioSalvo, type PremioId } from "./Roleta";
+import type { Depoimento, GoalId } from "./testimonialSelection";
 
 // Quiz de triagem: reproduz no site as perguntas que o atendimento faz hoje no
 // WhatsApp (fluxo "NOVO PROCESSO V3") e entrega a pessoa no WhatsApp com a
@@ -20,14 +21,17 @@ import Roleta, { PREMIOS, premioSalvo, type PremioId } from "./Roleta";
 
 // Objetivo, nunca doença, na tela; a patologia só existe no payload do CRM.
 const GOALS = [
-  { id: "sono", label: "Dormir melhor", patologia: "Insônia" },
-  { id: "relaxar", label: "Relaxar e ter menos ansiedade", patologia: "Ansiedade" },
-  { id: "dores", label: "Aliviar dores", patologia: "Dores" },
-  { id: "humor", label: "Melhorar meu humor", patologia: "Depressão" },
-  { id: "foco", label: "Ter mais foco", patologia: "TDAH" },
+  { id: "sono", label: "Dormir melhor", patologia: "Insônia", tentou: "dormir melhor" },
+  { id: "relaxar", label: "Relaxar e ter menos ansiedade", patologia: "Ansiedade", tentou: "relaxar" },
+  { id: "dores", label: "Aliviar dores", patologia: "Dores", tentou: "aliviar as dores" },
+  { id: "humor", label: "Melhorar meu humor", patologia: "Depressão", tentou: "melhorar o humor" },
+  { id: "foco", label: "Ter mais foco", patologia: "TDAH", tentou: "ter mais foco" },
 ] as const;
 
 const TEMPOS = ["Menos de 6 meses", "De 6 meses a 1 ano", "De 1 a 3 anos", "Mais de 3 anos"];
+
+const NADA = "Ainda não tentei nada";
+const TENTATIVAS = ["Remédios", "Chás e fitoterápicos", "Terapia ou psicólogo", "Exercícios ou meditação", NADA];
 
 type StepId =
   | "inicio"
@@ -38,7 +42,9 @@ type StepId =
   | "acao-paciente"
   | "para-quem"
   | "objetivo"
+  | "prova"
   | "tempo"
+  | "tentou"
   | "acolhimento"
   | "como-funciona"
   | "duvida"
@@ -48,7 +54,7 @@ type StepId =
   | "nome";
 
 // Total aproximado de telas por ramo, só pra barra de progresso.
-const TOTAL_LEAD = 11;
+const TOTAL_LEAD = 13;
 const TOTAL_PACIENTE = 4;
 
 type Respostas = {
@@ -56,6 +62,7 @@ type Respostas = {
   paraQuem?: string;
   objetivos: string[];
   tempo?: string;
+  tentou: string[];
   querAgendar?: boolean;
   premio?: PremioId;
   // Fecho da mensagem dos ramos de paciente.
@@ -75,6 +82,7 @@ function montarMensagem(nome: string, r: Respostas): string {
     "",
     `Para: ${r.paraQuem === "familiar" ? "um familiar" : "mim"}`,
     `Há quanto tempo: ${r.tempo?.toLowerCase()}`,
+    `Já tentou: ${r.tentou.includes(NADA) ? "nada ainda" : r.tentou.join(", ").toLowerCase()}`,
     "",
     r.querAgendar ? "Já entendi como funciona e quero agendar minha consulta." : "Tenho uma dúvida antes de agendar minha consulta.",
   ];
@@ -82,10 +90,10 @@ function montarMensagem(nome: string, r: Respostas): string {
   return linhas.join("\n");
 }
 
-export default function AvaliacaoClient() {
+export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<GoalId, Depoimento[]> }) {
   const reduce = useReducedMotion();
   const [historico, setHistorico] = useState<StepId[]>(["inicio"]);
-  const [r, setR] = useState<Respostas>({ objetivos: [] });
+  const [r, setR] = useState<Respostas>({ objetivos: [], tentou: [] });
   const [nome, setNome] = useState("");
   const [erroNome, setErroNome] = useState(false);
   const [waUrl, setWaUrl] = useState<string | null>(null);
@@ -191,6 +199,10 @@ export default function AvaliacaoClient() {
         >
           {step === "inicio" && (
             <Tela titulo={<>Seu cuidado começa <b>com um clique.</b></>} sub="Responda algumas perguntas rápidas e saia daqui com sua consulta encaminhada." cena={["acena", "conversa"]}>
+              <p className="-mt-2 flex items-center gap-2 text-sm" style={{ color: "var(--muted)" }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+                Leva menos de 1 minuto
+              </p>
               <Pergunta texto="Você já fez consulta com a Click?" />
               <Opcoes
                 opcoes={[
@@ -291,13 +303,72 @@ export default function AvaliacaoClient() {
                   );
                 })}
               </div>
-              <Cta onClick={() => ir("tempo")} disabled={r.objetivos.length === 0}>Continuar</Cta>
+              <Cta onClick={() => ir("prova")} disabled={r.objetivos.length === 0}>Continuar</Cta>
+            </Tela>
+          )}
+
+          {step === "prova" && (
+            <Tela titulo={<>Você está em <b>boas mãos.</b></>}>
+              <div className="rounded-2xl border bg-white p-5 text-center" style={{ borderColor: "var(--line)" }}>
+                <p className="font-display text-4xl font-bold" style={{ color: "var(--green-700)" }}>+150 mil</p>
+                <p className="mt-1 text-[15px]" style={{ color: "var(--ink)" }}>consultas realizadas pela Click</p>
+              </div>
+              <div className="flex flex-col gap-2.5">
+                {depoimentos[(r.objetivos[0] ?? "sono") as GoalId].map((d) => (
+                  <figure key={d.nome + d.iniciais} className="rounded-2xl border bg-white p-4" style={{ borderColor: "var(--line)" }}>
+                    <div className="flex items-center gap-3">
+                      <span className="font-display flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-bold" style={{ background: "var(--green-100)", color: "var(--green-700)" }} aria-hidden="true">
+                        {d.iniciais}
+                      </span>
+                      <figcaption className="text-sm font-semibold" style={{ color: "var(--ink)" }}>{d.nome}</figcaption>
+                      <span className="ml-auto text-sm tracking-tight" style={{ color: "#E8A317" }} aria-label="5 estrelas">★★★★★</span>
+                    </div>
+                    <blockquote className="mt-2.5 text-[15px] leading-snug" style={{ color: "var(--ink)" }}>“{d.texto}”</blockquote>
+                  </figure>
+                ))}
+              </div>
+              <Cta onClick={() => ir("tempo")}>Continuar</Cta>
             </Tela>
           )}
 
           {step === "tempo" && (
             <Tela titulo={<>Há quanto tempo você <b>convive com isso?</b></>}>
-              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "acolhimento") }))} />
+              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "tentou") }))} />
+            </Tela>
+          )}
+
+          {step === "tentou" && (
+            <Tela
+              titulo={<>O que você já tentou pra <b>{r.objetivos.length === 1 ? GOALS.find((g) => g.id === r.objetivos[0])?.tentou : "se sentir melhor"}?</b></>}
+              sub="Pode escolher mais de uma opção."
+            >
+              <div className="flex flex-col gap-2.5">
+                {TENTATIVAS.map((t) => {
+                  const on = r.tentou.includes(t);
+                  return (
+                    <button
+                      key={t}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() =>
+                        setR((prev) => ({
+                          ...prev,
+                          // "Ainda não tentei nada" não combina com as outras opções.
+                          tentou: on ? prev.tentou.filter((x) => x !== t) : t === NADA ? [NADA] : [...prev.tentou.filter((x) => x !== NADA), t],
+                        }))
+                      }
+                      className="opcao flex items-center justify-between"
+                      data-on={on}
+                    >
+                      <span>{t}</span>
+                      <span className="check" aria-hidden="true">
+                        {on && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5 9-10" /></svg>}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              <Cta onClick={() => ir("acolhimento")} disabled={r.tentou.length === 0}>Continuar</Cta>
             </Tela>
           )}
 
@@ -310,7 +381,7 @@ export default function AvaliacaoClient() {
                   <b>Você não está sozinho.</b>
                 </span>
               }
-              sub="Muita gente chega até a gente depois de tentar resolver isso por conta própria. A Click já realizou mais de 150 mil consultas, e cada caso é avaliado com calma por um médico especialista."
+              sub="Muita gente chega até a gente depois de tentar resolver isso por conta própria. Aqui, cada caso é avaliado com calma por um médico especialista."
               cena={["medita", "coracao"]}
             >
               <Cta onClick={() => ir("como-funciona")}>Ver como funciona</Cta>
@@ -323,7 +394,7 @@ export default function AvaliacaoClient() {
                 {[
                   <>Você agenda sua consulta no WhatsApp com a equipe da Click.</>,
                   <>Consulta online com médico especialista por <b style={{ color: "var(--green-700)" }}>apenas R$50.</b></>,
-                  <>Orientação na autorização e documentação, sem custo adicional.</>,
+                  <>Orientação na autorização e documentação, sem custo extra.</>,
                   <>O medicamento chega na sua casa, em qualquer lugar do Brasil.</>,
                   <>Acompanhamento do início ao fim, com consulta de retorno.</>,
                 ].map((t, i) => (
@@ -380,7 +451,7 @@ export default function AvaliacaoClient() {
           )}
 
           {step === "nome" && (
-            <Tela titulo={<>Falta pouco! <b>Como você se chama?</b></>}>
+            <Tela titulo={<>Falta pouco! <b>Como você se chama?</b></>} sub="Pra nossa equipe já te chamar pelo nome no WhatsApp.">
               <label htmlFor="avaliacao-nome" className="sr-only">Seu nome</label>
               <input
                 ref={inputRef}

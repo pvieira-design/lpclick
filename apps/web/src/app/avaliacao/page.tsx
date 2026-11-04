@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Lexend } from "next/font/google";
 import AvaliacaoClient from "./AvaliacaoClient";
+import { DEPOIMENTOS } from "./testimonialSelection";
 
 // /avaliacao = quiz de triagem no estilo "Ilustra Click": fundo sálvia claro,
 // headline verde alinhada à esquerda com destaque em negrito, cenas vetoriais
@@ -93,7 +94,7 @@ export default function AvaliacaoPage() {
         .avaliacao .roleta-ponteiro { transform-origin: 210px 12px; transition: transform .07s ease-out; }
         .avaliacao .roleta-ponteiro.nudge { transform: rotate(-12deg); }
       `}</style>
-      <AvaliacaoClient />
+      <AvaliacaoClient depoimentos={DEPOIMENTOS} />
     </div>
   );
 }
