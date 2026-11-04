@@ -205,7 +205,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
               <Pergunta texto="Como podemos te ajudar?" />
               <Opcoes
                 opcoes={[
-                  { label: "Quero agendar uma primeira consulta", onClick: () => responder({ paciente: false }, "para-quem") },
+                  { label: "Quero minha primeira consulta", onClick: () => responder({ paciente: false }, "para-quem") },
                   { label: "Sim, já fiz uma consulta", onClick: () => responder({ paciente: true }, "tratamento") },
                 ]}
               />
