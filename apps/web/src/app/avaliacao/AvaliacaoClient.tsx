@@ -41,6 +41,7 @@ type StepId =
   | "objetivo"
   | "prova"
   | "tempo"
+  | "contato"
   | "acolhimento"
   | "como-funciona"
   | "duvida"
@@ -50,7 +51,7 @@ type StepId =
   | "nome";
 
 // Total aproximado de telas por ramo, só pra barra de progresso.
-const TOTAL_LEAD = 12;
+const TOTAL_LEAD = 13;
 const TOTAL_PACIENTE = 4;
 
 type Respostas = {
@@ -58,6 +59,7 @@ type Respostas = {
   paraQuem?: string;
   objetivos: string[];
   tempo?: string;
+  jaUsou?: boolean;
   querAgendar?: boolean;
   premio?: PremioId;
   // Fecho da mensagem dos ramos de paciente.
@@ -77,6 +79,7 @@ function montarMensagem(nome: string, r: Respostas): string {
     "",
     `Consulta para: ${r.paraQuem === "familiar" ? "Outra pessoa" : "Mim"}`,
     `Há quanto tempo: ${r.tempo?.toLowerCase()}`,
+    `Já teve contato com CBD/cannabis: ${r.jaUsou ? "Sim" : "Não"}`,
     "",
     r.querAgendar ? "Já entendi como funciona e quero agendar minha consulta." : "Tenho uma dúvida antes de agendar minha consulta.",
   ];
@@ -341,7 +344,18 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
 
           {step === "tempo" && (
             <Tela titulo={<>Há quanto tempo você <b>convive com isso?</b></>}>
-              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "acolhimento") }))} />
+              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "contato") }))} />
+            </Tela>
+          )}
+
+          {step === "contato" && (
+            <Tela titulo={<>Você já teve contato com <b>CBD ou algum tratamento à base de cannabis?</b></>}>
+              <Opcoes
+                opcoes={[
+                  { label: "Sim", onClick: () => responder({ jaUsou: true }, "acolhimento") },
+                  { label: "Não", onClick: () => responder({ jaUsou: false }, "acolhimento") },
+                ]}
+              />
             </Tela>
           )}
 
