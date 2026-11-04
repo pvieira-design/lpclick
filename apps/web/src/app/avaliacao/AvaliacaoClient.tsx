@@ -323,7 +323,7 @@ export default function AvaliacaoClient() {
                 {[
                   <>Você agenda sua consulta no WhatsApp com a equipe da Click.</>,
                   <>Consulta online com médico especialista por <b style={{ color: "var(--green-700)" }}>apenas R$50.</b></>,
-                  <>A equipe te orienta na autorização e na documentação, sem custo adicional.</>,
+                  <>Orientação na autorização e documentação, sem custo adicional.</>,
                   <>O medicamento chega na sua casa, em qualquer lugar do Brasil.</>,
                   <>Acompanhamento do início ao fim, com consulta de retorno.</>,
                 ].map((t, i) => (
