@@ -203,8 +203,8 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
               <Pergunta texto="Você já fez consulta com a Click?" />
               <Opcoes
                 opcoes={[
-                  { label: "Sim, já fiz", onClick: () => responder({ paciente: true }, "tratamento") },
-                  { label: "Não, ainda não", onClick: () => responder({ paciente: false }, "para-quem") },
+                  { label: "Quero agendar uma primeira consulta", onClick: () => responder({ paciente: false }, "para-quem") },
+                  { label: "Sim, já fiz uma consulta", onClick: () => responder({ paciente: true }, "tratamento") },
                 ]}
               />
             </Tela>
