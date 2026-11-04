@@ -302,7 +302,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
           )}
 
           {step === "prova" && (
-            <Tela titulo={<>Você está em <b>boas mãos.</b></>}>
+            <Tela titulo={<span className="block whitespace-nowrap text-[clamp(1.125rem,5.6vw,1.5rem)]">Quem já passou por aqui <b>recomenda.</b></span>}>
               <div className="rounded-2xl border bg-white p-5 text-center" style={{ borderColor: "var(--line)" }}>
                 <p className="font-display text-4xl font-bold" style={{ color: "var(--green-700)" }}>+150 mil</p>
                 <p className="mt-1 text-[15px]" style={{ color: "var(--ink)" }}>consultas realizadas pela Click</p>
