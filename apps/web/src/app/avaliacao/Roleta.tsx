@@ -129,10 +129,8 @@ function spinEase(t: number) {
 }
 
 // Giro único: o prêmio fica salvo no navegador, então refazer o quiz não sorteia de novo.
-// Com ?teste na URL a trava some, pra equipe girar quantas vezes quiser.
 export function premioSalvo(): PremioId | null {
   try {
-    if (new URLSearchParams(window.location.search).has("teste")) return null;
     const v = localStorage.getItem(STORAGE_KEY);
     return v && v in PREMIOS ? (v as PremioId) : null;
   } catch {
