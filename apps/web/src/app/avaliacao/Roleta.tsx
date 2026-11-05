@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { animate, useReducedMotion, type AnimationPlaybackControls } from "framer-motion";
 import { sendGTMEvent } from "@next/third-parties/google";
+import { audio } from "./som";
 
 // Roleta adaptada da /oferta, com sorteio de verdade e pesos definidos pelo
 // Guira em 30/10/2026: retorno incluso 50%, 2 por 1 30%, cashback 20%.
@@ -145,7 +146,6 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
   const [vencedora, setVencedora] = useState<number | null>(null);
   const [mudo, setMudo] = useState(false);
   const mudoRef = useRef(false);
-  const audioRef = useRef<AudioContext | null>(null);
   const wheelRef = useRef<SVGGElement>(null);
   const pointerRef = useRef<SVGGElement>(null);
   const ctrl = useRef<AnimationPlaybackControls | null>(null);
@@ -155,7 +155,6 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
     () => () => {
       ctrl.current?.stop();
       timeouts.current.forEach(clearTimeout);
-      audioRef.current?.close().catch(() => {});
     },
     [],
   );
@@ -177,17 +176,7 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
     vibrate(20);
 
     // O AudioContext precisa nascer no toque do botão (política de autoplay).
-    let ctx: AudioContext | null = null;
-    try {
-      if (!audioRef.current) {
-        const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-        if (AC) audioRef.current = new AC();
-      }
-      audioRef.current?.resume().catch(() => {});
-      ctx = audioRef.current;
-    } catch {
-      /* som é opcional */
-    }
+    const ctx = audio();
 
     const premio = sortearPremio();
     const opcoes = FATIAS.flatMap((f, i) => (f.id === premio ? [i] : []));

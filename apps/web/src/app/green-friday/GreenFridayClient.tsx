@@ -11,6 +11,7 @@ import {
 } from "@/lib/lead-observation";
 import { buildWhatsAppUrl, collectLeadData, sendLeadToApi } from "./lead";
 import { Cena, SimboloClick, type Pose, type Prop } from "./Ilustra";
+import { tocarToque } from "./som";
 import Roleta, { PREMIOS, premioSalvo, type PremioId } from "./Roleta";
 import type { Depoimento, GoalId } from "./testimonialSelection";
 
@@ -285,12 +286,13 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
                       key={g.id}
                       type="button"
                       aria-pressed={on}
-                      onClick={() =>
+                      onClick={() => {
+                        tocarToque();
                         setR((prev) => ({
                           ...prev,
                           objetivos: on ? prev.objetivos.filter((x) => x !== g.id) : [...prev.objetivos, g.id],
-                        }))
-                      }
+                        }));
+                      }}
                       className="opcao flex items-center justify-between"
                       data-on={on}
                     >
@@ -304,7 +306,7 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
                 <button
                   type="button"
                   aria-pressed={r.outro !== undefined}
-                  onClick={() => setR((prev) => ({ ...prev, outro: prev.outro === undefined ? "" : undefined }))}
+                  onClick={() => { tocarToque(); setR((prev) => ({ ...prev, outro: prev.outro === undefined ? "" : undefined })); }}
                   className="opcao flex items-center justify-between"
                   data-on={r.outro !== undefined}
                 >
@@ -423,7 +425,7 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
                   </li>
                 ))}
               </ol>
-              <Cta onClick={() => ir("duvida")}>Continuar</Cta>
+              <Cta onClick={() => ir("duvida")} fixo>Continuar</Cta>
             </Tela>
           )}
 
@@ -456,7 +458,7 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
           )}
 
           {step === "premio" && r.premio && (
-            <Tela titulo={<>Parabéns! Você ganhou <b>{PREMIOS[r.premio].titulo}.</b></>} sub={PREMIOS[r.premio].desc} cena={["comemora", "presente"]}>
+            <Tela titulo={<span className="block text-[clamp(1.375rem,6.6vw,1.75rem)]">Parabéns! Você ganhou <b>{PREMIOS[r.premio].titulo}.</b></span>} sub={PREMIOS[r.premio].desc} cena={["comemora", "presente"]}>
               {r.premio === "cashback" && (
                 <div className="rounded-2xl border-2 border-dashed bg-white p-4 text-center" style={{ borderColor: "var(--green-500)" }}>
                   <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--muted)" }}>Seu cupom</p>
@@ -601,7 +603,7 @@ function Opcoes({ opcoes }: { opcoes: { label: string; onClick: () => void }[] }
   return (
     <div className="flex flex-col gap-2.5">
       {opcoes.map((o) => (
-        <button key={o.label} type="button" onClick={o.onClick} className="opcao flex items-center justify-between">
+        <button key={o.label} type="button" onClick={() => { tocarToque(); o.onClick(); }} className="opcao flex items-center justify-between">
           <span>{o.label}</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ color: "var(--green-500)" }}><path d="M9 6l6 6-6 6" /></svg>
         </button>
@@ -610,9 +612,10 @@ function Opcoes({ opcoes }: { opcoes: { label: string; onClick: () => void }[] }
   );
 }
 
-function Cta({ onClick, disabled, children }: { onClick: () => void; disabled?: boolean; children: React.ReactNode }) {
+// fixo: gruda no rodapé enquanto a tela for maior que o celular.
+function Cta({ onClick, disabled, fixo, children }: { onClick: () => void; disabled?: boolean; fixo?: boolean; children: React.ReactNode }) {
   return (
-    <button type="button" onClick={onClick} disabled={disabled} className="btn-cta mt-1 w-full disabled:cursor-not-allowed disabled:opacity-40">
+    <button type="button" onClick={() => { tocarToque(); onClick(); }} disabled={disabled} className={`btn-cta mt-1 w-full disabled:cursor-not-allowed disabled:opacity-40 ${fixo ? "sticky bottom-4 z-10" : ""}`}>
       {children}
     </button>
   );
