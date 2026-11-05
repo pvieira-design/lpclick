@@ -408,7 +408,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
           )}
 
           {step === "como-funciona" && (
-            <Tela titulo={<>Como funciona <b>na Click</b></>} cena={["medico", "calendario"]} compact>
+            <Tela titulo={<>Como funciona <b>na Click</b></>}>
               <ol className="flex flex-col gap-2.5">
                 {[
                   <>Você agenda sua consulta no WhatsApp com a equipe da Click.</>,
@@ -519,13 +519,11 @@ function Tela({
   titulo,
   sub,
   cena,
-  compact,
   children,
 }: {
   titulo: React.ReactNode;
   sub?: string;
   cena?: [Pose, Prop];
-  compact?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -534,7 +532,7 @@ function Tela({
         <h1 className="titulo font-display text-[1.75rem] leading-[1.15] sm:text-[2rem]">{titulo}</h1>
         {sub && <p className="mt-3 text-[15px] leading-relaxed" style={{ color: "var(--muted)" }}>{sub}</p>}
       </div>
-      {cena && <Cena pose={cena[0]} prop={cena[1]} compact={compact} />}
+      {cena && <Cena pose={cena[0]} prop={cena[1]} />}
       {children}
     </section>
   );

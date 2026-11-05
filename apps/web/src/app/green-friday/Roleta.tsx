@@ -30,19 +30,26 @@ export const PREMIOS: Record<PremioId, { titulo: string; desc: string; mensagem:
   },
 };
 
-// Cada prêmio ocupa duas fatias opostas; a roda alterna as cores.
-const FATIAS: { id: PremioId; linhas: [string, string] }[] = [
-  { id: "retorno", linhas: ["R$40 com", "retorno"] },
-  { id: "dupla", linhas: ["2 consultas", "por 1"] },
-  { id: "cashback", linhas: ["R$50", "cashback"] },
-  { id: "retorno", linhas: ["R$40 com", "retorno"] },
-  { id: "dupla", linhas: ["2 consultas", "por 1"] },
-  { id: "cashback", linhas: ["R$50", "cashback"] },
+// Fatias com tamanho próximo da chance real (retorno 200°, 2 por 1 90°,
+// cashback 70°): os prêmios bons ficam estreitos e sempre entre duas de retorno.
+const FATIAS: { id: PremioId; linhas: [string, string]; graus: number }[] = [
+  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 50 },
+  { id: "dupla", linhas: ["2 consultas", "por 1"], graus: 45 },
+  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 50 },
+  { id: "cashback", linhas: ["R$50", "cashback"], graus: 35 },
+  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 50 },
+  { id: "dupla", linhas: ["2 consultas", "por 1"], graus: 45 },
+  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 50 },
+  { id: "cashback", linhas: ["R$50", "cashback"], graus: 35 },
 ];
+const INICIO = FATIAS.map((_, i) => FATIAS.slice(0, i).reduce((s, f) => s + f.graus, 0));
 
-const N = FATIAS.length;
-const SEG = 360 / N;
-const SPIN_S = 6.4;
+// Fatia sob o ponteiro com a roda girada em r graus.
+function fatiaEm(r: number) {
+  const w = (((-r) % 360) + 360) % 360;
+  return FATIAS.findIndex((f, i) => w >= INICIO[i] && w < INICIO[i] + f.graus);
+}
+const SPIN_S = 7.2;
 const VOLTAS = 6;
 const STORAGE_KEY = "greenfriday_premio";
 
@@ -181,8 +188,9 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
     const premio = sortearPremio();
     const opcoes = FATIAS.flatMap((f, i) => (f.id === premio ? [i] : []));
     const i = opcoes[Math.floor(Math.random() * opcoes.length)];
-    const centro = i * SEG + SEG / 2;
-    const target = 360 * VOLTAS + ((360 - centro) % 360);
+    // Para logo depois de cruzar a borda, vindo da fatia vizinha: o "quase".
+    const parada = INICIO[i] + FATIAS[i].graus * (1 - (0.1 + Math.random() * 0.12));
+    const target = 360 * VOLTAS + ((360 - parada) % 360);
     // Salva antes de animar: recarregar no meio do giro não libera outro sorteio.
     try {
       localStorage.setItem(STORAGE_KEY, premio);
@@ -200,7 +208,7 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
         if (reduce) return;
         const r = target * spinEase(p);
         if (wheelRef.current) wheelRef.current.style.transform = `rotate(${r}deg)`;
-        const seg = Math.floor(r / SEG);
+        const seg = fatiaEm(r);
         if (seg !== lastSeg) {
           lastSeg = seg;
           vibrate(5);
@@ -249,12 +257,12 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
               const a = ((deg - 90) * Math.PI) / 180;
               return `${(210 + radius * Math.cos(a)).toFixed(3)} ${(210 + radius * Math.sin(a)).toFixed(3)}`;
             };
-            const escura = i % 2 === 0;
+            const escura = f.id === "retorno";
             return (
               <g key={i} className="roleta-fatia" style={{ opacity: vencedora === null || vencedora === i ? 1 : 0.35 }}>
-                <path d={`M210 210 L${pt(i * SEG)} A${radius} ${radius} 0 0 1 ${pt((i + 1) * SEG)} Z`} fill={escura ? "#2B6B35" : "#CFE5C3"} stroke="#F4F1E6" strokeWidth="2" />
-                <g transform={`rotate(${i * SEG + SEG / 2} 210 210)`}>
-                  <text x="210" y="74" textAnchor="middle" fill={escura ? "#F4F1E6" : "#1C4423"} className="roleta-txt">
+                <path d={`M210 210 L${pt(INICIO[i])} A${radius} ${radius} 0 0 1 ${pt(INICIO[i] + f.graus)} Z`} fill={escura ? "#2B6B35" : "#CFE5C3"} stroke="#F4F1E6" strokeWidth="2" />
+                <g transform={`rotate(${INICIO[i] + f.graus / 2} 210 210)`}>
+                  <text x="210" y="74" textAnchor="middle" fill={escura ? "#F4F1E6" : "#1C4423"} className="roleta-txt" style={f.graus < 50 ? { fontSize: 16 } : undefined}>
                     <tspan x="210">{f.linhas[0]}</tspan>
                     <tspan x="210" dy="22">{f.linhas[1]}</tspan>
                   </text>
