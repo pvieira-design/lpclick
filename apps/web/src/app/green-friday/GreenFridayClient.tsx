@@ -205,7 +205,7 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
               <Pergunta texto="Como podemos te ajudar?" />
               <Opcoes
                 opcoes={[
-                  { label: "Quero minha primeira consulta", onClick: () => responder({ paciente: false }, "para-quem") },
+                  { label: "Quero agendar a 1ª consulta", onClick: () => responder({ paciente: false }, "para-quem") },
                   { label: "Já fiz uma consulta", onClick: () => responder({ paciente: true }, "tratamento") },
                 ]}
               />
