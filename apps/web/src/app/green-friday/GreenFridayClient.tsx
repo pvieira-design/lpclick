@@ -276,7 +276,7 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
           )}
 
           {step === "objetivo" && (
-            <Tela titulo={<>O que você <b>busca melhorar?</b></>} sub="Pode escolher mais de uma opção.">
+            <Tela titulo={<>O que {r.paraQuem === "familiar" ? "ele/ela" : "você"} <b>busca melhorar?</b></>} sub="Pode escolher mais de uma opção.">
               <div className="flex flex-col gap-2.5">
                 {GOALS.map((g) => {
                   const on = r.objetivos.includes(g.id);
