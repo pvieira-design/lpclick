@@ -373,7 +373,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
           )}
 
           {step === "tempo" && (
-            <Tela titulo={<>Há quanto tempo você <b>convive com isso?</b></>}>
+            <Tela titulo={<>Há quanto tempo {r.paraQuem === "familiar" ? "ele/ela" : "você"} <b>convive com isso?</b></>}>
               <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "contato") }))} />
             </Tela>
           )}
