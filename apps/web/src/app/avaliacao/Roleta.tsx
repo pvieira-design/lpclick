@@ -30,17 +30,17 @@ export const PREMIOS: Record<PremioId, { titulo: string; desc: string; mensagem:
   },
 };
 
-// Fatias com tamanho próximo da chance real (retorno 200°, 2 por 1 90°,
-// cashback 70°): os prêmios bons ficam estreitos e sempre entre duas de retorno.
+// Fatias com tamanho próximo da chance real (retorno 192°, 2 por 1 90°,
+// cashback 78°): os prêmios bons ficam estreitos e sempre entre duas de retorno.
 const FATIAS: { id: PremioId; linhas: [string, string]; graus: number }[] = [
-  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 50 },
+  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 48 },
   { id: "dupla", linhas: ["2 consultas", "por 1"], graus: 45 },
-  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 50 },
-  { id: "cashback", linhas: ["R$50", "cashback"], graus: 35 },
-  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 50 },
+  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 48 },
+  { id: "cashback", linhas: ["R$50", "cashback"], graus: 39 },
+  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 48 },
   { id: "dupla", linhas: ["2 consultas", "por 1"], graus: 45 },
-  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 50 },
-  { id: "cashback", linhas: ["R$50", "cashback"], graus: 35 },
+  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 48 },
+  { id: "cashback", linhas: ["R$50", "cashback"], graus: 39 },
 ];
 const INICIO = FATIAS.map((_, i) => FATIAS.slice(0, i).reduce((s, f) => s + f.graus, 0));
 
@@ -262,7 +262,7 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
               <g key={i} className="roleta-fatia" style={{ opacity: vencedora === null || vencedora === i ? 1 : 0.35 }}>
                 <path d={`M210 210 L${pt(INICIO[i])} A${radius} ${radius} 0 0 1 ${pt(INICIO[i] + f.graus)} Z`} fill={escura ? "#2B6B35" : "#CFE5C3"} stroke="#F4F1E6" strokeWidth="2" />
                 <g transform={`rotate(${INICIO[i] + f.graus / 2} 210 210)`}>
-                  <text x="210" y="74" textAnchor="middle" fill={escura ? "#F4F1E6" : "#1C4423"} className="roleta-txt" style={f.graus < 50 ? { fontSize: 16 } : undefined}>
+                  <text x="210" y={escura ? 74 : 68} textAnchor="middle" fill={escura ? "#F4F1E6" : "#1C4423"} className="roleta-txt" style={escura ? undefined : { fontSize: 15 }}>
                     <tspan x="210">{f.linhas[0]}</tspan>
                     <tspan x="210" dy="22">{f.linhas[1]}</tspan>
                   </text>
