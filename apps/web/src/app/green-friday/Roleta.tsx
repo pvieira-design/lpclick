@@ -246,7 +246,7 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z" />{mudo ? <path d="m16 9 6 6m0-6-6 6" /> : <><path d="M15 8a6 6 0 0 1 0 8" /><path d="M18 5a10 10 0 0 1 0 14" /></>}</svg>
         Som {mudo ? "desligado" : "ligado"}
       </button>
-      <svg viewBox="0 0 420 430" className={`roleta-svg w-[min(84vw,340px)]${girando && vencedora === null ? " girando" : ""}${vencedora !== null ? " ganhou" : ""}`} role="img" aria-label="Roleta Click: consulta com retorno, 2 consultas por 1 e cashback">
+      <svg viewBox="0 0 420 430" onClick={girar} className={`roleta-svg w-[min(84vw,340px)] cursor-pointer${girando && vencedora === null ? " girando" : ""}${vencedora !== null ? " ganhou" : ""}`} role="img" aria-label="Roleta Click: consulta com retorno, 2 consultas por 1 e cashback">
         <circle cx="210" cy="214" r="199" fill="#1C4423" />
         <circle cx="210" cy="210" r="199" fill="#2B6B35" />
         <circle cx="210" cy="210" r="190" fill="#F4F1E6" />
