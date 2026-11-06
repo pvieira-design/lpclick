@@ -69,6 +69,8 @@ type Respostas = {
   pedido?: string;
 };
 
+const ACOLHIMENTO_MS = 5000;
+
 const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 function montarMensagem(nome: string, r: Respostas): string {
@@ -108,6 +110,12 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
   const ir = useCallback((proximo: StepId) => setHistorico((h) => [...h, proximo]), []);
   // Troca o passo atual em vez de empilhar: voltar do prêmio não reabre a roleta.
   const trocarPor = useCallback((proximo: StepId) => setHistorico((h) => [...h.slice(0, -1), proximo]), []);
+  // O acolhimento passa sozinho; trocarPor tira ele do histórico, então voltar não cai nele de novo.
+  useEffect(() => {
+    if (step !== "acolhimento") return;
+    const t = setTimeout(() => trocarPor("como-funciona"), ACOLHIMENTO_MS);
+    return () => clearTimeout(t);
+  }, [step, trocarPor]);
   const voltar = useCallback(() => setHistorico((h) => (h.length > 1 ? h.slice(0, -1) : h)), []);
   const responder = useCallback(
     (patch: Partial<Respostas>, proximo: StepId) => {
@@ -332,7 +340,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
                   </>
                 )}
               </div>
-              <Cta onClick={() => ir("tempo")} disabled={r.objetivos.length === 0 && !r.outro?.trim()}>Continuar</Cta>
+              <Cta onClick={() => ir("prova")} disabled={r.objetivos.length === 0 && !r.outro?.trim()}>Continuar</Cta>
             </Tela>
           )}
 
@@ -363,7 +371,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
                   </figure>
                 ))}
               </div>
-              <Cta onClick={() => ir("contato")}>Continuar</Cta>
+              <Cta onClick={() => ir("tempo")}>Continuar</Cta>
               <div className="mt-3 flex items-center justify-center gap-5">
                 <div className="flex items-center gap-2">
                   <GoogleIcon />
@@ -383,7 +391,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
 
           {step === "tempo" && (
             <Tela titulo={<>Há quanto tempo {r.paraQuem === "familiar" ? "ele/ela" : "você"} <b>convive com isso?</b></>}>
-              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "prova") }))} />
+              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "contato") }))} />
             </Tela>
           )}
 
@@ -410,7 +418,9 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
               sub="Muita gente chega até a gente depois de tentar resolver isso por conta própria. Aqui, cada caso é avaliado com calma por um médico especialista."
               cena={["medita", "coracao"]}
             >
-              <Cta onClick={() => ir("como-funciona")}>Ver como funciona</Cta>
+              <div className="h-1.5 overflow-hidden rounded-full" style={{ background: "#D5E3CC" }} aria-hidden="true">
+                <motion.div className="h-full rounded-full" style={{ background: "var(--green-500)" }} initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: ACOLHIMENTO_MS / 1000, ease: "linear" }} />
+              </div>
             </Tela>
           )}
 
