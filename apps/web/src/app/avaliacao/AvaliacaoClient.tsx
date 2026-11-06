@@ -332,15 +332,22 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
                   </>
                 )}
               </div>
-              <Cta onClick={() => ir("prova")} disabled={r.objetivos.length === 0 && !r.outro?.trim()}>Continuar</Cta>
+              <Cta onClick={() => ir("tempo")} disabled={r.objetivos.length === 0 && !r.outro?.trim()}>Continuar</Cta>
             </Tela>
           )}
 
           {step === "prova" && (
             <Tela titulo={<span className="block whitespace-nowrap text-[clamp(1.125rem,5.6vw,1.5rem)]">Quem já fez, <b>recomenda.</b></span>}>
-              <div className="rounded-2xl border bg-white p-5 text-center" style={{ borderColor: "var(--line)" }}>
-                <p className="font-display text-4xl font-bold" style={{ color: "var(--green-700)" }}>+150 mil</p>
-                <p className="mt-1 text-[15px]" style={{ color: "var(--ink)" }}>consultas realizadas pela Click</p>
+              <div className="flex items-center rounded-2xl border bg-white px-2 py-4 text-center" style={{ borderColor: "var(--line)" }}>
+                {[
+                  ["+150 mil", "consultas realizadas"],
+                  ["+1 milhão", "de seguidores no Instagram"],
+                ].map(([n, t], i) => (
+                  <div key={n} className={`flex-1 px-2 ${i ? "border-l" : ""}`} style={{ borderColor: "var(--line)" }}>
+                    <p className="font-display whitespace-nowrap text-[clamp(1.375rem,6.6vw,1.875rem)] font-bold" style={{ color: "var(--green-700)" }}>{n}</p>
+                    <p className="mt-0.5 text-[13px] leading-snug" style={{ color: "var(--ink)" }}>{t}</p>
+                  </div>
+                ))}
               </div>
               <div className="flex flex-col gap-2.5">
                 {depoimentos[(r.objetivos[0] ?? "sono") as GoalId].map((d) => (
@@ -356,8 +363,8 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
                   </figure>
                 ))}
               </div>
-              <Cta onClick={() => ir("tempo")}>Continuar</Cta>
-              <div className="-mt-1 flex items-center justify-center gap-5">
+              <Cta onClick={() => ir("contato")}>Continuar</Cta>
+              <div className="mt-3 flex items-center justify-center gap-5">
                 <div className="flex items-center gap-2">
                   <GoogleIcon />
                   <div className="leading-tight">
@@ -376,7 +383,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
 
           {step === "tempo" && (
             <Tela titulo={<>Há quanto tempo {r.paraQuem === "familiar" ? "ele/ela" : "você"} <b>convive com isso?</b></>}>
-              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "contato") }))} />
+              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "prova") }))} />
             </Tela>
           )}
 
