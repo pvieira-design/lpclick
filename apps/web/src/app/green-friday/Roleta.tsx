@@ -256,7 +256,7 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
               <g key={i} className="roleta-fatia" style={{ opacity: vencedora === null || vencedora === i ? 1 : 0.35 }}>
                 <path d={`M210 210 L${pt(INICIO[i])} A${radius} ${radius} 0 0 1 ${pt(INICIO[i] + f.graus)} Z`} fill={escura ? "#2B6B35" : "#CFE5C3"} stroke="#F4F1E6" strokeWidth="2" />
                 <g transform={`rotate(${INICIO[i] + f.graus / 2} 210 210)`}>
-                  <text x="210" y={escura ? 74 : 68} textAnchor="middle" fill={escura ? "#F4F1E6" : "#1C4423"} className="roleta-txt" style={escura ? undefined : { fontSize: 15 }}>
+                  <text x="210" y="68" textAnchor="middle" fill={escura ? "#F4F1E6" : "#1C4423"} className="roleta-txt" style={{ fontSize: 15 }}>
                     <tspan x="210">{f.linhas[0]}</tspan>
                     <tspan x="210" dy="22">{f.linhas[1]}</tspan>
                   </text>
