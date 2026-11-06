@@ -420,6 +420,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
               <div className="h-1.5 overflow-hidden rounded-full" style={{ background: "#D5E3CC" }} aria-hidden="true">
                 <motion.div className="h-full rounded-full" style={{ background: "var(--green-500)" }} initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: ACOLHIMENTO_MS / 1000, ease: "linear" }} />
               </div>
+              <Cta onClick={() => trocarPor("como-funciona")}>Ver como funciona</Cta>
             </Tela>
           )}
 
