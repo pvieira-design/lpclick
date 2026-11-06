@@ -345,13 +345,14 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
           {step === "prova" && (
             <Tela titulo={<span className="block whitespace-nowrap text-[clamp(1.125rem,5.6vw,1.5rem)]">Quem já fez, <b>recomenda.</b></span>}>
               <div className="flex items-center rounded-2xl border bg-white px-2 py-4 text-center" style={{ borderColor: "var(--line)" }}>
-                {[
-                  ["+150 mil", "consultas realizadas"],
-                  ["+1 milhão", "de seguidores no Instagram"],
-                ].map(([n, t], i) => (
-                  <div key={n} className={`flex-1 px-2 ${i ? "border-l" : ""}`} style={{ borderColor: "var(--line)" }}>
-                    <p className="font-display whitespace-nowrap text-[clamp(1.375rem,6.6vw,1.875rem)] font-bold" style={{ color: "var(--green-700)" }}>{n}</p>
-                    <p className="mt-0.5 text-[13px] leading-snug" style={{ color: "var(--ink)" }}>{t}</p>
+                {([
+                  [<SimboloClick key="c" size={26} />, "+150 mil", "consultas realizadas"],
+                  [<InstagramIcon key="i" />, "+1 mi", "seguidores no Instagram"],
+                ] as const).map(([icone, n, t], i) => (
+                  <div key={n} className={`flex flex-1 flex-col items-center px-2 ${i ? "border-l" : ""}`} style={{ borderColor: "var(--line)" }}>
+                    {icone}
+                    <p className="font-display mt-1.5 whitespace-nowrap text-[clamp(1.375rem,6.6vw,1.875rem)] font-bold leading-tight" style={{ color: "var(--green-700)" }}>{n}</p>
+                    <p className="whitespace-nowrap text-[clamp(11px,3.4vw,13px)]" style={{ color: "var(--ink)" }}>{t}</p>
                   </div>
                 ))}
               </div>
@@ -583,6 +584,25 @@ function Cronometro() {
         ))}
       </div>
     </div>
+  );
+}
+
+function InstagramIcon() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" role="img" aria-label="Instagram">
+      <defs>
+        <linearGradient id="ig-grad" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#FEDA75" />
+          <stop offset=".3" stopColor="#FA7E1E" />
+          <stop offset=".55" stopColor="#D62976" />
+          <stop offset=".8" stopColor="#962FBF" />
+          <stop offset="1" stopColor="#4F5BD5" />
+        </linearGradient>
+      </defs>
+      <rect x="3" y="3" width="18" height="18" rx="5" stroke="url(#ig-grad)" strokeWidth="2" />
+      <circle cx="12" cy="12" r="4" stroke="url(#ig-grad)" strokeWidth="2" />
+      <circle cx="17.2" cy="6.8" r="1.2" fill="url(#ig-grad)" />
+    </svg>
   );
 }
 
