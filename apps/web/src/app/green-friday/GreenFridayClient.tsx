@@ -44,14 +44,13 @@ type StepId =
   | "contato"
   | "acolhimento"
   | "como-funciona"
-  | "duvida"
   | "condicao"
   | "roleta"
   | "premio"
   | "nome";
 
 // Total aproximado de telas por ramo, só pra barra de progresso.
-const TOTAL_LEAD = 13;
+const TOTAL_LEAD = 12;
 const TOTAL_PACIENTE = 4;
 
 type Respostas = {
@@ -62,7 +61,6 @@ type Respostas = {
   outro?: string;
   tempo?: string;
   jaUsou?: boolean;
-  querAgendar?: boolean;
   premio?: PremioId;
   // Fecho da mensagem dos ramos de paciente.
   pedido?: string;
@@ -85,7 +83,7 @@ function montarMensagem(nome: string, r: Respostas): string {
     `Há quanto tempo: ${r.tempo?.toLowerCase()}`,
     `Já teve contato com CBD/cannabis: ${r.jaUsou ? "Sim" : "Não"}`,
     "",
-    r.querAgendar ? "Já entendi como funciona e quero agendar minha consulta." : "Tenho uma dúvida antes de agendar minha consulta.",
+    "Já entendi como funciona e quero agendar minha consulta.",
   ];
   if (r.premio) linhas.push(PREMIOS[r.premio].mensagem);
   return linhas.join("\n");
@@ -442,18 +440,7 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
                   </li>
                 ))}
               </ol>
-              <Cta onClick={() => ir("duvida")} fixo>Continuar</Cta>
-            </Tela>
-          )}
-
-          {step === "duvida" && (
-            <Tela titulo={<>Ficou alguma dúvida <b>antes de agendar?</b></>}>
-              <Opcoes
-                opcoes={[
-                  { label: "Quero agendar minha consulta", onClick: () => responder({ querAgendar: true }, "condicao") },
-                  { label: "Ainda quero tirar uma dúvida", onClick: () => responder({ querAgendar: false }, "condicao") },
-                ]}
-              />
+              <Cta onClick={() => ir("condicao")} fixo>Quero agendar minha consulta</Cta>
             </Tela>
           )}
 
