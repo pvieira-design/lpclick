@@ -6,40 +6,34 @@ import { sendGTMEvent } from "@next/third-parties/google";
 import { audio } from "./som";
 
 // Roleta adaptada da /oferta, com sorteio de verdade e pesos definidos pelo
-// Guira em 30/10/2026: retorno incluso 50%, 2 por 1 30%, cashback 20%.
-export type PremioId = "retorno" | "dupla" | "cashback";
+// Guira em 06/11/2026: 2 por 1 60%, cashback 40%. "Tente novamente" nunca sai.
+export type PremioId = "dupla" | "cashback";
 
 export const PREMIOS: Record<PremioId, { titulo: string; desc: string; mensagem: string; peso: number }> = {
-  retorno: {
-    titulo: "1ª consulta por R$40 com retorno incluso",
-    desc: "Sua primeira consulta sai por R$40 e a consulta de retorno já vem junto.",
-    mensagem: "Ganhei na Roleta Click: 1ª consulta por R$40 com retorno incluso.",
-    peso: 50,
-  },
   dupla: {
     titulo: "2 consultas pelo preço de 1",
     desc: "Duas consultas por R$25 cada. Você pode usar a segunda no seu acompanhamento.",
     mensagem: "Ganhei na Roleta Click: 2 consultas pelo preço de 1 (R$25 cada).",
-    peso: 30,
+    peso: 60,
   },
   cashback: {
     titulo: "R$50 de cashback",
     desc: "Use o cupom CASHBACK no link de pagamento da consulta. Você recebe os R$50 se iniciar o tratamento.",
     mensagem: "Ganhei na Roleta Click: R$50 de cashback (cupom CASHBACK).",
-    peso: 20,
+    peso: 40,
   },
 };
 
-// Fatias com tamanho próximo da chance real (retorno 192°, 2 por 1 90°,
-// cashback 78°): os prêmios bons ficam estreitos e sempre entre duas de retorno.
-const FATIAS: { id: PremioId; linhas: [string, string]; graus: number }[] = [
-  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 48 },
+// Os prêmios ficam estreitos e sempre entre dois "tente novamente", que é
+// por onde a roda passa devagar antes de parar.
+const FATIAS: { id: PremioId | "tente"; linhas: [string, string]; graus: number }[] = [
+  { id: "tente", linhas: ["Tente", "novamente"], graus: 48 },
   { id: "dupla", linhas: ["2 consultas", "por 1"], graus: 45 },
-  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 48 },
+  { id: "tente", linhas: ["Tente", "novamente"], graus: 48 },
   { id: "cashback", linhas: ["R$50", "cashback"], graus: 39 },
-  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 48 },
+  { id: "tente", linhas: ["Tente", "novamente"], graus: 48 },
   { id: "dupla", linhas: ["2 consultas", "por 1"], graus: 45 },
-  { id: "retorno", linhas: ["R$40 com", "retorno"], graus: 48 },
+  { id: "tente", linhas: ["Tente", "novamente"], graus: 48 },
   { id: "cashback", linhas: ["R$50", "cashback"], graus: 39 },
 ];
 const INICIO = FATIAS.map((_, i) => FATIAS.slice(0, i).reduce((s, f) => s + f.graus, 0));
@@ -60,7 +54,7 @@ function sortearPremio(): PremioId {
     r -= PREMIOS[id].peso;
     if (r < 0) return id;
   }
-  return "retorno";
+  return "dupla";
 }
 
 // Som sintetizado da /oferta, sem assets: estalo de catraca e arpejo de vitória.
@@ -188,8 +182,8 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
     const premio = sortearPremio();
     const opcoes = FATIAS.flatMap((f, i) => (f.id === premio ? [i] : []));
     const i = opcoes[Math.floor(Math.random() * opcoes.length)];
-    // Para logo depois de cruzar a borda, vindo da fatia vizinha: o "quase".
-    const parada = INICIO[i] + FATIAS[i].graus * (1 - (0.1 + Math.random() * 0.12));
+    // Para logo depois de cruzar a borda, vindo do "tente novamente": o "quase".
+    const parada = INICIO[i] + FATIAS[i].graus * (1 - (0.04 + Math.random() * 0.06));
     const target = 360 * VOLTAS + ((360 - parada) % 360);
     // Salva antes de animar: recarregar no meio do giro não libera outro sorteio.
     try {
@@ -246,7 +240,7 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z" />{mudo ? <path d="m16 9 6 6m0-6-6 6" /> : <><path d="M15 8a6 6 0 0 1 0 8" /><path d="M18 5a10 10 0 0 1 0 14" /></>}</svg>
         Som {mudo ? "desligado" : "ligado"}
       </button>
-      <svg viewBox="0 0 420 430" onClick={girar} className={`roleta-svg w-[min(84vw,340px)] cursor-pointer${girando && vencedora === null ? " girando" : ""}${vencedora !== null ? " ganhou" : ""}`} role="img" aria-label="Roleta Click: consulta com retorno, 2 consultas por 1 e cashback">
+      <svg viewBox="0 0 420 430" onClick={girar} className={`roleta-svg w-[min(84vw,340px)] cursor-pointer${girando && vencedora === null ? " girando" : ""}${vencedora !== null ? " ganhou" : ""}`} role="img" aria-label="Roleta Click: 2 consultas por 1, cashback e tente novamente">
         <circle cx="210" cy="214" r="199" fill="#1C4423" />
         <circle cx="210" cy="210" r="199" fill="#2B6B35" />
         <circle cx="210" cy="210" r="190" fill="#F4F1E6" />
@@ -257,7 +251,7 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
               const a = ((deg - 90) * Math.PI) / 180;
               return `${(210 + radius * Math.cos(a)).toFixed(3)} ${(210 + radius * Math.sin(a)).toFixed(3)}`;
             };
-            const escura = f.id === "retorno";
+            const escura = f.id === "tente";
             return (
               <g key={i} className="roleta-fatia" style={{ opacity: vencedora === null || vencedora === i ? 1 : 0.35 }}>
                 <path d={`M210 210 L${pt(INICIO[i])} A${radius} ${radius} 0 0 1 ${pt(INICIO[i] + f.graus)} Z`} fill={escura ? "#2B6B35" : "#CFE5C3"} stroke="#F4F1E6" strokeWidth="2" />
