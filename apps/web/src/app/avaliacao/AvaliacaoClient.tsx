@@ -395,7 +395,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
           )}
 
           {step === "contato" && (
-            <Tela titulo={<>{r.paraQuem === "familiar" ? "A pessoa" : "Você"} já teve contato com <b>CBD ou algum tratamento à base de cannabis?</b></>}>
+            <Tela titulo={<>{r.paraQuem === "familiar" ? "A pessoa" : "Você"} já teve contato com <b>CBD ou algum tratamento à base de cannabis medicinal?</b></>}>
               <Opcoes
                 opcoes={[
                   { label: "Sim", onClick: () => responder({ jaUsou: true }, "acolhimento") },
