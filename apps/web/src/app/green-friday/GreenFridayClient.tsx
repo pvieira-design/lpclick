@@ -21,11 +21,11 @@ import type { Depoimento, GoalId } from "./testimonialSelection";
 
 // Objetivo, nunca doença, na tela; a patologia só existe no payload do CRM.
 const GOALS = [
-  { id: "sono", label: "Dormir melhor", patologia: "Insônia" },
-  { id: "relaxar", label: "Relaxar e ter menos ansiedade", patologia: "Ansiedade" },
-  { id: "dores", label: "Aliviar dores", patologia: "Dores" },
-  { id: "humor", label: "Melhorar meu humor", patologia: "Depressão" },
-  { id: "foco", label: "Ter mais foco", patologia: "TDAH" },
+  { id: "sono", label: "Dormir melhor", frase: "dormir melhor", patologia: "Insônia" },
+  { id: "relaxar", label: "Relaxar e ter menos ansiedade", frase: "relaxar e ter menos ansiedade", patologia: "Ansiedade" },
+  { id: "dores", label: "Aliviar dores", frase: "aliviar dores", patologia: "Dores" },
+  { id: "humor", label: "Melhorar meu humor", frase: "melhorar o humor", patologia: "Depressão" },
+  { id: "foco", label: "Ter mais foco", frase: "ter mais foco", patologia: "TDAH" },
 ] as const;
 
 const TEMPOS = ["Menos de 6 meses", "De 6 meses a 1 ano", "De 1 a 3 anos", "Mais de 3 anos", "Não sei ao certo"];
@@ -70,20 +70,25 @@ const ACOLHIMENTO_MS = 5000;
 
 const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
+// "a, b e c": a mensagem sai em texto corrido, como a pessoa escreveria.
+function juntar(itens: string[]): string {
+  return itens.length < 2 ? itens.join("") : `${itens.slice(0, -1).join(", ")} e ${itens[itens.length - 1]}`;
+}
+
 function montarMensagem(nome: string, r: Respostas): string {
   if (r.paciente) return `Olá, me chamo ${nome}.\n\n${r.pedido}`;
-  const objetivos = GOALS.filter((g) => r.objetivos.includes(g.id)).map((g) => g.label);
+  const familiar = r.paraQuem === "familiar";
+  const outro = r.outro?.trim();
+  const objetivos = juntar([
+    ...GOALS.filter((g) => r.objetivos.includes(g.id)).map((g) => g.frase),
+    ...(outro ? [outro.charAt(0).toLowerCase() + outro.slice(1)] : []),
+  ]);
+  const tempo = r.tempo && r.tempo !== "Não sei ao certo" ? `há ${r.tempo.toLowerCase().replace(/^de /, "")}` : "";
+  const cbd = familiar ? `${r.jaUsou ? "já" : "nunca"} teve contato com CBD` : `${r.jaUsou ? "já" : "nunca"} tive contato com CBD`;
+  const quem = familiar ? "Ele/ela " : "";
   const linhas = [
-    `Olá, me chamo ${nome}.`,
-    "",
-    "Eu busco:",
-    ...[...objetivos, ...(r.outro?.trim() ? [r.outro.trim()] : [])].map((p, i) => `${i + 1}. ${p}`),
-    "",
-    `Consulta para: ${r.paraQuem === "familiar" ? "Outra pessoa" : "Mim"}`,
-    `Há quanto tempo: ${r.tempo?.toLowerCase()}`,
-    `Já teve contato com CBD/cannabis: ${r.jaUsou ? "Sim" : "Não"}`,
-    "",
-    "Já entendi como funciona e quero agendar minha consulta.",
+    `Oi! Me chamo ${nome} e quero agendar ${familiar ? "uma consulta pra um familiar, " : "minha consulta "}pra ${objetivos}.`,
+    tempo ? `${quem}${familiar ? "convive" : "Convivo"} com isso ${tempo} e ${cbd}.` : `${quem}${familiar ? cbd : cbd.charAt(0).toUpperCase() + cbd.slice(1)}.`,
   ];
   if (r.premio) linhas.push(PREMIOS[r.premio].mensagem);
   return linhas.join("\n");

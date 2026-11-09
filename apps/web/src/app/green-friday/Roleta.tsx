@@ -13,13 +13,13 @@ export const PREMIOS: Record<PremioId, { titulo: string; desc: string; mensagem:
   dupla: {
     titulo: "2 consultas pelo preço de 1",
     desc: "Duas consultas por R$25 cada. Você pode usar a segunda no seu acompanhamento.",
-    mensagem: "Ganhei na Roleta Green Friday da Click: 2 consultas pelo preço de 1 (R$25 cada).",
+    mensagem: "Ganhei 2 consultas pelo preço de 1 (R$25 cada) na Roleta Green Friday da Click.",
     peso: 60,
   },
   cashback: {
     titulo: "R$50 de cashback",
     desc: "Use o cupom CASHBACK no link de pagamento da consulta. Você recebe os R$50 se iniciar o tratamento.",
-    mensagem: "Ganhei na Roleta Green Friday da Click: R$50 de cashback (cupom CASHBACK).",
+    mensagem: "Ganhei R$50 de cashback na Roleta Green Friday da Click (cupom CASHBACK).",
     peso: 40,
   },
 };
