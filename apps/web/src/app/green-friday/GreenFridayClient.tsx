@@ -49,6 +49,26 @@ type StepId =
   | "premio"
   | "nome";
 
+const ROTULO_DO_PASSO: Record<StepId, string> = {
+  inicio: "inicio",
+  tratamento: "paciente",
+  "ajuda-inicio": "paciente",
+  retorno: "paciente",
+  parabens: "paciente",
+  "acao-paciente": "paciente",
+  "para-quem": "para-quem",
+  objetivo: "objetivo",
+  prova: "prova",
+  tempo: "tempo",
+  contato: "contato",
+  acolhimento: "acolhimento",
+  "como-funciona": "como-funciona",
+  condicao: "condicao",
+  roleta: "roleta",
+  premio: "premio",
+  nome: "nome",
+};
+
 // Total aproximado de telas por ramo, só pra barra de progresso.
 const TOTAL_LEAD = 12;
 const TOTAL_PACIENTE = 4;
@@ -105,7 +125,7 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
   const step = historico[historico.length - 1];
 
   useEffect(() => {
-    sendGTMEvent({ event: "quizStep", category: "Quiz", action: "View", label: `Green Friday - ${step}` });
+    sendGTMEvent({ event: "quizStep", category: "Quiz", action: "View", label: `Green Friday - ${ROTULO_DO_PASSO[step]}` });
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [step]);
 
@@ -169,7 +189,7 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
         leadObservationId,
       );
     } else {
-      sendGTMEvent({ event: "buttonClick", category: "Paciente", action: "Click", label: "Enviar no WhatsApp - Green Friday paciente", value: r.pedido ?? "" });
+      sendGTMEvent({ event: "buttonClick", category: "Paciente", action: "Click", label: "Enviar no WhatsApp - Green Friday paciente" });
     }
 
     setWaUrl(url);
