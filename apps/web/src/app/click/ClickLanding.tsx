@@ -241,7 +241,6 @@ export default function ClickLanding() {
         category: "Lead",
         action: "Click",
         label: "Continuar no WhatsApp - Click",
-        value: pathologies.join(", "),
       },
       leadObservationId,
     );

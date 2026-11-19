@@ -224,7 +224,7 @@ export default function BioClient() {
             <motion.button
               key={p}
               type="button"
-              onClick={() => openSchedule({ patologia: p, origem: `chip:${p}` })}
+              onClick={() => openSchedule({ patologia: p, origem: "chip" })}
               whileHover={reduceMotion ? undefined : { y: -2 }}
               whileTap={reduceMotion ? undefined : { scale: 0.96 }}
               className="rounded-full border bg-white px-4 py-2.5 text-[13.5px] font-medium text-[color:var(--ink)] transition-colors hover:border-[color:var(--green-500)] hover:text-[color:var(--green-700)]"

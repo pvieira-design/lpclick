@@ -197,7 +197,6 @@ export default function LandingClient() {
         category: "Lead",
         action: "Click",
         label: "Selecionar objetivo - PrimeiroPasso",
-        value: g.patologia,
       });
     }, 0);
   }, []);
@@ -225,7 +224,6 @@ export default function LandingClient() {
           category: "Lead",
           action: "Click",
           label: "CTA voltar ao formulário - PrimeiroPasso",
-          value: goal?.patologia ?? "",
         });
       }, 0);
     };
@@ -256,8 +254,6 @@ export default function LandingClient() {
         category: "Lead",
         action: "Click",
         label: "Falar com especialista - PrimeiroPasso",
-        value: patologias.join(", "),
-        leadData,
       },
       leadObservationId,
     );

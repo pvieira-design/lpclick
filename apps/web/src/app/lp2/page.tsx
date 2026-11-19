@@ -76,7 +76,6 @@ export default function LandingPage() {
           category: "Lead",
           action: "FormOpen",
           label: "Modal aberto (inatividade) - LP2",
-          value: Array.from(currentSelected).join(", "),
         });
       }
     }, 3000);
@@ -108,7 +107,6 @@ export default function LandingPage() {
       category: "Lead",
       action: "FormOpen",
       label: "Modal aberto - LP2",
-      value: Array.from(selected).join(", "),
     });
   }, [selected, resetInactivityTimer]);
 
@@ -128,8 +126,6 @@ export default function LandingPage() {
     resetInactivityTimer();
 
     const patologias = Array.from(selected);
-    const params = new URLSearchParams(window.location.search);
-    const fbclid = document.cookie.match(/(?:^|;\s*)fbclid=([^;]*)/)?.[1] || "";
 
     const leadObservationId = captureLeadObservation();
 
@@ -139,22 +135,6 @@ export default function LandingPage() {
         category: "Lead",
         action: "Click",
         label: "Falar com o médico - LP2",
-        value: patologias.join(", "),
-        leadData: {
-          name: trimmed,
-          patologies: patologias,
-          referrer: document.referrer,
-          userAgent: navigator.userAgent,
-          language: navigator.language,
-          platform: navigator.platform,
-          src: params.get("src") || "",
-          utm_source: params.get("utm_source") || "",
-          utm_medium: params.get("utm_medium") || "",
-          utm_content: params.get("utm_content") || "",
-          utm_campaign: params.get("utm_campaign") || "",
-          utm_term: params.get("utm_term") || "",
-          fbclid,
-        },
       },
       leadObservationId,
     );

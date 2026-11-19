@@ -221,7 +221,7 @@ export default function LandingClient() {
             <motion.button
               key={p}
               type="button"
-              onClick={() => openSchedule({ objetivo: p, origem: `chip:${p}` })}
+              onClick={() => openSchedule({ objetivo: p, origem: "chip" })}
               whileHover={reduceMotion ? undefined : { y: -2 }}
               whileTap={reduceMotion ? undefined : { scale: 0.96 }}
               className="rounded-full border bg-white px-2 py-2.5 text-[clamp(12px,3.4vw,13.5px)] font-medium text-[color:var(--ink)] transition-colors last:odd:col-span-2 last:odd:mx-auto last:odd:w-[calc(50%-0.25rem)] hover:border-[color:var(--green-500)] hover:text-[color:var(--green-700)]"

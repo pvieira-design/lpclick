@@ -91,10 +91,9 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
         category: "Lead",
         action: "Click",
         label: "Selecionar objetivo - Ajuda",
-        value: patologias.join(", "),
       });
     }, 0);
-  }, [selected, onGoalChange, reviewsGoal, patologias]);
+  }, [selected, onGoalChange, reviewsGoal]);
 
   const backToGoals = useCallback(() => {
     setStep(1);
@@ -119,13 +118,12 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
           category: "Lead",
           action: "Click",
           label: "CTA voltar ao formulário - Ajuda",
-          value: patologias.join(", "),
         });
       }, 0);
     };
     window.addEventListener("treatment:open", handler);
     return () => window.removeEventListener("treatment:open", handler);
-  }, [patologias, scrollToHero]);
+  }, [scrollToHero]);
 
   const handleSubmit = useCallback(() => {
     if (patologias.length === 0) return;
@@ -149,8 +147,6 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
         category: "Lead",
         action: "Click",
         label: "Falar com especialista - Ajuda",
-        value: patologias.join(", "),
-        leadData,
       },
       leadObservationId,
     );

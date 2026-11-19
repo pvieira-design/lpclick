@@ -196,7 +196,6 @@ export default function LandingClient() {
         category: "Lead",
         action: "Click",
         label: "Selecionar queixa de sono - PrimeiroPassoSono",
-        value: g.patologia,
       });
     }, 0);
   }, []);
@@ -224,7 +223,6 @@ export default function LandingClient() {
           category: "Lead",
           action: "Click",
           label: "CTA voltar ao formulário - PrimeiroPassoSono",
-          value: goal?.patologia ?? "",
         });
       }, 0);
     };
@@ -255,8 +253,6 @@ export default function LandingClient() {
         category: "Lead",
         action: "Click",
         label: "Falar com especialista - PrimeiroPassoSono",
-        value: patologias.join(", "),
-        leadData,
       },
       leadObservationId,
     );
