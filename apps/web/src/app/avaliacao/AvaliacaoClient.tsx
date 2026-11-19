@@ -123,10 +123,14 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
   const [erroNome, setErroNome] = useState(false);
   const [waUrl, setWaUrl] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const ultimoRotulo = useRef<string | null>(null);
   const step = historico[historico.length - 1];
 
   useEffect(() => {
-    sendGTMEvent({ event: "quizStep", category: "Quiz", action: "View", label: `Avaliacao - ${ROTULO_DO_PASSO[step]}` });
+    if (ROTULO_DO_PASSO[step] !== ultimoRotulo.current) {
+      ultimoRotulo.current = ROTULO_DO_PASSO[step];
+      sendGTMEvent({ event: "quizStep", category: "Quiz", action: "View", label: `Avaliacao - ${ROTULO_DO_PASSO[step]}` });
+    }
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [step]);
 
