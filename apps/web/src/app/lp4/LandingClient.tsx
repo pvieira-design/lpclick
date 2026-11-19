@@ -158,7 +158,6 @@ export default function LandingClient() {
           category: "Lead",
           action: "Click",
           label: "Abrir modal (inatividade) - LP4",
-          value: Array.from(currentSelected).join(", "),
         });
       }
     }, 3000);
@@ -206,10 +205,9 @@ export default function LandingClient() {
         category: "Lead",
         action: "Click",
         label: "Abrir modal - LP4",
-        value: Array.from(selected).join(", "),
       });
     }, 0);
-  }, [selected, resetInactivityTimer, lockScroll]);
+  }, [resetInactivityTimer, lockScroll]);
 
   const closeModal = useCallback(() => {
     hasDismissedModal.current = true;
@@ -260,8 +258,6 @@ export default function LandingClient() {
         category: "Lead",
         action: "Click",
         label: "Falar com o médico - LP4",
-        value: patologias.join(", "),
-        leadData,
       },
       leadObservationId,
     );

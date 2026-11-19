@@ -421,7 +421,6 @@ export default function LandingClient({
       category: "Lead",
       action: "FormOpen",
       label: "Form passo 2 (nome) - LP9",
-      value: Array.from(selected).join(", "),
     });
     setTimeout(() => nameRef.current?.focus(), 80);
   }, [selected]);
@@ -442,9 +441,6 @@ export default function LandingClient({
 
     setSubmitted(true);
 
-    const params = new URLSearchParams(window.location.search);
-    const fbclid = document.cookie.match(/(?:^|;\s*)fbclid=([^;]*)/)?.[1] || "";
-
     const leadObservationId = captureLeadObservation();
 
     sendCorrelatedLeadEvent(
@@ -453,22 +449,6 @@ export default function LandingClient({
         category: "Lead",
         action: "Click",
         label: "Iniciar tratamento - LP9",
-        value: patologias.join(", "),
-        leadData: {
-          name: trimmed,
-          patologies: patologias,
-          referrer: document.referrer,
-          userAgent: navigator.userAgent,
-          language: navigator.language,
-          platform: navigator.platform,
-          src: params.get("src") || "",
-          utm_source: params.get("utm_source") || "",
-          utm_medium: params.get("utm_medium") || "",
-          utm_content: params.get("utm_content") || "",
-          utm_campaign: params.get("utm_campaign") || "",
-          utm_term: params.get("utm_term") || "",
-          fbclid,
-        },
       },
       leadObservationId,
     );

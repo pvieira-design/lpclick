@@ -996,7 +996,6 @@ function WonLeadModal({ onClose, mode }: { onClose: () => void; mode: "won" | "l
         action: "Click",
         label:
           mode === "won" ? "Resgatar consulta - LP6" : "Iniciar tratamento - LP6",
-        value: patologias.join(", "),
       },
       leadObservationId,
     );

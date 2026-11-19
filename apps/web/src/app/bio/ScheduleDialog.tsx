@@ -76,7 +76,6 @@ export default function ScheduleDialog() {
           category: "Lead",
           action: "Click",
           label: `Abrir agendamento (${detail.origem}) - BIO`,
-          value: detail.patologia ?? "",
         });
       }, 0);
     };
@@ -127,8 +126,6 @@ export default function ScheduleDialog() {
         category: "Lead",
         action: "Click",
         label: `Agendar consulta (${originRef.current}) - BIO`,
-        value: patologias.join(", "),
-        leadData,
       },
       leadObservationId,
     );

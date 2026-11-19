@@ -183,7 +183,6 @@ export default function LandingClient({ variant }: { variant?: "inicio" }) {
           category: "Lead",
           action: "Click",
           label: "Abrir modal (inatividade) - LP12",
-          value: Array.from(currentSelected).join(", "),
         });
       }
     }, 3000);
@@ -234,10 +233,9 @@ export default function LandingClient({ variant }: { variant?: "inicio" }) {
         category: "Lead",
         action: "Click",
         label: "Abrir modal - LP12",
-        value: initialPathology ?? Array.from(selected).join(", "),
       });
     }, 0);
-  }, [isInicio, selected, resetInactivityTimer, lockScroll]);
+  }, [isInicio, resetInactivityTimer, lockScroll]);
 
   const chooseGoal = useCallback((patologia: string) => {
     setShowError(false);
@@ -247,7 +245,6 @@ export default function LandingClient({ variant }: { variant?: "inicio" }) {
       category: "Lead",
       action: "Click",
       label: "Selecionar objetivo - Inicio",
-      value: patologia,
     });
   }, [openModal]);
 
@@ -305,8 +302,6 @@ export default function LandingClient({ variant }: { variant?: "inicio" }) {
         category: "Lead",
         action: "Click",
         label: "Falar com o médico - LP12",
-        value: patologias.join(", "),
-        leadData,
       },
       leadObservationId,
     );

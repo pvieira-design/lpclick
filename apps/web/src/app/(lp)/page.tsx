@@ -105,9 +105,8 @@ export default function LP2() {
       category: "Lead",
       action: "FormOpen",
       label: "Modal aberto - LP",
-      value: Array.from(selected).join(", "),
     });
-  }, [selected]);
+  }, []);
 
   // Auto-open modal 3s after first pathology selection
   useEffect(() => {
@@ -133,8 +132,6 @@ export default function LP2() {
     if (!trimmed) return;
 
     const patologias = Array.from(selected);
-    const params = new URLSearchParams(window.location.search);
-    const fbclid = document.cookie.match(/(?:^|;\s*)fbclid=([^;]*)/)?.[1] || "";
 
     const leadObservationId = captureLeadObservation();
 
@@ -144,22 +141,6 @@ export default function LP2() {
         category: "Lead",
         action: "Click",
         label: "Falar com o médico - LP",
-        value: patologias.join(", "),
-        leadData: {
-          name: trimmed,
-          patologies: patologias,
-          referrer: document.referrer,
-          userAgent: navigator.userAgent,
-          language: navigator.language,
-          platform: navigator.platform,
-          src: params.get("src") || "",
-          utm_source: params.get("utm_source") || "",
-          utm_medium: params.get("utm_medium") || "",
-          utm_content: params.get("utm_content") || "",
-          utm_campaign: params.get("utm_campaign") || "",
-          utm_term: params.get("utm_term") || "",
-          fbclid,
-        },
       },
       leadObservationId,
     );

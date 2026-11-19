@@ -506,13 +506,6 @@ function ResultForm({
           category: "Lead",
           action: "Click",
           label: "Agendar consulta - Oferta Cashback",
-          value: sintomas.join(", "),
-          leadData: {
-            name: trimmed,
-            patologies: sintomas,
-            premio: "Cashback de R$50",
-            cupom: CUPOM,
-          },
         },
         leadObservationId,
       );

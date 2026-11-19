@@ -165,9 +165,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
           category: "Lead",
           action: "Click",
           label: "Enviar no WhatsApp - Avaliacao",
-          value: patologias.join(", "),
           premio: r.premio ?? "",
-          leadData,
         },
         leadObservationId,
       );

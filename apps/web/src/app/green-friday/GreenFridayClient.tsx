@@ -164,9 +164,7 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
           category: "Lead",
           action: "Click",
           label: "Enviar no WhatsApp - Green Friday",
-          value: patologias.join(", "),
           premio: r.premio ?? "",
-          leadData,
         },
         leadObservationId,
       );

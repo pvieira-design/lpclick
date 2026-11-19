@@ -163,7 +163,6 @@ export default function LandingClient() {
           category: "Lead",
           action: "Click",
           label: "Selecionar objetivo - Consulta",
-          value: g.patologia,
         });
       }, 0);
     },
@@ -188,7 +187,6 @@ export default function LandingClient() {
           category: "Lead",
           action: "Click",
           label: "CTA voltar ao formulário - Consulta",
-          value: goal?.patologia ?? "",
         });
       }, 0);
     };
@@ -220,8 +218,6 @@ export default function LandingClient() {
         category: "Lead",
         action: "Click",
         label: "Falar com o médico - Consulta",
-        value: patologias.join(", "),
-        leadData,
       },
       leadObservationId,
     );

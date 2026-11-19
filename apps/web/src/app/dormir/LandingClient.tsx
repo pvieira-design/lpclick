@@ -203,7 +203,6 @@ export default function LandingClient() {
         category: "Lead",
         action: "Click",
         label: "Selecionar queixa de sono - Dormir",
-        value: g.patologia,
       });
     }, 0);
   }, []);
@@ -231,7 +230,6 @@ export default function LandingClient() {
           category: "Lead",
           action: "Click",
           label: "CTA voltar ao formulário - Dormir",
-          value: goal?.patologia ?? "",
         });
       }, 0);
     };
@@ -262,8 +260,6 @@ export default function LandingClient() {
         category: "Lead",
         action: "Click",
         label: "Falar com especialista - Dormir",
-        value: patologias.join(", "),
-        leadData,
       },
       leadObservationId,
     );

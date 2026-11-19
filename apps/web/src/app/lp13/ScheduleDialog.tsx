@@ -70,7 +70,6 @@ export default function ScheduleDialog() {
           category: "Lead",
           action: "Click",
           label: `Abrir agendamento (${detail.origem}) - LP13`,
-          value: detail.objetivo ?? "",
         });
       }, 0);
     };
@@ -149,9 +148,6 @@ export default function ScheduleDialog() {
         category: "Lead",
         action: "Click",
         label: `Agendar consulta (${originRef.current}) - LP13`,
-        value: patologias.join(", "),
-        outroTexto: selected.has("Outros") ? outroTexto.trim() : "",
-        leadData,
       },
       leadObservationId,
     );
