@@ -24,6 +24,7 @@ export default function TrackingContextCapture({
         contextCookie: COOKIE_CONTEXTO,
         cookieDomain,
         onDiagnostic: code => console.warn("[tracking-context]", code),
+        pageView: true,
       });
     } catch {
       console.warn("[tracking-context]", "initialization-failed");
