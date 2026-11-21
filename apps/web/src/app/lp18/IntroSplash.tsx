@@ -172,7 +172,9 @@ function StoryFull() {
         {PHOTOS.map((src, n) => (
           <div
             key={src}
-            className={`lp18-full-slide${n % 2 ? " lp18-full-side" : ""}`}
+            className={`lp18-full-slide${n % 2 ? " lp18-full-side" : ""}${
+              n === PHOTOS.length - 1 ? " lp18-full-last" : ""
+            }`}
             style={{ "--at": `calc(var(--t-m1) + ${n} * var(--photo-step))` } as React.CSSProperties}
           >
             {/* prioridade baixa: só entram em cena segundos depois, não disputam o primeiro paint */}
@@ -660,21 +662,25 @@ export default function IntroSplash({
           inset: 0;
           animation: lp18-fade-out 320ms ease-in var(--t-m-exit) forwards;
         }
+        /* Cada foto some assim que a 2ª seguinte já a cobriu por inteiro: só 2 ou
+           3 ficam vivas por vez, o que poupa memória de vídeo em celular. */
         .lp18-full-slide {
           position: absolute;
           inset: 0;
+          background: var(--floresta-700); /* aparece se a foto ainda não carregou */
           clip-path: inset(0 0 0 0);
-          will-change: clip-path;
-          animation: lp18-blind 340ms var(--ease-in-out) var(--at) backwards;
+          animation:
+            lp18-blind 340ms var(--ease-in-out) var(--at) backwards,
+            lp18-off 1ms steps(1) calc(var(--at) + 3 * var(--photo-step)) forwards;
         }
-        .lp18-full-side { animation-name: lp18-blind-side; }
+        .lp18-full-side { animation-name: lp18-blind-side, lp18-off; }
+        .lp18-full-last { animation-name: lp18-blind-side, none; }
         .lp18-full-img {
           position: absolute;
           inset: 0;
           width: 100%;
           height: 100%;
           object-fit: cover;
-          will-change: transform;
           animation: lp18-zoom 1400ms var(--ease-out) var(--at) backwards;
         }
         /* véu no verde escuro: garante leitura do logo em cima e do título embaixo */
@@ -890,6 +896,7 @@ export default function IntroSplash({
         }
         @keyframes lp18-fade-in { from { opacity: 0; } }
         @keyframes lp18-fade-out { to { opacity: 0; visibility: hidden; } }
+        @keyframes lp18-off { to { visibility: hidden; } }
         @keyframes lp18-blind { from { clip-path: inset(100% 0 0 0); } }
         @keyframes lp18-blind-side { from { clip-path: inset(0 0 0 100%); } }
         @keyframes lp18-zoom { from { transform: scale(1.18); } }
