@@ -1,10 +1,10 @@
 import { LOGO_ICON_D, LOGO_TEXT_D } from "./logoPaths";
-import AnswerButtons from "./AnswerButtons";
 import Clico from "./Clico";
 
 // /lp18 conta a história da Click numa tela só, em sequência contínua:
 //   logo → Clico dá tchau + frase → "mais de 100 mil" → marcos da história
-//   em fotos ("desde 2023 fazendo história") → Instagram → pergunta.
+//   em fotos ("desde 2023 fazendo história") → tela branca, onde entra o funil
+//   (ver Lp18Shell).
 //
 // Cores e tipografia seguem o aidesignclick (brand/tokens.json, modo escuro):
 // fundo chapado floresta-800, texto quase-branco, destaque lima-300, Lexend
@@ -20,6 +20,8 @@ import Clico from "./Clico";
 //   d = igual à c, mas cada cor nova abre em onda a partir do centro
 // "Nossa história" tem 4 jeitos de a foto aparecer (prop `story`, ?h=1|2|3|4):
 //   1 = baralho · 2 = tela cheia · 3 = carrossel · 4 = polaroids
+// Sem `story`, a cena das fotos não aparece e a tela branca do funil abre logo
+// depois do "100 mil" (é assim na /lp18 por enquanto).
 
 export type StatVariant = "a" | "b" | "c" | "d";
 export type StoryVariant = "1" | "2" | "3" | "4";
@@ -28,7 +30,9 @@ const HEADLINE = "O maior ecossistema de cannabis medicinal da América Latina";
 const ACCENT_FROM = HEADLINE.split(" ").indexOf("América");
 // Cada coluna do "100" é uma tira de dígitos que rola e para no último.
 const STAT_COLUMNS = ["3581", "246970", "13572580"];
-const QUESTION = "Você já teve contato prévio com esse novo tipo de tratamento?";
+// Cena do "+1 milhão no Instagram": escondida por enquanto. Pra voltar, troque
+// pra true e aponte o --t-end das regras de fim pra var(--t-ig-exit).
+const MOSTRAR_INSTAGRAM = false;
 
 // Marcos da história. As fotos ainda são retângulos de marcação.
 const MOMENTS = ["Click Runner", "Limpeza de praia", "Carnaval"];
@@ -244,7 +248,7 @@ function StoryPolaroids() {
 
 export default function IntroSplash({
   stat = "a",
-  story = "1",
+  story,
 }: {
   stat?: StatVariant;
   story?: StoryVariant;
@@ -289,8 +293,7 @@ export default function IntroSplash({
           --t-m-exit: calc(9450ms + var(--stat-extra) + var(--m2-extra)); 
           --t-ig: calc(9650ms + var(--stat-extra) + var(--m2-extra)); /* Instagram */
           --t-ig-exit: calc(10900ms + var(--stat-extra) + var(--m2-extra)); 
-          --t-question: calc(11100ms + var(--stat-extra) + var(--m2-extra)); /* pergunta entra */
-          --t-buttons: calc(11550ms + var(--stat-extra) + var(--m2-extra)); /* Sim / Não */
+          --t-end: var(--t-stat-exit); /* tela branca abre e o funil entra */
 
           position: relative;
           min-height: 100svh;
@@ -333,8 +336,7 @@ export default function IntroSplash({
         /* ───────── Cenas: todas ocupam o mesmo lugar, abaixo do logo ───────── */
         .lp18-copy,
         .lp18-stat,
-        .lp18-scene,
-        .lp18-ask {
+        .lp18-scene {
           position: absolute;
           top: calc(50% - 80px);
           left: 0;
@@ -359,8 +361,7 @@ export default function IntroSplash({
           transform-origin: 0 0;
           animation: lp18-wave 1300ms var(--ease-in-out) var(--t-wave);
         }
-        .lp18-headline,
-        .lp18-question {
+        .lp18-headline {
           margin: 0 auto;
           font-family: var(--display);
           font-weight: 500;
@@ -369,7 +370,6 @@ export default function IntroSplash({
           text-wrap: balance;
         }
         .lp18-headline { max-width: 17ch; font-size: clamp(1.75rem, 6.4vw, 3.25rem); }
-        .lp18-question { max-width: 19ch; font-size: clamp(1.625rem, 5.8vw, 2.75rem); }
 
         /* Palavra subindo de dentro de uma máscara */
         .lp18-word {
@@ -382,9 +382,6 @@ export default function IntroSplash({
         .lp18-word > span {
           display: inline-block;
           animation: lp18-word 650ms var(--ease-out) calc(var(--t-words) + var(--i) * 55ms) backwards;
-        }
-        .lp18-question .lp18-word > span {
-          animation-delay: calc(var(--t-question) + var(--i) * 40ms);
         }
         .lp18-accent { color: var(--lima-300); }
 
@@ -781,44 +778,19 @@ export default function IntroSplash({
           animation: lp18-rise 600ms var(--ease-out) calc(var(--t-m3) + 250ms) backwards;
         }
 
-        /* ───────── Pergunta ───────── */
-        .lp18-answers {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-          max-width: 360px;
-          margin: 28px auto 0;
-        }
-        .lp18-answer {
-          min-height: 56px;
-          border-radius: 14px;
-          border: 1.5px solid var(--floresta-500);
-          background: var(--floresta-700);
-          color: var(--quase-branco);
-          font-family: inherit;
-          font-size: 1.0625rem;
-          font-weight: 600;
-          cursor: pointer;
-          -webkit-tap-highlight-color: transparent;
-          touch-action: manipulation;
-          animation: lp18-rise 550ms var(--ease-out) calc(var(--t-buttons) + var(--i) * 80ms) backwards;
-          transition:
-            scale 150ms ease-out,
-            background-color 150ms ease,
-            border-color 150ms ease,
-            color 150ms ease;
-        }
-        .lp18-answer:active { scale: 0.97; }
-        .lp18-answer:focus-visible { outline: 2px solid var(--lima-300); outline-offset: 3px; }
-        .lp18-answer[aria-pressed="true"] {
-          background: var(--lima-300);
-          border-color: var(--lima-300);
-          color: var(--floresta-800);
-        }
-        @media (hover: hover) and (pointer: fine) {
-          .lp18-answer:not([aria-pressed="true"]):hover {
-            border-color: var(--lima-300);
-          }
+        /* ───────── Fim: tela branca do funil ─────────
+           Um círculo branco abre do centro por cima da última cena, como os flashes
+           da história. Quando termina, o Lp18Shell troca a abertura pelo funil,
+           que já nasce nesse mesmo branco. */
+        /* Com a cena das fotos, a tela branca espera ela acabar */
+        .lp18:has(.lp18-moments, .lp18-full) { --t-end: var(--t-m-exit); }
+        .lp18-end {
+          position: absolute;
+          inset: 0;
+          z-index: 2; /* por cima do logo e das fotos */
+          background: #fff;
+          clip-path: circle(0% at 50% 50%);
+          animation: lp18-flash-in 650ms var(--ease-out) var(--t-end) forwards;
         }
 
         /* ───────── Pular: checkbox + :has(), funciona sem JS ───────── */
@@ -839,7 +811,7 @@ export default function IntroSplash({
           -webkit-tap-highlight-color: transparent;
           animation:
             lp18-rise 500ms var(--ease-out) 1600ms backwards,
-            lp18-out 200ms ease-in var(--t-ig-exit) forwards;
+            lp18-out 200ms ease-in var(--t-end) forwards;
         }
         .lp18-skip-input:focus-visible + .lp18-skip { outline: 2px solid var(--lima-300); outline-offset: 3px; }
 
@@ -902,28 +874,22 @@ export default function IntroSplash({
           33%, 67% { transform: rotate(-3deg); }
         }
 
-        /* Pulou: vai direto pro estado final (logo no topo + pergunta) */
-        .lp18:has(.lp18-skip-input:checked) :is(.lp18-copy, .lp18-stat, .lp18-flash, .lp18-build, .lp18-scene, .lp18-full, .lp18-skip) {
-          display: none;
+        /* Pulou: a tela branca abre na hora e o funil entra */
+        .lp18:has(.lp18-skip-input:checked) .lp18-skip { display: none; }
+        .lp18:has(.lp18-skip-input:checked) .lp18-end {
+          animation: lp18-flash-in 450ms var(--ease-out) forwards;
         }
-        .lp18:has(.lp18-skip-input:checked) :is(.lp18-logo, .lp18-icon-shift, .lp18-icon-pop, .lp18-wordmark, .lp18-question .lp18-word > span, .lp18-answer) {
-          animation: none;
-        }
-        .lp18:has(.lp18-skip-input:checked) .lp18-logo { transform: translateY(calc(-50svh + 52px)) scale(0.86); }
-        .lp18:has(.lp18-skip-input:checked) .lp18-ask { animation: lp18-rise 400ms var(--ease-out); }
 
         /* Sem movimento: mesmo estado final, sem nenhuma animação */
         @media (prefers-reduced-motion: reduce) {
           .lp18-logo,
           .lp18-icon-shift,
           .lp18-icon-pop,
-          .lp18-wordmark,
-          .lp18-question .lp18-word > span,
-          .lp18-answer {
+          .lp18-wordmark {
             animation: none;
           }
-          .lp18-answer { transition: none; }
-          .lp18-logo { transform: translateY(calc(-50svh + 52px)) scale(0.86); }
+          /* Sem movimento a abertura não roda: fica a tela branca e o funil entra. */
+          .lp18-end { animation: none; clip-path: none; }
           .lp18-copy,
           .lp18-stat,
           .lp18-flash,
@@ -973,6 +939,7 @@ export default function IntroSplash({
       {story === "4" && <StoryPolaroids />}
 
       {/* Instagram: mesma animação de flash da versão B do "100 mil" */}
+      {MOSTRAR_INSTAGRAM && (
       <div className="lp18-flash lp18-flash-ig">
         <div>
           <p className="lp18-flash-kicker">No Instagram</p>
@@ -987,13 +954,9 @@ export default function IntroSplash({
           <p className="lp18-flash-label">de seguidores</p>
         </div>
       </div>
+      )}
 
-      <div className="lp18-ask">
-        <h1 className="lp18-question">
-          <Words text={QUESTION} />
-        </h1>
-        <AnswerButtons />
-      </div>
+      <div className="lp18-end" aria-hidden="true" />
     </>
   );
 }

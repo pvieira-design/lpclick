@@ -4,8 +4,7 @@ import AvaliacaoClient from "../avaliacao/AvaliacaoClient";
 import type { Depoimento, GoalId } from "../avaliacao/testimonialSelection";
 
 // Passos do formulário da /lp18: o mesmo quiz da /avaliacao, até o envio no
-// WhatsApp, em fundo branco. O passo do contato com CBD não aparece de novo,
-// porque a pessoa já respondeu na abertura.
+// WhatsApp, em fundo branco, logo depois da abertura animada.
 // Os estilos são os da /avaliacao (page.tsx de lá), só com o fundo trocado.
 const CSS = `
         .avaliacao {
@@ -76,23 +75,19 @@ const CSS = `
         .avaliacao .ganhou .roleta-luz { fill: #F2C94C; opacity: 1; animation: roleta-pisca .5s steps(1) 4; }
         @keyframes roleta-pisca { 0% { opacity: 1; fill: #F2C94C; } 50% { opacity: .45; fill: #F4F1E6; } }
         @media (prefers-reduced-motion: reduce) { .avaliacao .roleta-luz { animation: none !important; } }
-              /* Só na /lp18: entra por cima do verde da abertura. */
-        .lp18-form { animation: lp18-form-in 280ms cubic-bezier(0.23, 1, 0.32, 1); }
-        @keyframes lp18-form-in { from { opacity: 0; } }
-        @media (prefers-reduced-motion: reduce) { .lp18-form { animation: none; } }
+        /* Só na /lp18: a abertura termina numa tela branca e o conteúdo do
+           funil sobe por cima dela. Fica no contêiner (que monta uma vez só),
+           não no passo, que já tem a transição própria entre perguntas. */
+        .lp18-form > div { animation: lp18-form-in 550ms cubic-bezier(0.23, 1, 0.32, 1) 60ms backwards; }
+        @keyframes lp18-form-in { from { opacity: 0; translate: 0 18px; } }
+        @media (prefers-reduced-motion: reduce) { .lp18-form > div { animation: none; } }
 `;
 
-export default function Lp18Form({
-  depoimentos,
-  jaUsou,
-}: {
-  depoimentos: Record<GoalId, Depoimento[]>;
-  jaUsou: boolean;
-}) {
+export default function Lp18Form({ depoimentos }: { depoimentos: Record<GoalId, Depoimento[]> }) {
   return (
     <>
       <style>{CSS}</style>
-      <AvaliacaoClient depoimentos={depoimentos} origem="LP18" jaUsouInicial={jaUsou} />
+      <AvaliacaoClient depoimentos={depoimentos} origem="LP18" />
     </>
   );
 }

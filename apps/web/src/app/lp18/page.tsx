@@ -10,9 +10,9 @@ export const metadata: Metadata = {
     "Mais de 100 mil pacientes atendidos. Tratamento com cannabis medicinal 100% online, com acompanhamento médico completo.",
 };
 
-// Combinação em uso: "100 mil" versão C + fotos em tela cheia. Depois do
-// Sim / Não, o Lp18Shell troca a abertura pelos passos do formulário (o quiz da
-// /avaliacao em fundo branco), que termina no envio pelo WhatsApp.
+// Combinação em uso: "100 mil" versão C, sem a cena das fotos nem a do
+// Instagram (escondidas por enquanto). No fim da abertura a tela fica branca e o Lp18Shell troca a abertura pelo funil (o quiz
+// da /avaliacao em fundo branco), que termina no envio pelo WhatsApp.
 // A página é estática; as outras versões da abertura continuam em
 // /lp18/variantes?v=a|b|c|d&h=1|2|3|4.
 export const revalidate = false;
@@ -20,7 +20,7 @@ export const revalidate = false;
 export default function LandingPage() {
   return (
     <Lp18Shell fontClass={`${lexend.variable} ${inter.variable}`} depoimentos={DEPOIMENTOS}>
-      <IntroSplash stat="c" story="2" />
+      <IntroSplash stat="c" />
     </Lp18Shell>
   );
 }

@@ -3,7 +3,7 @@ import IntroSplash, { type StatVariant, type StoryVariant } from "../IntroSplash
 import { inter, lexend } from "../fonts";
 
 // Página interna de validação: ?v=a|b|c|d troca a versão do ato "100 mil" e
-// ?h=1|2|3|4 a de "Nossa história". A /lp18 pública é estática e fixa em c + 2.
+// ?h=1|2|3|4 a de "Nossa história". A /lp18 pública é estática, fixa em c e sem a cena das fotos.
 
 export const metadata: Metadata = {
   title: "LP18 · variantes",

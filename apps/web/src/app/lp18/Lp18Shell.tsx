@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { sendGTMEvent } from "@next/third-parties/google";
 import type { Depoimento, GoalId } from "../avaliacao/testimonialSelection";
@@ -10,12 +10,8 @@ import type { Depoimento, GoalId } from "../avaliacao/testimonialSelection";
 const carregarForm = () => import("./Lp18Form");
 const Lp18Form = dynamic(carregarForm, { ssr: false, loading: () => null });
 
-const AnswerContext = createContext<(jaUsou: boolean) => void>(() => {});
-export const useAnswer = () => useContext(AnswerContext);
-
-// Tempo pro botão escolhido acender antes de a tela trocar.
-const TROCA_MS = 260;
-
+// A abertura termina com um círculo branco tomando a tela (.lp18-end). Quando
+// ele acaba de abrir, a abertura dá lugar ao funil, que nasce no mesmo branco.
 export default function Lp18Shell({
   fontClass,
   depoimentos,
@@ -25,36 +21,41 @@ export default function Lp18Shell({
   depoimentos: Record<GoalId, Depoimento[]>;
   children: React.ReactNode;
 }) {
-  const [jaUsou, setJaUsou] = useState<boolean | null>(null);
   const [noForm, setNoForm] = useState(false);
-  const respondeu = useRef(false);
+  const irProFunil = useCallback(() => {
+    carregarForm();
+    setNoForm(true);
+  }, []);
 
   useEffect(() => {
     sendGTMEvent({ event: "quizStep", category: "Quiz", action: "View", label: "LP18 - abertura" });
+    // Sem movimento a abertura não roda; e o "Pular" pode ter sido marcado antes
+    // da hidratação, quando o fim da animação ainda não era ouvido.
+    const pulou = (document.getElementById("lp18-skip") as HTMLInputElement | null)?.checked;
+    if (pulou || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      irProFunil();
+      return;
+    }
     const t = setTimeout(carregarForm, 2500);
     return () => clearTimeout(t);
-  }, []);
+  }, [irProFunil]);
 
-  const responder = useCallback((valor: boolean) => {
-    if (respondeu.current) return;
-    respondeu.current = true;
-    setJaUsou(valor);
-    sendGTMEvent({ event: "quizStep", category: "Quiz", action: "View", label: `LP18 - contato ${valor ? "sim" : "nao"}` });
-    carregarForm();
-    setTimeout(() => setNoForm(true), TROCA_MS);
-  }, []);
-
-  if (noForm && jaUsou !== null) {
+  if (noForm) {
     return (
       <div className={`avaliacao lp18-form ${fontClass}`}>
-        <Lp18Form depoimentos={depoimentos} jaUsou={jaUsou} />
+        <Lp18Form depoimentos={depoimentos} />
       </div>
     );
   }
 
   return (
-    <AnswerContext.Provider value={responder}>
-      <main className={`lp18 ${fontClass}`}>{children}</main>
-    </AnswerContext.Provider>
+    <main
+      className={`lp18 ${fontClass}`}
+      onAnimationEnd={(e) => {
+        if ((e.target as HTMLElement).classList.contains("lp18-end")) irProFunil();
+      }}
+    >
+      {children}
+    </main>
   );
 }
