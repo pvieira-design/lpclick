@@ -12,6 +12,11 @@ const Lp18Form = dynamic(carregarForm, { ssr: false, loading: () => null });
 
 // A abertura termina com um círculo branco tomando a tela (.lp18-end). Quando
 // ele acaba de abrir, a abertura dá lugar ao funil, que nasce no mesmo branco.
+// Quem aperta "Pular" gera um quizStep à parte, pra separar quem viu a abertura
+// inteira de quem pulou.
+const pulouAbertura = () =>
+  sendGTMEvent({ event: "quizStep", category: "Quiz", action: "View", label: "LP18 - pulou abertura" });
+
 export default function Lp18Shell({
   fontClass,
   depoimentos,
@@ -32,6 +37,7 @@ export default function Lp18Shell({
     // Sem movimento a abertura não roda; e o "Pular" pode ter sido marcado antes
     // da hidratação, quando o fim da animação ainda não era ouvido.
     const pulou = (document.getElementById("lp18-skip") as HTMLInputElement | null)?.checked;
+    if (pulou) pulouAbertura();
     if (pulou || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       irProFunil();
       return;
@@ -53,6 +59,10 @@ export default function Lp18Shell({
       className={`lp18 ${fontClass}`}
       onAnimationEnd={(e) => {
         if ((e.target as HTMLElement).classList.contains("lp18-end")) irProFunil();
+      }}
+      onChange={(e) => {
+        const alvo = e.target as HTMLInputElement;
+        if (alvo.id === "lp18-skip" && alvo.checked) pulouAbertura();
       }}
     >
       {children}
