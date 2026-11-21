@@ -9,7 +9,7 @@ import {
   sendCorrelatedLeadEvent,
   withLeadObservation,
 } from "@/lib/lead-observation";
-import { buildWhatsAppUrl, collectLeadData, sendLeadToApi } from "./lead";
+import { buildWhatsAppUrl, collectLeadData, sendLeadToApi, sendQuizAnswers } from "./lead";
 import { Cena, SimboloClick, type Pose, type Prop } from "./Ilustra";
 import { tocarToque } from "./som";
 import Roleta, { PREMIOS, premioSalvo, type PremioId } from "./Roleta";
@@ -194,6 +194,20 @@ export default function AvaliacaoClient({
       const leadObservationId = captureLeadObservation();
       sendLeadToApi(withLeadObservation(leadData, leadObservationId));
       sendLeadToCrm(trimmed, patologias);
+      sendQuizAnswers("avaliacao", {
+        origem,
+        ramo: "lead",
+        paraQuem: r.paraQuem ?? null,
+        objetivos: r.objetivos,
+        patologias,
+        outro: r.outro?.trim() || null,
+        tempo: r.tempo ?? null,
+        jaUsou: r.jaUsou ?? null,
+        premio: r.premio ?? null,
+        nome: trimmed,
+        mensagem: texto,
+        lead_observation_id: leadObservationId ?? null,
+      });
       sendCorrelatedLeadEvent(
         {
           event: "buttonWhatsappClicked",
@@ -206,6 +220,15 @@ export default function AvaliacaoClient({
       );
     } else {
       sendGTMEvent({ event: "buttonClick", category: "Paciente", action: "Click", label: `Enviar no WhatsApp - ${origem} paciente` });
+      // Sem captureLeadObservation aqui: ele registra lead_submitted no tracking.
+      sendQuizAnswers("avaliacao", {
+        origem,
+        ramo: "paciente",
+        pedido: r.pedido ?? null,
+        nome: trimmed,
+        mensagem: texto,
+        lead_observation_id: null,
+      });
     }
 
     setWaUrl(url);

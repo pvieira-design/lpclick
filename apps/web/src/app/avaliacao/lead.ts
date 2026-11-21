@@ -78,20 +78,41 @@ export function collectLeadData(name: string, patologies: string[]): LeadPayload
 }
 
 export function sendLeadToApi(payload: LeadPayload): void {
-  const body = JSON.stringify(payload);
+  postEmSegundoPlano(LEADS_API_ENDPOINT, JSON.stringify(payload));
+}
 
+function postEmSegundoPlano(endpoint: string, body: string): void {
   // sendBeacon sobrevive à navegação disparada por window.open — preferência nº 1.
   if (typeof navigator.sendBeacon === "function") {
     const blob = new Blob([body], { type: "application/json" });
-    if (navigator.sendBeacon(LEADS_API_ENDPOINT, blob)) return;
+    if (navigator.sendBeacon(endpoint, blob)) return;
   }
 
-  fetch(LEADS_API_ENDPOINT, {
+  fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body,
     keepalive: true,
   }).catch(() => {});
+}
+
+// Respostas do quiz salvas no Neon (form_submissions) para cruzar com o
+// tracking e o CRM. Em segundo plano, sem await: nunca atrasa o window.open do
+// WhatsApp. Falha é silenciosa.
+export function sendQuizAnswers(formType: string, respostas: Record<string, unknown>): void {
+  // Em dev, não suja o Neon de produção: loga o payload e sai.
+  if (process.env.NODE_ENV === "development") {
+    console.info("[quiz] dev — respostas não salvas no Neon", { formType, respostas });
+    return;
+  }
+
+  const utm = Object.fromEntries(
+    [...new URLSearchParams(window.location.search)].filter(([k]) => k.startsWith("utm_")),
+  );
+  postEmSegundoPlano(
+    "/api/forms/submit",
+    JSON.stringify({ formType, payload: { ...respostas, pageUrl: window.location.href, ...utm } }),
+  );
 }
 
 // Diferente das outras LPs: o CRM hoje registra o contato assim que a mensagem

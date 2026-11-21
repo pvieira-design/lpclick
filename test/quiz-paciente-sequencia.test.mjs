@@ -171,6 +171,7 @@ function session(file) {
         `https://wa.example.test/?text=${encodeURIComponent(message)}`,
       collectLeadData: () => ({}),
       sendLeadToApi() {},
+      sendQuizAnswers() {},
     },
     "./Ilustra": { Cena: "Cena", SimboloClick: "SimboloClick" },
     "./som": { tocarToque() {} },

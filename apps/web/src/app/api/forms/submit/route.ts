@@ -24,6 +24,10 @@ const TESTIMONIAL_PATHS = [
   "/bem-estar",
 ];
 
+// Respostas dos quizzes trazem dado de saúde (LGPD): nada de IP, userAgent
+// nem acceptLanguage junto, só o horário de chegada.
+const QUIZ_SEM_RASTRO = new Set(["avaliacao", "green-friday"]);
+
 function clientIp(request: Request): string | null {
   const xff = request.headers.get("x-forwarded-for");
   if (xff) return xff.split(",")[0]?.trim() || null;
@@ -46,14 +50,17 @@ export async function POST(request: Request) {
       );
     }
 
+    const receivedAt = new Date().toISOString();
     const auditedPayload = {
       ...payload,
-      serverAudit: {
-        ip: clientIp(request),
-        userAgent: request.headers.get("user-agent"),
-        acceptLanguage: request.headers.get("accept-language"),
-        receivedAt: new Date().toISOString(),
-      },
+      serverAudit: QUIZ_SEM_RASTRO.has(formType)
+        ? { receivedAt }
+        : {
+            ip: clientIp(request),
+            userAgent: request.headers.get("user-agent"),
+            acceptLanguage: request.headers.get("accept-language"),
+            receivedAt,
+          },
     };
 
     const result = await sql`
