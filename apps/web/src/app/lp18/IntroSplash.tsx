@@ -4,7 +4,7 @@ import Clico from "./Clico";
 
 // /lp18 conta a história da Click numa tela só, em sequência contínua:
 //   logo → Clico dá tchau + frase → "mais de 100 mil" → marcos da história
-//   (fotos) → Instagram → "desde 2023" → pergunta.
+//   em fotos ("desde 2023 fazendo história") → Instagram → pergunta.
 //
 // Cores e tipografia seguem o aidesignclick (brand/tokens.json, modo escuro):
 // fundo chapado floresta-800, texto quase-branco, destaque lima-300, Lexend
@@ -183,7 +183,11 @@ function StoryFull() {
         ))}
       </div>
       <div className="lp18-full-scrim" />
-      <p className="lp18-full-title">Nossa história</p>
+      <p className="lp18-full-title">
+        Desde <span className="lp18-accent">2023</span>
+        <br />
+        fazendo história
+      </p>
     </div>
   );
 }
@@ -275,10 +279,8 @@ export default function IntroSplash({
           --t-m-exit: calc(9450ms + var(--stat-extra) + var(--m2-extra)); 
           --t-ig: calc(9650ms + var(--stat-extra) + var(--m2-extra)); /* Instagram */
           --t-ig-exit: calc(10900ms + var(--stat-extra) + var(--m2-extra)); 
-          --t-since: calc(11100ms + var(--stat-extra) + var(--m2-extra)); /* "desde 2023" */
-          --t-since-exit: calc(12500ms + var(--stat-extra) + var(--m2-extra)); 
-          --t-question: calc(12700ms + var(--stat-extra) + var(--m2-extra)); /* pergunta entra */
-          --t-buttons: calc(13150ms + var(--stat-extra) + var(--m2-extra)); /* Sim / Não */
+          --t-question: calc(11100ms + var(--stat-extra) + var(--m2-extra)); /* pergunta entra */
+          --t-buttons: calc(11550ms + var(--stat-extra) + var(--m2-extra)); /* Sim / Não */
 
           position: relative;
           min-height: 100svh;
@@ -347,22 +349,6 @@ export default function IntroSplash({
           transform-origin: 0 0;
           animation: lp18-wave 1300ms var(--ease-in-out) var(--t-wave);
         }
-        .lp18-since {
-          --t-scene: var(--t-since);
-          --t-words: calc(var(--t-since) + 120ms);
-          top: calc(50% - 100px);
-          animation: lp18-out 260ms ease-in var(--t-since-exit) forwards;
-        }
-        .lp18-stat {
-          top: calc(50% - 110px);
-          animation: lp18-out 260ms ease-in var(--t-stat-exit) forwards;
-        }
-        .lp18-moments {
-          --t-scene: var(--t-m1);
-          top: calc(50% - 235px);
-          animation: lp18-out 260ms ease-in var(--t-m-exit) forwards;
-        }
-
         .lp18-headline,
         .lp18-question {
           margin: 0 auto;
@@ -591,18 +577,6 @@ export default function IntroSplash({
           letter-spacing: -0.02em;
           animation: lp18-from-above 620ms var(--ease-in-out) var(--t4) backwards;
         }
-
-        /* ───────── "Desde 2023" ───────── */
-        .lp18-since-big {
-          margin: 0;
-          font-family: var(--display);
-          font-size: clamp(3.25rem, 15.5vw, 6.5rem);
-          font-weight: 600;
-          line-height: 1.02;
-          letter-spacing: -0.04em;
-          white-space: nowrap;
-        }
-        .lp18-since .lp18-stat-label { animation-delay: calc(var(--t-since) + 420ms); }
 
         /* ───────── Momentos: baralho de fotos ───────── */
         .lp18-deck {
@@ -855,7 +829,7 @@ export default function IntroSplash({
           -webkit-tap-highlight-color: transparent;
           animation:
             lp18-rise 500ms var(--ease-out) 1600ms backwards,
-            lp18-out 200ms ease-in var(--t-since-exit) forwards;
+            lp18-out 200ms ease-in var(--t-ig-exit) forwards;
         }
         .lp18-skip-input:focus-visible + .lp18-skip { outline: 2px solid var(--lima-300); outline-offset: 3px; }
 
@@ -1002,14 +976,6 @@ export default function IntroSplash({
           </p>
           <p className="lp18-flash-label">de seguidores</p>
         </div>
-      </div>
-
-      <div className="lp18-scene lp18-since">
-        <p className="lp18-kicker">Desde</p>
-        <p className="lp18-since-big">
-          <Words text="2023" accentFrom={0} />
-        </p>
-        <p className="lp18-stat-label">fazendo história</p>
       </div>
 
       <div className="lp18-ask">
