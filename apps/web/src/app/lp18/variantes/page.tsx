@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Lexend } from "next/font/google";
 import IntroSplash, { type StatVariant, type StoryVariant } from "../IntroSplash";
+import { inter, lexend } from "../fonts";
 
 // Página interna de validação: ?v=a|b|c|d troca a versão do ato "100 mil" e
 // ?h=1|2|3|4 a de "Nossa história". A /lp18 pública é estática e fixa em c + 2.
-const lexend = Lexend({
-  subsets: ["latin"],
-  weight: ["500", "600"],
-  variable: "--font-display",
-  display: "swap",
-});
-const inter = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
 
 export const metadata: Metadata = {
   title: "LP18 · variantes",
