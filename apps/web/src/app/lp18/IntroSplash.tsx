@@ -37,9 +37,11 @@ const MOMENTS = ["Click Runner", "Limpeza de praia", "Carnaval"];
 // ponha o arquivo em public/lp18 como foto-NN.webp e aumente PHOTO_COUNT; a
 // duração da cena se ajusta sozinha.
 const PHOTO_COUNT = 18;
+// Cada foto existe em 720px e em 1080px (foto-NN-1080.webp): o navegador pega
+// a maior só em tela de alta densidade, pra ficar nítida sem pesar nas outras.
 const PHOTOS = Array.from(
   { length: PHOTO_COUNT },
-  (_, n) => `/lp18/foto-${String(n + 1).padStart(2, "0")}.webp`,
+  (_, n) => `/lp18/foto-${String(n + 1).padStart(2, "0")}`,
 );
 
 const i = (n: number) => ({ "--i": n }) as React.CSSProperties;
@@ -178,7 +180,15 @@ function StoryFull() {
             style={{ "--at": `calc(var(--t-m1) + ${n} * var(--photo-step))` } as React.CSSProperties}
           >
             {/* prioridade baixa: só entram em cena segundos depois, não disputam o primeiro paint */}
-            <img className="lp18-full-img" src={src} alt="" decoding="async" fetchPriority="low" />
+            <img
+              className="lp18-full-img"
+              src={`${src}.webp`}
+              srcSet={`${src}.webp 720w, ${src}-1080.webp 1080w`}
+              sizes="100vw"
+              alt=""
+              decoding="async"
+              fetchPriority="low"
+            />
           </div>
         ))}
       </div>

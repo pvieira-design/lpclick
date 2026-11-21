@@ -115,10 +115,21 @@ function montarMensagem(nome: string, r: Respostas): string {
   return linhas.join("\n");
 }
 
-export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<GoalId, Depoimento[]> }) {
+// origem: nome da página nos eventos do GTM. jaUsouInicial: quando a página já
+// perguntou sobre o contato com CBD antes do quiz (a /lp18), o passo "contato"
+// é pulado e a resposta entra direto na mensagem.
+export default function AvaliacaoClient({
+  depoimentos,
+  origem = "Avaliacao",
+  jaUsouInicial,
+}: {
+  depoimentos: Record<GoalId, Depoimento[]>;
+  origem?: string;
+  jaUsouInicial?: boolean;
+}) {
   const reduce = useReducedMotion();
   const [historico, setHistorico] = useState<StepId[]>(["inicio"]);
-  const [r, setR] = useState<Respostas>({ objetivos: [] });
+  const [r, setR] = useState<Respostas>({ objetivos: [], jaUsou: jaUsouInicial });
   const [nome, setNome] = useState("");
   const [erroNome, setErroNome] = useState(false);
   const [waUrl, setWaUrl] = useState<string | null>(null);
@@ -129,10 +140,10 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
   useEffect(() => {
     if (ROTULO_DO_PASSO[step] !== ultimoRotulo.current) {
       ultimoRotulo.current = ROTULO_DO_PASSO[step];
-      sendGTMEvent({ event: "quizStep", category: "Quiz", action: "View", label: `Avaliacao - ${ROTULO_DO_PASSO[step]}` });
+      sendGTMEvent({ event: "quizStep", category: "Quiz", action: "View", label: `${origem} - ${ROTULO_DO_PASSO[step]}` });
     }
     window.scrollTo({ top: 0, behavior: "auto" });
-  }, [step]);
+  }, [step, origem]);
 
   const ir = useCallback((proximo: StepId) => setHistorico((h) => [...h, proximo]), []);
   // Troca o passo atual em vez de empilhar: voltar do prêmio não reabre a roleta.
@@ -188,18 +199,18 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
           event: "buttonWhatsappClicked",
           category: "Lead",
           action: "Click",
-          label: "Enviar no WhatsApp - Avaliacao",
+          label: `Enviar no WhatsApp - ${origem}`,
           premio: r.premio ?? "",
         },
         leadObservationId,
       );
     } else {
-      sendGTMEvent({ event: "buttonClick", category: "Paciente", action: "Click", label: "Enviar no WhatsApp - Avaliacao paciente" });
+      sendGTMEvent({ event: "buttonClick", category: "Paciente", action: "Click", label: `Enviar no WhatsApp - ${origem} paciente` });
     }
 
     setWaUrl(url);
     window.open(url, "_blank", "noopener,noreferrer");
-  }, [nome, r]);
+  }, [nome, r, origem]);
 
   const total = r.paciente ? TOTAL_PACIENTE : TOTAL_LEAD;
   const progresso = step === "inicio" ? 0.04 : Math.min(1, (historico.length - 1) / total);
@@ -417,7 +428,7 @@ export default function AvaliacaoClient({ depoimentos }: { depoimentos: Record<G
 
           {step === "tempo" && (
             <Tela titulo={<>Há quanto tempo {r.paraQuem === "familiar" ? "ele/ela" : "você"} <b>convive com isso?</b></>}>
-              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, "contato") }))} />
+              <Opcoes opcoes={TEMPOS.map((t) => ({ label: t, onClick: () => responder({ tempo: t }, jaUsouInicial === undefined ? "contato" : "acolhimento") }))} />
             </Tela>
           )}
 
