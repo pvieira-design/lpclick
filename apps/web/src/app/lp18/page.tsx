@@ -1,18 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Lexend } from "next/font/google";
 import { DEPOIMENTOS } from "../avaliacao/testimonialSelection";
 import IntroSplash from "./IntroSplash";
 import Lp18Shell from "./Lp18Shell";
-
-// Tipografia da marca (aidesignclick): Lexend nos títulos, Inter no corpo.
-// Lexend vai como fonte variável (um arquivo só): a abertura usa 500 e 600, o
-// formulário usa 400, 600 e 700.
-const lexend = Lexend({
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-const inter = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
+import { inter, lexend } from "./fonts";
 
 export const metadata: Metadata = {
   title: "Click Cannabis · O maior ecossistema de cannabis medicinal da América Latina",
