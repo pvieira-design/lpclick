@@ -33,9 +33,14 @@ const QUESTION = "Você já teve contato prévio com esse novo tipo de tratament
 // Marcos da história. As fotos ainda são retângulos de marcação.
 const MOMENTS = ["Click Runner", "Limpeza de praia", "Carnaval"];
 // Fotos de "Nossa história": na versão tela cheia passam todas, uma atrás da
-// outra. Pra acrescentar foto, é só pôr o arquivo em public/lp18 e listar aqui;
-// a duração da cena se ajusta sozinha. (Por ora, as da limpeza de praia.)
-const PHOTOS = [1, 2, 3, 4].map((n) => `/lp18/praia-${n}.webp`);
+// outra (esportes → praia → pessoas → limpeza de praia). Pra acrescentar foto,
+// ponha o arquivo em public/lp18 como foto-NN.webp e aumente PHOTO_COUNT; a
+// duração da cena se ajusta sozinha.
+const PHOTO_COUNT = 18;
+const PHOTOS = Array.from(
+  { length: PHOTO_COUNT },
+  (_, n) => `/lp18/foto-${String(n + 1).padStart(2, "0")}.webp`,
+);
 
 const i = (n: number) => ({ "--i": n }) as React.CSSProperties;
 
@@ -158,8 +163,8 @@ function StoryDeck() {
   );
 }
 
-// 2 · Tela cheia: as fotos passam em sequência, uma atrás da outra, cada uma
-// subindo como persiana com zoom lento. O título fica fixo.
+// 2 · Tela cheia: as fotos passam em sequência rápida, uma atrás da outra,
+// entrando alternadamente por baixo e pelo lado, com zoom lento. O título fica fixo.
 function StoryFull() {
   return (
     <div className="lp18-full">
@@ -167,10 +172,11 @@ function StoryFull() {
         {PHOTOS.map((src, n) => (
           <div
             key={src}
-            className={`lp18-full-slide${n > 0 ? " lp18-full-quick" : ""}`}
+            className={`lp18-full-slide${n % 2 ? " lp18-full-side" : ""}`}
             style={{ "--at": `calc(var(--t-m1) + ${n} * var(--photo-step))` } as React.CSSProperties}
           >
-            <img className="lp18-full-img" src={src} alt="" decoding="async" />
+            {/* prioridade baixa: só entram em cena segundos depois, não disputam o primeiro paint */}
+            <img className="lp18-full-img" src={src} alt="" decoding="async" fetchPriority="low" />
           </div>
         ))}
       </div>
@@ -615,7 +621,7 @@ export default function IntroSplash({
         }
         .lp18-ph-1 { background: var(--floresta-700); }
         .lp18-ph-2 {
-          background: var(--verde-700) url(/lp18/praia-1.webp) center / cover;
+          background: var(--verde-700) url(/lp18/foto-15.webp) center / cover;
           color: transparent;
         }
         .lp18-ph-3 { background: var(--verde-600); }
@@ -642,11 +648,13 @@ export default function IntroSplash({
         .lp18-card-2 { --r: 3deg;  --from: 70%, 48px;  --at: var(--t-m2); }
         .lp18-card-3 { --r: -1deg; --from: 0%, 90px;   --at: var(--t-m3); }
 
-        /* 2 · Tela cheia. A cena dura (nº de fotos × --photo-step) em vez dos
-           3600ms das versões por marco; a diferença empurra o resto da história. */
-        .lp18 { --photo-step: 700ms; }
-        .lp18:has(.lp18-full) { --m2-extra: calc(${PHOTOS.length} * var(--photo-step) - 3600ms); }
-        .lp18-full-quick { animation-duration: 500ms; }
+        /* 2 · Tela cheia. A cena dura (nº de fotos × --photo-step) + uma pausa na
+           última, em vez dos 3600ms das versões por marco; a diferença empurra
+           o resto da história. */
+        .lp18 { --photo-step: 400ms; --photo-hold: 700ms; }
+        .lp18:has(.lp18-full) {
+          --m2-extra: calc(${PHOTOS.length} * var(--photo-step) + var(--photo-hold) - 3600ms);
+        }
         .lp18-full {
           position: absolute;
           inset: 0;
@@ -657,8 +665,9 @@ export default function IntroSplash({
           inset: 0;
           clip-path: inset(0 0 0 0);
           will-change: clip-path;
-          animation: lp18-blind 750ms var(--ease-in-out) var(--at) backwards;
+          animation: lp18-blind 340ms var(--ease-in-out) var(--at) backwards;
         }
+        .lp18-full-side { animation-name: lp18-blind-side; }
         .lp18-full-img {
           position: absolute;
           inset: 0;
@@ -666,7 +675,7 @@ export default function IntroSplash({
           height: 100%;
           object-fit: cover;
           will-change: transform;
-          animation: lp18-zoom 2200ms var(--ease-out) var(--at) backwards;
+          animation: lp18-zoom 1400ms var(--ease-out) var(--at) backwards;
         }
         /* véu no verde escuro: garante leitura do logo em cima e do título embaixo */
         .lp18-full-scrim {
@@ -882,6 +891,7 @@ export default function IntroSplash({
         @keyframes lp18-fade-in { from { opacity: 0; } }
         @keyframes lp18-fade-out { to { opacity: 0; visibility: hidden; } }
         @keyframes lp18-blind { from { clip-path: inset(100% 0 0 0); } }
+        @keyframes lp18-blind-side { from { clip-path: inset(0 0 0 100%); } }
         @keyframes lp18-zoom { from { transform: scale(1.18); } }
         @keyframes lp18-track-in { from { opacity: 0; transform: translateX(45%); } }
         @keyframes lp18-step { to { transform: translateX(calc(var(--step) * -1)); } }
