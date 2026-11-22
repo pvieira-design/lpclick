@@ -1,5 +1,46 @@
-import * as M from "./mascot";
-import * as X from "./mascot-extra";
+import {
+  BOX_DROP,
+  BOX_DROPPER,
+  BOX_HEAD,
+  BOX_JUMP,
+  BOX_MED,
+  BOX_SHORT,
+  BOX_STAND,
+  DOC_BODY,
+  DOC_COAT,
+  DOC_EYES,
+  DOC_GLASSES,
+  DOC_TIE,
+  DROP,
+  DROPPER,
+  DROPPER_TIP,
+  HEAD_BODY,
+  HEAD_SOLID,
+  JUMP_BODY,
+  JUMP_EYES,
+  JUMP_SOLES,
+  MED_BODY,
+  MED_DARK,
+  MED_EYES,
+  STAND_BODY,
+  STAND_EYES,
+  STAND_PUPILS,
+  STAND_SOLID,
+} from "./mascot";
+import {
+  BOX_OLD,
+  BOX_RUN,
+  BOX_TREE,
+  OLD_CREAM,
+  OLD_DARK,
+  OLD_GREEN,
+  RUN_CREAM,
+  RUN_DARK,
+  RUN_GREEN,
+  TREE_CREAM,
+  TREE_DARK,
+  TREE_GREEN,
+} from "./mascot-extra";
 
 // Cópia de especialistas/scenes/shared.tsx (cada LP tem a sua). Mascote da
 // Click vetorizado direto das artes oficiais (mascot.ts, gerado) e
@@ -57,8 +98,8 @@ function StandEyes({ eyes }: { eyes: Eyes }) {
   if (eyes === "open")
     return (
       <>
-        <path d={M.STAND_EYES} fill={C.cream} />
-        <path d={M.STAND_PUPILS} fill={C.green} />
+        <path d={STAND_EYES} fill={C.cream} />
+        <path d={STAND_PUPILS} fill={C.green} />
       </>
     );
   // fechados (arco para baixo) ou felizes (arco para cima), traço creme da arte da gota
@@ -82,8 +123,8 @@ function StandEyes({ eyes }: { eyes: Eyes }) {
 // as pernas encurtadas).
 export function Stand({ eyes = "open", ...p }: PlaceProps & { eyes?: Eyes }) {
   return (
-    <g transform={place(M.BOX_SHORT, p)} className={p.className}>
-      <path d={eyes === "open" ? M.STAND_BODY : M.STAND_SOLID} fill={C.green} />
+    <g transform={place(BOX_SHORT, p)} className={p.className}>
+      <path d={eyes === "open" ? STAND_BODY : STAND_SOLID} fill={C.green} />
       <StandEyes eyes={eyes} />
     </g>
   );
@@ -95,12 +136,12 @@ export function Stand({ eyes = "open", ...p }: PlaceProps & { eyes?: Eyes }) {
 // largura e ~0.46w de comprimento até o pé; pé ~0.35w × 0.16w, ponta
 // arredondada para fora; verde chapado, sem contorno.
 export function Head({ x, y, w, eyes = "open", flip, rotate, className }: { x: number; y: number; w: number; eyes?: Eyes; flip?: boolean; rotate?: number; className?: string }) {
-  const [x0, , x1, y1] = M.BOX_HEAD;
+  const [x0, , x1, y1] = BOX_HEAD;
   const s = w / (x1 - x0);
   const t = `translate(${x} ${y})${rotate ? ` rotate(${rotate})` : ""} scale(${flip ? -s : s} ${s}) translate(${-(x0 + x1) / 2} ${-y1})`;
   return (
     <g transform={t} className={className}>
-      <path d={eyes === "open" ? M.HEAD_BODY : M.HEAD_SOLID} fill={C.green} />
+      <path d={eyes === "open" ? HEAD_BODY : HEAD_SOLID} fill={C.green} />
       <StandEyes eyes={eyes} />
     </g>
   );
@@ -109,13 +150,13 @@ export function Head({ x, y, w, eyes = "open", flip, rotate, className }: { x: n
 // Mascote médico, exatamente como na arte (óculos, jaleco, gravata, estetoscópio).
 export function Doctor(p: PlaceProps) {
   return (
-    <g transform={place(M.BOX_STAND, p)} className={p.className}>
-      <path d={M.DOC_BODY} fill={C.green} />
-      <path d={M.DOC_COAT} fill={C.cream} />
-      <path d={M.DOC_EYES} fill={C.cream} />
-      <path d={M.STAND_PUPILS} fill={C.green} />
-      <path d={M.DOC_GLASSES} fill={C.dark} />
-      <path d={M.DOC_TIE} fill={C.dark} />
+    <g transform={place(BOX_STAND, p)} className={p.className}>
+      <path d={DOC_BODY} fill={C.green} />
+      <path d={DOC_COAT} fill={C.cream} />
+      <path d={DOC_EYES} fill={C.cream} />
+      <path d={STAND_PUPILS} fill={C.green} />
+      <path d={DOC_GLASSES} fill={C.dark} />
+      <path d={DOC_TIE} fill={C.dark} />
     </g>
   );
 }
@@ -123,10 +164,10 @@ export function Doctor(p: PlaceProps) {
 // Só os óculos da arte, para pôr sobre o Stand (use os mesmos PlaceProps).
 export function Glasses(p: PlaceProps) {
   return (
-    <g transform={place(M.BOX_SHORT, p)} className={p.className}>
-      <path d={M.DOC_EYES} fill={C.cream} />
-      <path d={M.STAND_PUPILS} fill={C.green} />
-      <path d={M.DOC_GLASSES} fill={C.dark} />
+    <g transform={place(BOX_SHORT, p)} className={p.className}>
+      <path d={DOC_EYES} fill={C.cream} />
+      <path d={STAND_PUPILS} fill={C.green} />
+      <path d={DOC_GLASSES} fill={C.dark} />
     </g>
   );
 }
@@ -134,10 +175,10 @@ export function Glasses(p: PlaceProps) {
 // Mascote "pulando" da arte da gota (pernas abertas, solas escuras, olhos felizes).
 export function Jump(p: PlaceProps) {
   return (
-    <g transform={place(M.BOX_JUMP, p)} className={p.className}>
-      <path d={M.JUMP_BODY} fill={C.green} />
-      <path d={M.JUMP_SOLES} fill={C.dark} />
-      <path d={M.JUMP_EYES} fill={C.cream} />
+    <g transform={place(BOX_JUMP, p)} className={p.className}>
+      <path d={JUMP_BODY} fill={C.green} />
+      <path d={JUMP_SOLES} fill={C.dark} />
+      <path d={JUMP_EYES} fill={C.cream} />
     </g>
   );
 }
@@ -145,14 +186,14 @@ export function Jump(p: PlaceProps) {
 // Gota da arte (cheia, sem o mascote) e o conta-gotas. Para reproduzir a arte
 // inteira, use DropScene.
 export function Drop({ fill = C.cream, ...p }: PlaceProps & { fill?: string }) {
-  return <path d={M.DROP} fill={fill} transform={place(M.BOX_DROP, p)} className={p.className} />;
+  return <path d={DROP} fill={fill} transform={place(BOX_DROP, p)} className={p.className} />;
 }
 
 export function Dropper(p: PlaceProps) {
   return (
-    <g transform={place(M.BOX_DROPPER, p)} className={p.className}>
-      <path d={M.DROPPER} fill={C.green} />
-      <path d={M.DROPPER_TIP} fill={C.cream} />
+    <g transform={place(BOX_DROPPER, p)} className={p.className}>
+      <path d={DROPPER} fill={C.green} />
+      <path d={DROPPER_TIP} fill={C.cream} />
     </g>
   );
 }
@@ -161,10 +202,10 @@ export function Dropper(p: PlaceProps) {
 // da arte aprovada. (x, y) = centro da base; h = altura do corpo.
 export function Meditate(p: PlaceProps) {
   return (
-    <g transform={place(M.BOX_MED, p)} className={p.className}>
-      <path d={M.MED_BODY} fill={C.green} />
-      <path d={M.MED_DARK} fill={C.dark} />
-      <path d={M.MED_EYES} fill={C.cream} />
+    <g transform={place(BOX_MED, p)} className={p.className}>
+      <path d={MED_BODY} fill={C.green} />
+      <path d={MED_DARK} fill={C.dark} />
+      <path d={MED_EYES} fill={C.cream} />
     </g>
   );
 }
@@ -177,11 +218,17 @@ export type PoseName = "RUN" | "TREE" | "OLD";
 // cream: tom do creme (a poeira da corrida precisa de um creme mais escuro
 // para aparecer sobre o fundo creme do card).
 export function Pose({ name, cream = C.cream, ...p }: PlaceProps & { name: PoseName; cream?: string }) {
+  const map = {
+    RUN: { box: BOX_RUN, green: RUN_GREEN, cream: RUN_CREAM, dark: RUN_DARK },
+    TREE: { box: BOX_TREE, green: TREE_GREEN, cream: TREE_CREAM, dark: TREE_DARK },
+    OLD: { box: BOX_OLD, green: OLD_GREEN, cream: OLD_CREAM, dark: OLD_DARK },
+  } as const;
+  const pose = map[name];
   return (
-    <g transform={place(X[`BOX_${name}`], p)} className={p.className}>
-      <path d={X[`${name}_GREEN`]} fill={C.green} />
-      <path d={X[`${name}_CREAM`]} fill={cream} />
-      <path d={X[`${name}_DARK`]} fill={C.dark} />
+    <g transform={place(pose.box, p)} className={p.className}>
+      <path d={pose.green} fill={C.green} />
+      <path d={pose.cream} fill={cream} />
+      <path d={pose.dark} fill={C.dark} />
     </g>
   );
 }
@@ -189,16 +236,16 @@ export function Pose({ name, cream = C.cream, ...p }: PlaceProps & { name: PoseN
 // A arte da gota completa (gota + mascote + conta-gotas), na posição original.
 // (x, y) = centro da base da gota; h = altura da gota.
 export function DropScene({ x, y, h, className }: PlaceProps) {
-  const [x0, y0, x1, y1] = M.BOX_DROP;
+  const [x0, y0, x1, y1] = BOX_DROP;
   const s = h / (y1 - y0);
   return (
     <g transform={`translate(${x} ${y}) scale(${s}) translate(${-(x0 + x1) / 2} ${-y1})`} className={className}>
-      <path d={M.DROP} fill={C.cream} />
-      <path d={M.JUMP_BODY} fill={C.green} />
-      <path d={M.JUMP_SOLES} fill={C.dark} />
-      <path d={M.JUMP_EYES} fill={C.cream} />
-      <path d={M.DROPPER} fill={C.green} />
-      <path d={M.DROPPER_TIP} fill={C.cream} />
+      <path d={DROP} fill={C.cream} />
+      <path d={JUMP_BODY} fill={C.green} />
+      <path d={JUMP_SOLES} fill={C.dark} />
+      <path d={JUMP_EYES} fill={C.cream} />
+      <path d={DROPPER} fill={C.green} />
+      <path d={DROPPER_TIP} fill={C.cream} />
     </g>
   );
 }

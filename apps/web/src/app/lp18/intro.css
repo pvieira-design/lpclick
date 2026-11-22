@@ -1,0 +1,261 @@
+.lp18 {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --display: var(--font-display), var(--font-geist-sans), system-ui, sans-serif;
+
+  /* aidesignclick · brand/tokens.json */
+  --floresta-950: #041B14;
+  --floresta-800: #10392D;
+  --floresta-700: #214C3E;
+  --floresta-500: #3F6B5C;
+  --floresta-200: #ABCDC0;
+  --verde-700: #32733B;
+  --verde-600: #148421;
+  --verde-500: #00A819;
+  --lima-300: #B6EF48;
+  --amarelo-300: #EDD94A;
+  --quase-branco: #FBFCF9;
+
+  --stat-extra: 0ms;
+  --m2-extra: 0ms;
+  --t-shift: 500ms;
+  --t-lift: 1150ms;
+  --t-clico: 1450ms;
+  --t-words: 1650ms;
+  --t-wave: 1950ms;
+  --t-exit: 3500ms;
+  --t-stat: 3700ms;
+  --t-land: 4920ms;
+  --t-stat-exit: calc(5650ms + var(--stat-extra));
+  --t-m1: calc(5850ms + var(--stat-extra));
+  --t-m2: calc(7050ms + var(--stat-extra));
+  --t-m3: calc(8250ms + var(--stat-extra) + var(--m2-extra));
+  --t-m-exit: calc(9450ms + var(--stat-extra) + var(--m2-extra));
+  --t-ig: calc(9650ms + var(--stat-extra) + var(--m2-extra));
+  --t-ig-exit: calc(10900ms + var(--stat-extra) + var(--m2-extra));
+  --t-end: var(--t-stat-exit);
+
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  font-family: var(--font-body), var(--font-geist-sans), system-ui, sans-serif;
+  color: var(--quase-branco);
+  background: var(--floresta-800);
+}
+
+/* Logo: nasce no centro da tela (236×34) e sobe pro topo */
+.lp18-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  gap: 8px;
+  width: 236px;
+  height: 34px;
+  margin: -17px 0 0 -118px;
+  z-index: 1;
+  will-change: transform;
+  animation: lp18-lift 600ms var(--ease-in-out) var(--t-lift) forwards;
+}
+.lp18-logo svg { display: block; height: 34px; width: auto; }
+.lp18-icon-shift {
+  animation: lp18-icon-shift 650ms var(--ease-in-out) var(--t-shift) backwards;
+}
+.lp18-icon-pop {
+  display: block;
+  animation: lp18-icon-pop 500ms cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+}
+.lp18-wordmark {
+  clip-path: inset(0 0 0 0);
+  animation: lp18-wipe 600ms var(--ease-in-out) calc(var(--t-shift) + 180ms) backwards;
+}
+
+.lp18-copy {
+  position: absolute;
+  top: calc(50% - 150px);
+  left: 0;
+  right: 0;
+  padding: 0 24px;
+  text-align: center;
+  animation: lp18-out 260ms ease-in var(--t-exit) forwards;
+}
+
+.lp18-clico {
+  display: block;
+  width: 132px;
+  height: 132px;
+  margin: 0 auto 14px;
+  animation: lp18-clico-in 700ms cubic-bezier(0.34, 1.4, 0.64, 1) var(--t-clico) backwards;
+}
+.lp18-clico-arm {
+  transform-origin: 0 0;
+  animation: lp18-wave 1300ms var(--ease-in-out) var(--t-wave);
+}
+.lp18-headline {
+  margin: 0 auto;
+  max-width: 17ch;
+  font-family: var(--display);
+  font-size: clamp(1.75rem, 6.4vw, 3.25rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.lp18-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.lp18-word > span {
+  display: inline-block;
+  animation: lp18-word 650ms var(--ease-out) calc(var(--t-words) + var(--i) * 55ms) backwards;
+}
+.lp18-accent { color: var(--lima-300); }
+
+/* 100 mil · versão C: a frase se completa, o fundo troca */
+.lp18:has(.lp18-build) { --stat-extra: 1350ms; }
+.lp18-build {
+  --u: min(1vw, 0.62svh);
+  --h-100: calc(var(--u) * 41);
+  --h-mil: calc(var(--u) * 32);
+  --h-pac: calc(var(--u) * 15);
+  --t2: calc(var(--t-stat) + 500ms);
+  --t3: calc(var(--t-stat) + 1100ms);
+  --t4: calc(var(--t-stat) + 1800ms);
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  color: var(--floresta-800);
+  animation:
+    lp18-on 1ms steps(1) var(--t-stat) backwards,
+    lp18-ink 1ms steps(1) var(--t4) forwards,
+    lp18-fade-out 320ms ease-in var(--t-stat-exit) forwards;
+}
+.lp18-bg { position: absolute; inset: 0; animation: lp18-on 1ms steps(1) var(--at) backwards; }
+.lp18-bg-1 { --at: var(--t-stat); background: var(--quase-branco); }
+.lp18-bg-2 { --at: var(--t2);     background: var(--amarelo-300); }
+.lp18-bg-3 { --at: var(--t3);     background: var(--lima-300); }
+.lp18-bg-4 { --at: var(--t4);     background: var(--floresta-800); }
+
+.lp18-build-a, .lp18-build-b, .lp18-build-c { position: relative; will-change: transform; }
+.lp18-build-a { animation: lp18-up-100 480ms var(--ease-out) var(--t2) backwards; }
+.lp18-build-b { animation: lp18-up-mil 620ms var(--ease-in-out) var(--t3) backwards; }
+.lp18-build-c { animation: lp18-up-pac 620ms var(--ease-in-out) var(--t4) backwards; }
+
+.lp18-b-mais {
+  font-size: calc(var(--u) * 9);
+  line-height: calc(var(--u) * 13);
+  letter-spacing: -0.02em;
+  animation: lp18-appear 450ms var(--ease-out) var(--t-stat) backwards;
+}
+.lp18-b-100 {
+  font-size: calc(var(--u) * 46);
+  line-height: var(--h-100);
+  animation: lp18-appear 480ms var(--ease-out) var(--t2) backwards;
+}
+.lp18-b-mask { overflow: hidden; }
+.lp18-b-mask-mil { height: var(--h-mil); }
+.lp18-b-mask-pac { height: var(--h-pac); }
+.lp18-b-mil {
+  font-size: calc(var(--u) * 34);
+  line-height: var(--h-mil);
+  animation:
+    lp18-from-above 620ms var(--ease-in-out) var(--t3) backwards,
+    lp18-ink-lima 1ms steps(1) var(--t4) forwards;
+}
+.lp18-b-pac {
+  font-size: calc(var(--u) * 7.6);
+  line-height: var(--h-pac);
+  letter-spacing: -0.02em;
+  animation: lp18-from-above 620ms var(--ease-in-out) var(--t4) backwards;
+}
+
+/* Fim: tela branca do funil */
+.lp18-end {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: #fff;
+  clip-path: circle(0% at 50% 50%);
+  animation: lp18-flash-in 650ms var(--ease-out) var(--t-end) forwards;
+}
+
+/* Pular: checkbox + :has(), funciona sem JS */
+.lp18-skip-input { position: absolute; opacity: 0; pointer-events: none; }
+.lp18-skip {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  translate: -50% 0;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--floresta-200);
+  background: var(--floresta-700);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation:
+    lp18-rise 500ms var(--ease-out) 1600ms backwards,
+    lp18-out 200ms ease-in var(--t-end) forwards;
+}
+.lp18-skip-input:focus-visible + .lp18-skip { outline: 2px solid var(--lima-300); outline-offset: 3px; }
+
+@keyframes lp18-icon-pop { from { opacity: 0; transform: scale(0.6) rotate(-90deg); } }
+@keyframes lp18-icon-shift { from { transform: translateX(101px) scale(1.5); } }
+@keyframes lp18-wipe { from { clip-path: inset(0 100% 0 0); transform: translateX(-16px); } }
+@keyframes lp18-lift { to { transform: translateY(calc(-50svh + 52px)) scale(0.86); } }
+@keyframes lp18-word { from { opacity: 0; transform: translateY(105%); } }
+@keyframes lp18-rise { from { opacity: 0; transform: translateY(12px); } }
+@keyframes lp18-out { to { opacity: 0; transform: translateY(-12px); visibility: hidden; } }
+@keyframes lp18-flash-in { to { clip-path: circle(150% at 50% 46%); } }
+@keyframes lp18-on { from { opacity: 0; } }
+@keyframes lp18-ink { to { color: var(--quase-branco); } }
+@keyframes lp18-ink-lima { to { color: var(--lima-300); } }
+@keyframes lp18-appear {
+  0% { opacity: 0; transform: scale(1.22); }
+  14% { opacity: 1; }
+}
+@keyframes lp18-from-above { from { transform: translateY(-105%); } }
+@keyframes lp18-up-100 { from { transform: translateY(calc(var(--h-100) / 2)); } }
+@keyframes lp18-up-mil { from { transform: translateY(calc(var(--h-mil) / 2)); } }
+@keyframes lp18-up-pac { from { transform: translateY(calc(var(--h-pac) / 2)); } }
+@keyframes lp18-fade-out { to { opacity: 0; visibility: hidden; } }
+@keyframes lp18-clico-in {
+  from { opacity: 0; transform: translateY(26px) scale(0.85) rotate(-10deg); }
+}
+@keyframes lp18-wave {
+  0%, 100% { transform: rotate(0deg); }
+  16%, 50%, 84% { transform: rotate(-17deg); }
+  33%, 67% { transform: rotate(-3deg); }
+}
+
+.lp18:has(.lp18-skip-input:checked) .lp18-skip { display: none; }
+.lp18:has(.lp18-skip-input:checked) .lp18-end {
+  animation: lp18-flash-in 450ms var(--ease-out) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp18-logo,
+  .lp18-icon-shift,
+  .lp18-icon-pop,
+  .lp18-wordmark {
+    animation: none;
+  }
+  .lp18-end { animation: none; clip-path: none; }
+  .lp18-copy,
+  .lp18-build,
+  .lp18-skip { display: none; }
+}

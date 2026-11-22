@@ -41,9 +41,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
       </head>
       {process.env.NODE_ENV === "production" && <DeferredGTM />}
       <body className={`${geistSans.variable} antialiased`}>

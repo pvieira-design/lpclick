@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { animate, useReducedMotion, type AnimationPlaybackControls } from "framer-motion";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { audio } from "./som";
 
@@ -141,7 +140,6 @@ export function premioSalvo(): PremioId | null {
 }
 
 export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => void }) {
-  const reduce = useReducedMotion();
   const [girando, setGirando] = useState(false);
   const [status, setStatus] = useState("Toque no botão e descubra seu benefício.");
   const [vencedora, setVencedora] = useState<number | null>(null);
@@ -149,12 +147,12 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
   const mudoRef = useRef(false);
   const wheelRef = useRef<SVGGElement>(null);
   const pointerRef = useRef<SVGGElement>(null);
-  const ctrl = useRef<AnimationPlaybackControls | null>(null);
+  const stopSpin = useRef<(() => void) | null>(null);
   const timeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(
     () => () => {
-      ctrl.current?.stop();
+      stopSpin.current?.();
       timeouts.current.forEach(clearTimeout);
     },
     [],
@@ -194,12 +192,17 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
 
     sendGTMEvent({ event: "roletaGirou", category: "Roleta", action: "Spin", label: "Girar roleta - Avaliacao" });
 
+    const reduce = !!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    const durationMs = (reduce ? 1.2 : SPIN_S) * 1000;
+    const start = performance.now();
     let lastSeg = 0;
-    ctrl.current = animate(0, 1, {
-      duration: reduce ? 1.2 : SPIN_S,
-      ease: "linear",
-      onUpdate: (p) => {
-        if (reduce) return;
+    let rafId = 0;
+    let cancelled = false;
+
+    const tick = (now: number) => {
+      if (cancelled) return;
+      const p = Math.min(1, (now - start) / durationMs);
+      if (!reduce) {
         const r = target * spinEase(p);
         if (wheelRef.current) wheelRef.current.style.transform = `rotate(${r}deg)`;
         const seg = fatiaEm(r);
@@ -214,18 +217,26 @@ export default function Roleta({ onResultado }: { onResultado: (p: PremioId) => 
           }
         }
         if (p > 0.55) setStatus("Quase lá…");
-      },
-      onComplete: () => {
-        if (wheelRef.current) wheelRef.current.style.transform = `rotate(${target}deg)`;
-        setStatus("É seu!");
-        setVencedora(i);
-        vibrate([80, 50, 80, 50, 180]);
-        if (ctx && !mudoRef.current) playWin(ctx);
-        sendGTMEvent({ event: "roletaResultado", category: "Roleta", action: "Result", label: PREMIOS[premio].titulo });
-        timeouts.current.push(setTimeout(() => onResultado(premio), 1100));
-      },
-    });
-  }, [girando, reduce, onResultado]);
+      }
+      if (p < 1) {
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
+      if (wheelRef.current) wheelRef.current.style.transform = `rotate(${target}deg)`;
+      setStatus("É seu!");
+      setVencedora(i);
+      vibrate([80, 50, 80, 50, 180]);
+      if (ctx && !mudoRef.current) playWin(ctx);
+      sendGTMEvent({ event: "roletaResultado", category: "Roleta", action: "Result", label: PREMIOS[premio].titulo });
+      timeouts.current.push(setTimeout(() => onResultado(premio), 1100));
+    };
+
+    rafId = requestAnimationFrame(tick);
+    stopSpin.current = () => {
+      cancelled = true;
+      cancelAnimationFrame(rafId);
+    };
+  }, [girando, onResultado]);
 
   return (
     <div className="flex flex-col items-center">

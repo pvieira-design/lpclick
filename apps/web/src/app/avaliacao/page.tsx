@@ -89,6 +89,15 @@ export default function AvaliacaoPage() {
         .avaliacao button:focus-visible, .avaliacao a:focus-visible, .avaliacao input:focus-visible {
           outline: 3px solid #9CC48F; outline-offset: 3px;
         }
+        .avaliacao .avaliacao-prog { transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+        .avaliacao .avaliacao-step { animation: avaliacao-step-in 280ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+        .avaliacao .avaliacao-acolhe-bar { transform-origin: left; animation: avaliacao-acolhe 5s linear forwards; }
+        .avaliacao .ilustra-respira { animation: ilustra-respira 2.6s ease-in-out infinite; }
+        .avaliacao .ilustra-pula { animation: ilustra-pula 1.1s ease-in-out infinite; }
+        @keyframes avaliacao-step-in { from { opacity: 0; translate: 24px 0; } }
+        @keyframes avaliacao-acolhe { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+        @keyframes ilustra-respira { 50% { transform: translateY(-1.5px); } }
+        @keyframes ilustra-pula { 50% { transform: translateY(-5px); } }
         .avaliacao .roleta-rotor { transform-origin: 210px 210px; will-change: transform; }
         .avaliacao .roleta-txt { font-family: var(--font-display), system-ui, sans-serif; font-size: 19px; font-weight: 700; }
         .avaliacao .roleta-ponteiro { transform-origin: 210px 12px; transition: transform .07s ease-out; }
@@ -99,7 +108,11 @@ export default function AvaliacaoPage() {
         .avaliacao .girando .roleta-luz.impar { animation-delay: .18s; }
         .avaliacao .ganhou .roleta-luz { fill: #F2C94C; opacity: 1; animation: roleta-pisca .5s steps(1) 4; }
         @keyframes roleta-pisca { 0% { opacity: 1; fill: #F2C94C; } 50% { opacity: .45; fill: #F4F1E6; } }
-        @media (prefers-reduced-motion: reduce) { .avaliacao .roleta-luz { animation: none !important; } }
+        @media (prefers-reduced-motion: reduce) {
+          .avaliacao .roleta-luz, .avaliacao .avaliacao-step, .avaliacao .avaliacao-acolhe-bar,
+          .avaliacao .ilustra-respira, .avaliacao .ilustra-pula { animation: none !important; }
+          .avaliacao .avaliacao-prog { transition: none !important; }
+        }
       `}</style>
       <AvaliacaoClient depoimentos={DEPOIMENTOS} />
     </div>

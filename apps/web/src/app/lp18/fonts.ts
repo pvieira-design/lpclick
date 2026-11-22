@@ -10,4 +10,9 @@ export const lexend = Lexend({
   variable: "--font-display",
   display: "swap",
 });
-export const inter = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
+export const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+  preload: false,
+});

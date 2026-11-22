@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { Doctor, Jump, Meditate, Stand } from "./mascote/shared";
+import { useEffect, useState, type ComponentType } from "react";
+import { Jump, Stand, type PlaceProps } from "./mascote/shared";
 
 // Ilustrações no estilo "Ilustra Click" (adsmaker/ESTILO_ILUSTRA_CLICK.md):
 // vetor geométrico, paleta tonal de verdes, card de cantos arredondados.
@@ -10,24 +10,51 @@ import { Doctor, Jump, Meditate, Stand } from "./mascote/shared";
 const SYMBOL_D =
   "M26.808 50.549a4.986 4.986 0 0 0 0 7.026 4.93 4.93 0 0 0 6.993 0 4.986 4.986 0 0 0 0-7.026l-3.497-3.514zM26.508 0h7.593v31.112l19.837-19.94 5.368 5.395-17.612 17.705h18.915v7.63H0v-7.63h18.915L1.303 16.567l5.368-5.394 19.837 19.939z";
 
-export type Pose = "acena" | "comemora" | "medico" | "medita";
+export type Pose = "acena" | "comemora" | "medita";
+
+// A pose "medita" tem 54 KB de coordenadas potrace e só entra no passo 7
+// ("acolhimento"): fica num chunk separado pré-carregado em idle após o passo 1.
+let MeditatePronto: ComponentType<PlaceProps> | null = null;
+let meditatePromise: Promise<ComponentType<PlaceProps>> | null = null;
+
+function carregarMeditate() {
+  if (!meditatePromise) {
+    meditatePromise = import("./mascote/Meditate").then((m) => {
+      MeditatePronto = m.default;
+      return m.default;
+    });
+  }
+  return meditatePromise;
+}
 
 // Poses do mascote oficial, usadas como estão na arte (sem redesenhar).
 export function Mascote({ pose = "acena", size = 120 }: { pose?: Pose; size?: number }) {
-  const reduce = useReducedMotion();
+  const [MedComp, setMedComp] = useState<ComponentType<PlaceProps> | null>(() => MeditatePronto);
+
+  useEffect(() => {
+    if (pose === "medita") {
+      if (!MedComp) void carregarMeditate().then((C) => setMedComp(() => C));
+      return;
+    }
+    if (MeditatePronto) return;
+    const ric = window.requestIdleCallback;
+    if (typeof ric === "function") {
+      const id = ric(() => void carregarMeditate(), { timeout: 1500 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = setTimeout(() => void carregarMeditate(), 500);
+    return () => clearTimeout(id);
+  }, [pose, MedComp]);
+
   const p = { x: 50, y: 97, h: pose === "medita" ? 70 : 92 };
   return (
     <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true">
       <ellipse cx="50" cy="97" rx="24" ry="3" fill="#000" opacity=".1" />
-      <motion.g
-        animate={reduce ? undefined : pose === "comemora" ? { y: [0, -5, 0] } : { y: [0, -1.5, 0] }}
-        transition={{ duration: pose === "comemora" ? 1.1 : 2.6, repeat: Infinity, ease: "easeInOut" }}
-      >
+      <g className={pose === "comemora" ? "ilustra-pula" : "ilustra-respira"}>
         {pose === "acena" && <Stand {...p} />}
         {pose === "comemora" && <Jump {...p} h={84} />}
-        {pose === "medico" && <Doctor {...p} />}
-        {pose === "medita" && <Meditate {...p} />}
-      </motion.g>
+        {pose === "medita" && MedComp && <MedComp {...p} />}
+      </g>
     </svg>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import IntroSplash, { type StatVariant, type StoryVariant } from "../IntroSplash";
 import { inter, lexend } from "../fonts";
+import "./variants.css";
 
 // Página interna de validação: ?v=a|b|c|d troca a versão do ato "100 mil" e
 // ?h=1|2|3|4 a de "Nossa história". A /lp18 pública é estática, fixa em c e sem a cena das fotos.

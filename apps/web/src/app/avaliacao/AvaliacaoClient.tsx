@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { sendGTMEvent } from "@next/third-parties/google";
 import { sendLeadToCrm } from "@/lib/crmLead";
 import {
@@ -89,8 +88,6 @@ type Respostas = {
 
 const ACOLHIMENTO_MS = 5000;
 
-const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
-
 // "a, b e c": a mensagem sai em texto corrido, como a pessoa escreveria.
 function juntar(itens: string[]): string {
   return itens.length < 2 ? itens.join("") : `${itens.slice(0, -1).join(", ")} e ${itens[itens.length - 1]}`;
@@ -127,7 +124,6 @@ export default function AvaliacaoClient({
   origem?: string;
   jaUsouInicial?: boolean;
 }) {
-  const reduce = useReducedMotion();
   const [historico, setHistorico] = useState<StepId[]>(["inicio"]);
   const [r, setR] = useState<Respostas>({ objetivos: [], jaUsou: jaUsouInicial });
   const [nome, setNome] = useState("");
@@ -135,6 +131,7 @@ export default function AvaliacaoClient({
   const [waUrl, setWaUrl] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const ultimoRotulo = useRef<string | null>(null);
+  const jaNavegou = useRef(false);
   const step = historico[historico.length - 1];
 
   useEffect(() => {
@@ -145,16 +142,25 @@ export default function AvaliacaoClient({
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [step, origem]);
 
-  const ir = useCallback((proximo: StepId) => setHistorico((h) => [...h, proximo]), []);
+  const ir = useCallback((proximo: StepId) => {
+    jaNavegou.current = true;
+    setHistorico((h) => [...h, proximo]);
+  }, []);
   // Troca o passo atual em vez de empilhar: voltar do prêmio não reabre a roleta.
-  const trocarPor = useCallback((proximo: StepId) => setHistorico((h) => [...h.slice(0, -1), proximo]), []);
+  const trocarPor = useCallback((proximo: StepId) => {
+    jaNavegou.current = true;
+    setHistorico((h) => [...h.slice(0, -1), proximo]);
+  }, []);
   // O acolhimento passa sozinho; trocarPor tira ele do histórico, então voltar não cai nele de novo.
   useEffect(() => {
     if (step !== "acolhimento") return;
     const t = setTimeout(() => trocarPor("como-funciona"), ACOLHIMENTO_MS);
     return () => clearTimeout(t);
   }, [step, trocarPor]);
-  const voltar = useCallback(() => setHistorico((h) => (h.length > 1 ? h.slice(0, -1) : h)), []);
+  const voltar = useCallback(() => {
+    jaNavegou.current = true;
+    setHistorico((h) => (h.length > 1 ? h.slice(0, -1) : h));
+  }, []);
   const responder = useCallback(
     (patch: Partial<Respostas>, proximo: StepId) => {
       setR((prev) => ({ ...prev, ...patch }));
@@ -165,9 +171,10 @@ export default function AvaliacaoClient({
 
   useEffect(() => {
     if (step !== "nome") return;
+    const reduce = !!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
     const id = setTimeout(() => inputRef.current?.focus({ preventScroll: true }), reduce ? 0 : 300);
     return () => clearTimeout(id);
-  }, [step, reduce]);
+  }, [step]);
 
   const irParaCondicao = useCallback(() => {
     // Quem já girou antes não gira de novo: vai direto pro prêmio salvo.
@@ -251,19 +258,12 @@ export default function AvaliacaoClient({
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
         </button>
         <div className="h-2 flex-1 overflow-hidden rounded-full" style={{ background: "#D5E3CC" }} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progresso * 100)} aria-label="Progresso">
-          <motion.div className="h-full rounded-full" style={{ background: "var(--green-700)" }} animate={{ width: `${progresso * 100}%` }} transition={{ duration: 0.4, ease: EASE }} />
+          <div className="avaliacao-prog h-full rounded-full" style={{ background: "var(--green-700)", width: `${progresso * 100}%` }} />
         </div>
         <SimboloClick size={30} />
       </header>
 
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.main
-          key={step}
-          className="flex flex-1 flex-col"
-          initial={{ opacity: 0, x: reduce ? 0 : 24 }}
-          animate={{ opacity: 1, x: 0, transition: { duration: 0.3, ease: EASE } }}
-          exit={{ opacity: 0, x: reduce ? 0 : -24, transition: { duration: 0.18, ease: EASE } }}
-        >
+      <main key={step} className={`${jaNavegou.current ? "avaliacao-step " : ""}flex flex-1 flex-col`}>
           {step === "inicio" && (
             <Tela titulo={<>Seu cuidado começa <b>com um clique.</b></>} sub="Responda algumas perguntas rápidas e saia daqui com sua consulta encaminhada." cena={["acena", "conversa"]}>
               <p className="-mt-2 flex items-center gap-2 text-sm" style={{ color: "var(--muted)" }}>
@@ -479,7 +479,7 @@ export default function AvaliacaoClient({
               cena={["medita", "coracao"]}
             >
               <div className="h-1.5 overflow-hidden rounded-full" style={{ background: "#D5E3CC" }} aria-hidden="true">
-                <motion.div className="h-full rounded-full" style={{ background: "var(--green-500)" }} initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: ACOLHIMENTO_MS / 1000, ease: "linear" }} />
+                <div className="avaliacao-acolhe-bar h-full w-full rounded-full" style={{ background: "var(--green-500)" }} />
               </div>
               <Cta onClick={() => trocarPor("como-funciona")}>Ver como funciona</Cta>
             </Tela>
@@ -572,8 +572,7 @@ export default function AvaliacaoClient({
               )}
             </Tela>
           )}
-        </motion.main>
-      </AnimatePresence>
+        </main>
 
       <footer className="mt-8 text-center text-[11px] leading-relaxed" style={{ color: "var(--muted)" }}>
         Click Cannabis · A maior plataforma de telemedicina canábica do Brasil

@@ -3,5 +3,10 @@ export default function LPLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div className="font-[family-name:var(--font-geist-sans)]">{children}</div>;
+  return (
+    <div className="font-[family-name:var(--font-geist-sans)]">
+      <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" />
+      {children}
+    </div>
+  );
 }
