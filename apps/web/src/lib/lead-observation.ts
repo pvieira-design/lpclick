@@ -8,9 +8,11 @@ export function normalizeLeadObservationId(value: unknown): string | undefined {
     : undefined;
 }
 
-export function captureLeadObservation(): string | undefined {
+export function captureLeadObservation(name?: string): string | undefined {
   try {
-    return normalizeLeadObservationId(captureLead());
+    return normalizeLeadObservationId(
+      captureLead(typeof name === "string" ? { name } : undefined),
+    );
   } catch {
     return undefined;
   }

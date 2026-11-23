@@ -127,7 +127,7 @@ export default function LandingPage() {
 
     const patologias = Array.from(selected);
 
-    const leadObservationId = captureLeadObservation();
+    const leadObservationId = captureLeadObservation(trimmed);
 
     sendCorrelatedLeadEvent(
       {

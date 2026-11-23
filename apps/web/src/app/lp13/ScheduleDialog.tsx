@@ -137,7 +137,7 @@ export default function ScheduleDialog() {
     const patologias = patologiasDe(selected);
     const leadData = collectLeadData(trimmed, patologias);
 
-    const leadObservationId = captureLeadObservation();
+    const leadObservationId = captureLeadObservation(trimmed);
 
     sendLeadToApi(withLeadObservation(leadData, leadObservationId));
     sendLeadToCrm(trimmed, patologias);

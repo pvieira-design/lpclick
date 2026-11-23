@@ -498,7 +498,7 @@ function ResultForm({
         return;
       }
 
-      const leadObservationId = captureLeadObservation();
+      const leadObservationId = captureLeadObservation(trimmed);
 
       sendCorrelatedLeadEvent(
         {

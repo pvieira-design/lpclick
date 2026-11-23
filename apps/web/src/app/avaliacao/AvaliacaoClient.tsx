@@ -198,7 +198,7 @@ export default function AvaliacaoClient({
     if (!r.paciente) {
       const patologias = GOALS.filter((g) => r.objetivos.includes(g.id)).map((g) => g.patologia);
       const leadData = collectLeadData(trimmed, patologias);
-      const leadObservationId = captureLeadObservation();
+      const leadObservationId = captureLeadObservation(trimmed);
       sendLeadToApi(withLeadObservation(leadData, leadObservationId));
       sendLeadToCrm(trimmed, patologias);
       sendQuizAnswers("avaliacao", {

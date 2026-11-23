@@ -232,7 +232,7 @@ export default function ClickLanding() {
       return;
     }
     const pathologies = OBJECTIVES.filter((objective) => selected.has(objective.label)).map((objective) => objective.patologia);
-    const leadObservationId = captureLeadObservation();
+    const leadObservationId = captureLeadObservation(cleanName);
 
     sendLeadToCrm(cleanName, pathologies);
     sendCorrelatedLeadEvent(

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import Script from "next/script";
-import DeferredGTM from "./DeferredGTM";
+// import DeferredGTM from "./DeferredGTM";
 import { Suspense } from "react";
 import TrackingContextCapture from "@/components/TrackingContextCapture";
 import { resolveDestinoDoTracking } from "@/lib/tracking-sink";
@@ -41,9 +41,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        {/* <link rel="dns-prefetch" href="https://www.googletagmanager.com" /> */}
       </head>
-      {process.env.NODE_ENV === "production" && <DeferredGTM />}
+      {/* {process.env.NODE_ENV === "production" && <DeferredGTM />} */}
       <body className={`${geistSans.variable} antialiased`}>
         {children}
         <Suspense fallback={null}>

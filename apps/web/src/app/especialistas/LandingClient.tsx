@@ -137,7 +137,7 @@ export default function LandingClient({ onGoalChange, goalReviews }: {
 
     const leadData = collectLeadData(trimmed, patologias);
 
-    const leadObservationId = captureLeadObservation();
+    const leadObservationId = captureLeadObservation(trimmed);
 
     sendLeadToApi(withLeadObservation(leadData, leadObservationId));
     sendLeadToCrm(trimmed, patologias);
