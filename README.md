@@ -64,10 +64,18 @@ lpclick/
 - `npm run db:migrate`: Run database migrations
 - `npm run db:studio`: Open database studio UI
 
+## Web GTM retired
+
+The layout no longer mounts `DeferredGTM`, so the page loads neither `gtm.js` nor
+container `GTM-NHB2NDHK`. The `sendGTMEvent` calls remain and only queue in
+`dataLayer`. The retired bootstrap stays commented in `layout.tsx`.
+
 ## Lead observation correlation
 
 After the existing validation succeeds, each CRM form calls
-`captureLeadObservation()` once. It accepts only the SDK's opaque observation ID
+`captureLeadObservation(name)` once, passing the trimmed name it also sends to the
+CRM and no other field. The SDK hashes the name in the browser (SHA-256) and the
+text never leaves it. It accepts only the SDK's opaque observation ID
 matching `^obs_[A-Za-z0-9_-]{8,64}$`. An unavailable, older or failing SDK returns
 no usable ID and the submission continues.
 
@@ -89,10 +97,10 @@ keeps its existing contract, endpoint and payload; its duplicate SDK capture was
 removed. Persistence of this ID in RunVeloz has **not** been verified and requires
 the CRM's confirmed field mapping before any new field is sent there.
 
-SDK 0.4.2 is published, and the dependency manifest and native npm lockfile pin
-`@click-cannabis/tracking-edge` to exactly `0.4.2`, with
-`@click-cannabis/tracking-contracts` unchanged at `1.6.0`. SDK 0.4.0 and 0.4.1 return
-`void`; the published 0.4.2 exposes the observation ID used by the existing helper.
+The dependency manifest and native npm lockfile pin
+`@click-cannabis/tracking-edge` to exactly `0.6.0`, with
+`@click-cannabis/tracking-contracts` at `1.23.0`. SDK 0.4.0 and 0.4.1 return
+`void`; from 0.4.2 on the SDK exposes the observation ID used by the existing helper.
 This application change is **not activated in production**. Application release
 still requires validation and the owner's explicit approval. No SDK code is copied
 into the application and no fallback ID is generated. Raw GA4 receipt, ID

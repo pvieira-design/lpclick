@@ -114,6 +114,7 @@ function harness(options = {}) {
   const requests = [];
   const beacons = [];
   let captures = 0;
+  const captureArgs = [];
   const location = new URL(
     `https://lp.example.test/form${options.search ?? ""}`,
   );
@@ -141,8 +142,9 @@ function harness(options = {}) {
   };
   const helper = load("apps/web/src/lib/lead-observation.ts", context, {
     "@click-cannabis/tracking-edge/browser": {
-      captureLead() {
+      captureLead(...args) {
         captures++;
+        captureArgs.push(args);
         if (options.captureThrows) throw new Error("SDK unavailable");
         return Object.hasOwn(options, "result") ? options.result : id;
       },
@@ -165,6 +167,7 @@ function harness(options = {}) {
     messages,
     requests,
     beacons,
+    captureArgs,
     get captures() {
       return captures;
     },
@@ -230,6 +233,14 @@ test("copies the legacy data object without changing existing fields", () => {
   for (const value of [undefined, "ctx_12345678", "invalid"]) {
     assert.equal(h.helper.withLeadObservation(payload, value), payload);
   }
+});
+
+test("the typed name reaches the tracking package only as its own argument", () => {
+  const h = harness();
+  assert.equal(h.helper.captureLeadObservation("Maria da Silva"), id);
+  assert.deepEqual(plain(h.captureArgs[0]), [{ name: "Maria da Silva" }]);
+  h.helper.captureLeadObservation();
+  assert.deepEqual(plain(h.captureArgs[1]), [null]);
 });
 
 test("one capture supplies the same ID to the existing event and legacy request", () => {
@@ -441,6 +452,12 @@ for (const form of forms) {
     assert.ok(captures[0].pos < events[0].pos);
     assert.ok(ts.isVariableDeclaration(captures[0].parent));
     assert.equal(captures[0].parent.name.getText(), "leadObservationId");
+    assert.equal(captures[0].arguments.length, 1);
+    assert.equal(
+      captures[0].arguments[0].getText(),
+      crm[0].arguments[0].getText(),
+    );
+    assert.match(captures[0].arguments[0].getText(), /^(trimmed|cleanName)$/);
     assert.equal(events[0].arguments[1].getText(), "leadObservationId");
     assert.match(
       events[0].arguments[0].getText(),
@@ -505,6 +522,37 @@ test("CRM caller inventory includes every current form", () => {
   }
   visit(join(root, "apps/web/src/app"));
   assert.deepEqual(found.sort(), [...forms].sort());
+});
+
+test("no module outside the retired bootstrap loads the web GTM", () => {
+  const offenders = [];
+  function visit(directory) {
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      const path = join(directory, entry.name);
+      if (entry.isDirectory()) {
+        visit(path);
+        continue;
+      }
+      if (!/\.tsx?$/.test(path)) continue;
+      const ast = parse(path.slice(root.length + 1));
+      const relative = path.slice(join(root, "apps/web/src").length + 1);
+      const active = descendants(
+        ast,
+        (node) =>
+          (ts.isImportDeclaration(node) &&
+            /DeferredGTM$/.test(node.moduleSpecifier.getText().slice(1, -1))) ||
+          (ts.isJsxSelfClosingElement(node) &&
+            node.tagName.getText() === "DeferredGTM") ||
+          ((ts.isStringLiteralLike(node) || ts.isTemplateHead(node)) &&
+            /GTM-NHB2NDHK|googletagmanager\.com\/gtm\.js/.test(node.text)),
+      );
+      if (active.length && relative !== "app/DeferredGTM.tsx") {
+        offenders.push(relative);
+      }
+    }
+  }
+  visit(join(root, "apps/web/src"));
+  assert.deepEqual(offenders, []);
 });
 
 function legacySender(form, h) {

@@ -984,7 +984,7 @@ function WonLeadModal({ onClose, mode }: { onClose: () => void; mode: "won" | "l
 
     const patologias = Array.from(selected);
 
-    const leadObservationId = captureLeadObservation();
+    const leadObservationId = captureLeadObservation(trimmed);
 
     sendLeadToApi(trimmed, patologias, leadObservationId);
     sendLeadToCrm(trimmed, patologias);

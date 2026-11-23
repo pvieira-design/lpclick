@@ -133,7 +133,7 @@ export default function LP2() {
 
     const patologias = Array.from(selected);
 
-    const leadObservationId = captureLeadObservation();
+    const leadObservationId = captureLeadObservation(trimmed);
 
     sendCorrelatedLeadEvent(
       {

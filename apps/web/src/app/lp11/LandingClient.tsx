@@ -641,7 +641,7 @@ export default function LandingClient({
 
     setSubmitted(true);
 
-    const leadObservationId = captureLeadObservation();
+    const leadObservationId = captureLeadObservation(trimmed);
 
     sendCorrelatedLeadEvent(
       {

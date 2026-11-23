@@ -179,7 +179,7 @@ export default function GreenFridayClient({ depoimentos }: { depoimentos: Record
     if (!r.paciente) {
       const patologias = GOALS.filter((g) => r.objetivos.includes(g.id)).map((g) => g.patologia);
       const leadData = collectLeadData(trimmed, patologias);
-      const leadObservationId = captureLeadObservation();
+      const leadObservationId = captureLeadObservation(trimmed);
       sendLeadToApi(withLeadObservation(leadData, leadObservationId));
       sendLeadToCrm(trimmed, patologias);
       sendQuizAnswers("green-friday", {

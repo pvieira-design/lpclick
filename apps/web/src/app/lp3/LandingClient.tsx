@@ -253,7 +253,7 @@ export default function LandingClient() {
     const patologias = Array.from(selected);
     const leadData = collectLeadData(trimmed, patologias);
 
-    const leadObservationId = captureLeadObservation();
+    const leadObservationId = captureLeadObservation(trimmed);
 
     sendLeadToApi(withLeadObservation(leadData, leadObservationId));
     sendLeadToCrm(trimmed, patologias);
