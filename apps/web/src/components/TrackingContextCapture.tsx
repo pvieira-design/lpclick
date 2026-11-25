@@ -5,12 +5,19 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { startBrowserTracking } from "@click-cannabis/tracking-edge/browser";
 import { COOKIE_CONTEXTO } from "@/lib/tracking-context-cookie";
 
+const TAXA_POR_HORA_DE_SAO_PAULO = [
+  1, 1, 1, 1, 1, 1, 1, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+  0.25, 0.25, 0.25, 0.25,
+];
+
 export default function TrackingContextCapture({
   enabled,
   cookieDomain,
+  interactionGtmContainerId,
 }: {
   enabled: boolean;
   cookieDomain: string;
+  interactionGtmContainerId?: string;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -25,6 +32,9 @@ export default function TrackingContextCapture({
         cookieDomain,
         onDiagnostic: code => console.warn("[tracking-context]", code),
         pageView: true,
+        pageViewModeFromServer: true,
+        pageTiming: { hourlyRate: TAXA_POR_HORA_DE_SAO_PAULO },
+        ...(interactionGtmContainerId === undefined ? {} : { interactionGtmContainerId }),
       });
     } catch {
       console.warn("[tracking-context]", "initialization-failed");
@@ -33,7 +43,7 @@ export default function TrackingContextCapture({
       tracker.current?.stop();
       tracker.current = null;
     };
-  }, [enabled, cookieDomain]);
+  }, [enabled, cookieDomain, interactionGtmContainerId]);
 
   useEffect(() => {
     void tracker.current?.capture();

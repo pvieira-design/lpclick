@@ -37,6 +37,7 @@ function sourceLoader(overrides = new Map()) {
       compilerOptions: {
         module: ts.ModuleKind.CommonJS,
         target: ts.ScriptTarget.ES2022,
+        jsx: ts.JsxEmit.ReactJSX,
       },
     });
     const localRequire = (name) => {
@@ -57,6 +58,67 @@ function sourceLoader(overrides = new Map()) {
     return loadedModule.exports;
   }
   return (relative) => load(join(app, relative));
+}
+
+const hourlyRate = [
+  1, 1, 1, 1, 1, 1, 1, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+  0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+];
+
+function captureComponent(options) {
+  const loadComponent = sourceLoader(
+    new Map([
+      [
+        "react",
+        {
+          useEffect: (effect) => effect(),
+          useRef: (value) => ({ current: value }),
+        },
+      ],
+      [
+        "next/navigation",
+        {
+          usePathname: () => "/",
+          useSearchParams: () => new URLSearchParams(),
+        },
+      ],
+      [
+        "@click-cannabis/tracking-edge/browser",
+        {
+          startBrowserTracking: (value) => {
+            options.push(value);
+            return { capture() {}, stop() {} };
+          },
+        },
+      ],
+    ]),
+  );
+  return loadComponent("src/components/TrackingContextCapture.tsx").default;
+}
+
+function layoutWith(Capture) {
+  const loadLayout = sourceLoader(
+    new Map([
+      ["next/font/google", { Geist: () => ({ variable: "font-geist" }) }],
+      ["next/script", { default: "script" }],
+      ["../index.css", {}],
+      ["@/components/TrackingContextCapture", { default: Capture }],
+    ]),
+  );
+  return loadLayout("src/app/layout.tsx").default;
+}
+
+function findElement(node, type) {
+  if (Array.isArray(node)) {
+    for (const child of node) {
+      const found = findElement(child, type);
+      if (found) return found;
+    }
+    return undefined;
+  }
+  if (node === null || typeof node !== "object") return undefined;
+  if (node.type === type) return node;
+  return findElement(node.props?.children, type);
 }
 
 function observation() {
@@ -221,6 +283,90 @@ test("tracking consumers require the upstream receipt", async (t) => {
       });
       assert.deepEqual(calls.at(-1).value, value);
     });
+    for (const [name, upstream, expected] of [
+      ["canonical", "canonical", { page_view_mode: "canonical" }],
+      ["interaction", "interaction", { page_view_mode: "interaction" }],
+      ["other string", "other", {}],
+      ["empty string", "", {}],
+      ["different case", "Interaction", {}],
+      ["number", 1, {}],
+      ["null", null, {}],
+      ["boolean", true, {}],
+      ["object", { mode: "interaction" }, {}],
+      ["list", ["interaction"], {}],
+    ]) {
+      await t.test(
+        `page view mode ${name} is relayed only when valid`,
+        async () => {
+          const value = observation();
+          reply = (payload) => ({
+            status: 200,
+            body: {
+              accepted: true,
+              duplicate: false,
+              observation_id: payload.observation_id,
+              page_view_mode: upstream,
+            },
+          });
+          const response = await POST(request(value));
+          assert.equal(response.status, 200);
+          assert.deepEqual(await response.json(), {
+            accepted: true,
+            duplicate: false,
+            observation_id: value.observation_id,
+            ...expected,
+          });
+        },
+      );
+    }
+    await t.test("page view mode absent upstream is omitted", async () => {
+      const value = observation();
+      reply = (payload) => ({
+        status: 200,
+        body: { accepted: true, observation_id: payload.observation_id },
+      });
+      const response = await POST(request(value));
+      assert.equal(response.status, 200);
+      const body = await response.json();
+      assert.equal("page_view_mode" in body, false);
+      assert.deepEqual(body, {
+        accepted: true,
+        duplicate: false,
+        observation_id: value.observation_id,
+      });
+    });
+    await t.test("page view mode is relayed on a duplicate", async () => {
+      const value = observation();
+      reply = (payload) => ({
+        status: 200,
+        body: {
+          accepted: true,
+          duplicate: true,
+          observation_id: payload.observation_id,
+          page_view_mode: "interaction",
+        },
+      });
+      const response = await POST(request(value));
+      assert.equal(response.status, 200);
+      assert.deepEqual(await response.json(), {
+        accepted: true,
+        duplicate: true,
+        observation_id: value.observation_id,
+        page_view_mode: "interaction",
+      });
+    });
+    await t.test(
+      "page view mode never rides on a failed response",
+      async () => {
+        reply = () => ({
+          status: 503,
+          body: { accepted: false, page_view_mode: "interaction" },
+        });
+        const response = await POST(request(observation()));
+        assert.equal(response.status, 503);
+        assert.deepEqual(await response.json(), { accepted: false });
+      },
+    );
     await t.test(
       "origin, context and payload validation never reach upstream",
       async () => {
@@ -332,36 +478,7 @@ test("tracking consumers require the upstream receipt", async (t) => {
       "browser endpoint follows the application slash policy",
       () => {
         const options = [];
-        const loadComponent = sourceLoader(
-          new Map([
-            [
-              "react",
-              {
-                useEffect: (effect) => effect(),
-                useRef: (value) => ({ current: value }),
-              },
-            ],
-            [
-              "next/navigation",
-              {
-                usePathname: () => "/",
-                useSearchParams: () => new URLSearchParams(),
-              },
-            ],
-            [
-              "@click-cannabis/tracking-edge/browser",
-              {
-                startBrowserTracking: (value) => {
-                  options.push(value);
-                  return { capture() {}, stop() {} };
-                },
-              },
-            ],
-          ]),
-        );
-        const { default: Component } = loadComponent(
-          "src/components/TrackingContextCapture.tsx",
-        );
+        const Component = captureComponent(options);
         Component({ enabled: true, cookieDomain: "127.0.0.1" });
         assert.equal(
           options[0].endpoint,
@@ -369,6 +486,62 @@ test("tracking consumers require the upstream receipt", async (t) => {
             ? "/api/tracking/observations/"
             : "/api/tracking/observations",
         );
+      },
+    );
+    await t.test("browser tracking lets the service pick the mode", () => {
+      const options = [];
+      const Component = captureComponent(options);
+      Component({ enabled: true, cookieDomain: "127.0.0.1" });
+      assert.equal(options.length, 1);
+      assert.equal(options[0].pageView, true);
+      assert.equal(options[0].pageViewModeFromServer, true);
+      assert.deepEqual(options[0].pageTiming, { hourlyRate });
+      assert.equal("gtmContainerId" in options[0], false);
+      assert.equal("interactionGtmContainerId" in options[0], false);
+    });
+    await t.test("browser tracking forwards the interaction container", () => {
+      const options = [];
+      const Component = captureComponent(options);
+      Component({
+        enabled: true,
+        cookieDomain: "127.0.0.1",
+        interactionGtmContainerId: "GTM-NHB2NDHK",
+      });
+      assert.equal(options[0].interactionGtmContainerId, "GTM-NHB2NDHK");
+      assert.equal(options[0].pageViewModeFromServer, true);
+    });
+    await t.test(
+      "interaction container reaches the edge only in production",
+      () => {
+        const options = [];
+        const Component = captureComponent(options);
+        const RootLayout = layoutWith(Component);
+        const previous = process.env.VERCEL_ENV;
+        try {
+          for (const [environment, expected] of [
+            ["production", "GTM-NHB2NDHK"],
+            ["preview", undefined],
+            ["development", undefined],
+            [undefined, undefined],
+          ]) {
+            if (environment === undefined) delete process.env.VERCEL_ENV;
+            else process.env.VERCEL_ENV = environment;
+            options.length = 0;
+            const element = findElement(
+              RootLayout({ children: null }),
+              Component,
+            );
+            assert.ok(element, `capture mounted for ${environment}`);
+            Component(element.props);
+            assert.equal(options.length, 1);
+            if (expected === undefined)
+              assert.equal("interactionGtmContainerId" in options[0], false);
+            else assert.equal(options[0].interactionGtmContainerId, expected);
+          }
+        } finally {
+          if (previous === undefined) delete process.env.VERCEL_ENV;
+          else process.env.VERCEL_ENV = previous;
+        }
       },
     );
   } finally {
