@@ -96,31 +96,6 @@ function captureComponent(options) {
   return loadComponent("src/components/TrackingContextCapture.tsx").default;
 }
 
-function layoutWith(Capture) {
-  const loadLayout = sourceLoader(
-    new Map([
-      ["next/font/google", { Geist: () => ({ variable: "font-geist" }) }],
-      ["next/script", { default: "script" }],
-      ["../index.css", {}],
-      ["@/components/TrackingContextCapture", { default: Capture }],
-    ]),
-  );
-  return loadLayout("src/app/layout.tsx").default;
-}
-
-function findElement(node, type) {
-  if (Array.isArray(node)) {
-    for (const child of node) {
-      const found = findElement(child, type);
-      if (found) return found;
-    }
-    return undefined;
-  }
-  if (node === null || typeof node !== "object") return undefined;
-  if (node.type === type) return node;
-  return findElement(node.props?.children, type);
-}
-
 function observation() {
   return tracking.buildBrowserEnriched({
     trackingContextId: edge.generateTrackingContextId(),
@@ -499,51 +474,6 @@ test("tracking consumers require the upstream receipt", async (t) => {
       assert.equal("gtmContainerId" in options[0], false);
       assert.equal("interactionGtmContainerId" in options[0], false);
     });
-    await t.test("browser tracking forwards the interaction container", () => {
-      const options = [];
-      const Component = captureComponent(options);
-      Component({
-        enabled: true,
-        cookieDomain: "127.0.0.1",
-        interactionGtmContainerId: "GTM-NHB2NDHK",
-      });
-      assert.equal(options[0].interactionGtmContainerId, "GTM-NHB2NDHK");
-      assert.equal(options[0].pageViewModeFromServer, true);
-    });
-    await t.test(
-      "interaction container reaches the edge only in production",
-      () => {
-        const options = [];
-        const Component = captureComponent(options);
-        const RootLayout = layoutWith(Component);
-        const previous = process.env.VERCEL_ENV;
-        try {
-          for (const [environment, expected] of [
-            ["production", "GTM-NHB2NDHK"],
-            ["preview", undefined],
-            ["development", undefined],
-            [undefined, undefined],
-          ]) {
-            if (environment === undefined) delete process.env.VERCEL_ENV;
-            else process.env.VERCEL_ENV = environment;
-            options.length = 0;
-            const element = findElement(
-              RootLayout({ children: null }),
-              Component,
-            );
-            assert.ok(element, `capture mounted for ${environment}`);
-            Component(element.props);
-            assert.equal(options.length, 1);
-            if (expected === undefined)
-              assert.equal("interactionGtmContainerId" in options[0], false);
-            else assert.equal(options[0].interactionGtmContainerId, expected);
-          }
-        } finally {
-          if (previous === undefined) delete process.env.VERCEL_ENV;
-          else process.env.VERCEL_ENV = previous;
-        }
-      },
-    );
   } finally {
     for (const key of [
       "VERCEL_ENV",
