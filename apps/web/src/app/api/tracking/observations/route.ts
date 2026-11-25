@@ -101,12 +101,20 @@ export async function POST(request: NextRequest) {
   }
   if (!deliver) return respond(503, { accepted: false });
   const result = await deliver(observation);
-  const detail = result.detail as { duplicate?: unknown; conflict?: unknown } | null;
+  const detail = result.detail as {
+    duplicate?: unknown;
+    conflict?: unknown;
+    page_view_mode?: unknown;
+  } | null;
   if (result.ok) {
+    const pageViewMode = detail?.page_view_mode;
     return respond(200, {
       accepted: true,
       duplicate: detail?.duplicate === true,
       observation_id: observation.observation_id,
+      ...(pageViewMode === "canonical" || pageViewMode === "interaction"
+        ? { page_view_mode: pageViewMode }
+        : {}),
     });
   }
   const status =

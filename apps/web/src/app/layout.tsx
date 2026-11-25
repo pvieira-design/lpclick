@@ -50,6 +50,9 @@ export default function RootLayout({
           <TrackingContextCapture
             enabled={resolveDestinoDoTracking(process.env).envia}
             cookieDomain={process.env.TRACKING_COOKIE_DOMAIN ?? ".clickatendimento.com"}
+            interactionGtmContainerId={
+              process.env.VERCEL_ENV === "production" ? "GTM-NHB2NDHK" : undefined
+            }
           />
         </Suspense>
         <Script
