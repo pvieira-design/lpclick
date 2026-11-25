@@ -13,11 +13,9 @@ const TAXA_POR_HORA_DE_SAO_PAULO = [
 export default function TrackingContextCapture({
   enabled,
   cookieDomain,
-  interactionGtmContainerId,
 }: {
   enabled: boolean;
   cookieDomain: string;
-  interactionGtmContainerId?: string;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -34,7 +32,6 @@ export default function TrackingContextCapture({
         pageView: true,
         pageViewModeFromServer: true,
         pageTiming: { hourlyRate: TAXA_POR_HORA_DE_SAO_PAULO },
-        ...(interactionGtmContainerId === undefined ? {} : { interactionGtmContainerId }),
       });
     } catch {
       console.warn("[tracking-context]", "initialization-failed");
@@ -43,7 +40,7 @@ export default function TrackingContextCapture({
       tracker.current?.stop();
       tracker.current = null;
     };
-  }, [enabled, cookieDomain, interactionGtmContainerId]);
+  }, [enabled, cookieDomain]);
 
   useEffect(() => {
     void tracker.current?.capture();

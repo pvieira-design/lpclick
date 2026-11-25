@@ -524,15 +524,6 @@ test("CRM caller inventory includes every current form", () => {
   assert.deepEqual(found.sort(), [...forms].sort());
 });
 
-function interactionContainerProp(node) {
-  for (let parent = node.parent; parent; parent = parent.parent) {
-    if (ts.isJsxAttribute(parent)) {
-      return parent.name.getText() === "interactionGtmContainerId";
-    }
-  }
-  return false;
-}
-
 test("no module outside the retired bootstrap loads the web GTM", () => {
   const offenders = [];
   function visit(directory) {
@@ -553,12 +544,7 @@ test("no module outside the retired bootstrap loads the web GTM", () => {
           (ts.isJsxSelfClosingElement(node) &&
             node.tagName.getText() === "DeferredGTM") ||
           ((ts.isStringLiteralLike(node) || ts.isTemplateHead(node)) &&
-            /GTM-NHB2NDHK|googletagmanager\.com\/gtm\.js/.test(node.text) &&
-            !(
-              relative === "app/layout.tsx" &&
-              /GTM-NHB2NDHK/.test(node.text) &&
-              interactionContainerProp(node)
-            )),
+            /GTM-NHB2NDHK|googletagmanager\.com\/gtm\.js/.test(node.text)),
       );
       if (active.length && relative !== "app/DeferredGTM.tsx") {
         offenders.push(relative);
