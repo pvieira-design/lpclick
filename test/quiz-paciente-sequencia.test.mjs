@@ -98,6 +98,7 @@ function session(file) {
   const cells = [];
   const pending = [];
   const dataLayer = [];
+  const opened = [];
   let cursor = 0;
   let dirty = false;
   let tree = null;
@@ -193,7 +194,7 @@ function session(file) {
     {
       exports,
       module: { exports },
-      window: { scrollTo() {}, open() {} },
+      window: { scrollTo() {}, open: (url) => opened.push(url) },
       setTimeout: () => 0,
       clearTimeout() {},
       require(name) {
@@ -222,6 +223,7 @@ function session(file) {
   render();
   return {
     dataLayer,
+    opened,
     has: (label) => actions(tree).some((action) => action.label === label),
     click(label) {
       const found = actions(tree).filter((action) => action.label === label);
@@ -305,5 +307,35 @@ for (const { route, file, name } of routes) {
         "nome",
       ].map((screen) => quizStep(name, screen)),
     );
+  });
+}
+
+// Cópia do parser do legado (click-backend, WebhookUtmController.
+// extrairNomeEPatologias): é ele que liga o lead ao contato do WhatsApp.
+function extrairNomeEPatologias(mensagem) {
+  const nome = mensagem.match(/Olá,\s+me\s+chamo\s+([^.\n]+)/i)?.[1]?.trim() ?? null;
+  const bloco = mensagem.match(/Patologias\s+selecionadas:\s*\n([\s\S]*?)(?:\n\s*\n|$)/i)?.[1] ?? "";
+  const patologias = bloco
+    .split("\n")
+    .map((linha) => linha.match(/\d+\.\s*(.+)/)?.[1]?.trim())
+    .filter(Boolean);
+  return { nome, patologias };
+}
+
+for (const { route, file } of routes) {
+  test(`${route}: the lead message is the pattern the legacy links to the lead`, () => {
+    const view = session(file);
+    for (const step of leadPath.slice(0, 3)) view.click(step);
+    view.click("Relaxar e ter menos ansiedade");
+    for (const step of leadPath.slice(3)) view.click(step);
+    view.type("Digite seu nome", "Maria Silva");
+    view.click("Enviar e agendar minha consulta");
+    assert.equal(view.opened.length, 1);
+    const mensagem = new URL(view.opened[0]).searchParams.get("text");
+    assert.deepEqual(extrairNomeEPatologias(mensagem), {
+      nome: "Maria Silva",
+      patologias: ["Insônia", "Ansiedade"],
+    });
+    assert.match(mensagem, /\n\nQuero agendar minha consulta pra dormir melhor e relaxar e ter menos ansiedade\./);
   });
 }
