@@ -164,11 +164,13 @@ function sendLeadToApi(payload: LeadPayload): void {
   }).catch(() => {});
 }
 
+// O legado só liga o lead ao contato do WhatsApp quando a mensagem abre com
+// "Olá, me chamo <nome>." e traz a lista "Patologias selecionadas:".
 function buildWhatsAppUrl(name: string, goal: Goal) {
-  const intro = `Oi, sou ${name} e estou buscando orientação para dormir melhor.`;
-  const text = goal.whatsAppConcern
-    ? `${intro}\n\nMinha maior dificuldade hoje é ${goal.whatsAppConcern}.`
-    : intro;
+  const pedido = "Estou buscando orientação para dormir melhor.";
+  const text = `Olá, me chamo ${name}.\n\nPatologias selecionadas:\n1. ${goal.patologia}\n\n${pedido}${
+    goal.whatsAppConcern ? ` Minha maior dificuldade hoje é ${goal.whatsAppConcern}.` : ""
+  }`;
   return `https://api.whatsapp.com/send/?phone=${PHONE}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
 }
 

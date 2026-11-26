@@ -105,11 +105,16 @@ function montarMensagem(nome: string, r: Respostas): string {
   const cbd = familiar ? `${r.jaUsou ? "já" : "nunca"} teve contato com CBD` : `${r.jaUsou ? "já" : "nunca"} tive contato com CBD`;
   const quem = familiar ? "Ele/ela " : "";
   const linhas = [
-    `Oi! Me chamo ${nome} e quero agendar ${familiar ? "uma consulta pra um familiar, " : "minha consulta "}pra ${objetivos}.`,
+    `Quero agendar ${familiar ? "uma consulta pra um familiar, " : "minha consulta "}pra ${objetivos}.`,
     tempo ? `${quem}${familiar ? "convive" : "Convivo"} com isso ${tempo} e ${cbd}.` : `${quem}${familiar ? cbd : cbd.charAt(0).toUpperCase() + cbd.slice(1)}.`,
   ];
   if (r.premio) linhas.push(PREMIOS[r.premio].mensagem);
-  return linhas.join("\n");
+  // O legado só liga o lead ao contato do WhatsApp quando a mensagem abre com
+  // "Olá, me chamo <nome>." (o nome vai até o ponto) e lê as patologias da
+  // lista "Patologias selecionadas:". Mesmo formato das outras LPs.
+  const patologias = GOALS.filter((g) => r.objetivos.includes(g.id)).map((g, i) => `${i + 1}. ${g.patologia}`);
+  const lista = patologias.length ? `Patologias selecionadas:\n${patologias.join("\n")}\n\n` : "";
+  return `Olá, me chamo ${nome}.\n\n${lista}${linhas.join("\n")}`;
 }
 
 // origem: nome da página nos eventos do GTM. jaUsouInicial: quando a página já

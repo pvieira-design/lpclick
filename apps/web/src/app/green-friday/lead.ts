@@ -115,9 +115,12 @@ export function sendQuizAnswers(formType: string, respostas: Record<string, unkn
   );
 }
 
-// Diferente das outras LPs: o CRM hoje registra o contato assim que a mensagem
-// chega, sem depender do texto exato (confirmado pelo Guira em 30/10/2026).
-// Por isso a triagem do quiz e o prêmio da roleta seguem no corpo da mensagem.
+// A mensagem precisa abrir com "Olá, me chamo <nome>." e trazer a lista
+// "Patologias selecionadas:", como nas outras LPs: é o padrão que o legado
+// reconhece para ligar o lead ao contato do WhatsApp (WebhookUtmController,
+// extrairNomeEPatologias). Sem ele o lead fica sem telefone (nov/2026:
+// green-friday 7 de 589 ligados, avaliacao 1 de 79). A triagem do quiz e o
+// prêmio vão depois.
 export function buildWhatsAppUrl(text: string): string {
   return `https://api.whatsapp.com/send/?phone=${PHONE}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
 }
