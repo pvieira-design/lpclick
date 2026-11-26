@@ -96,9 +96,8 @@ export function sendLeadToApi(payload: LeadPayload): void {
 
 export function buildWhatsAppUrl(name: string, objetivo?: Objetivo): string {
   const greeting = `Olá, me chamo ${name}.`;
-  // Na entrada por objetivo, preserve o bloco que o CRM usa para identificar a origem.
   const text = objetivo
-    ? `${greeting}\n\nPatologias selecionadas:\n1. ${objetivo.patologia}\n\nO que busco: ${objetivo.label}`
+    ? `${greeting}\n\nO que busco: ${objetivo.label}`
     : `${greeting} Quero agendar minha consulta.`;
   return `https://api.whatsapp.com/send/?phone=${PHONE}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
 }
