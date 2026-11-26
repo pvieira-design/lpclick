@@ -2,11 +2,9 @@
 
 export const PHONE = "5521993686082";
 
-// O que a pessoa busca (ordem do popup, 2 colunas). Mapeamento igual ao da
-// lp12-nova: cada objetivo vira uma patologia do CRM/WhatsApp.
+// Objetivos da primeira dobra e seu mapeamento para o CRM.
 export const OBJETIVOS = [
   { label: "Dormir melhor", patologia: "Insônia" },
-  { label: "Desacelerar", patologia: "Ansiedade" },
   { label: "Reduzir o estresse", patologia: "Estresse" },
   { label: "Mais disposição", patologia: "Disposição" },
   { label: "Melhorar o foco", patologia: "TDAH" },
@@ -15,11 +13,7 @@ export const OBJETIVOS = [
   { label: "Outros", patologia: "Outros" },
 ] as const;
 
-/** Patologias (deduplicadas) dos objetivos marcados, na ordem da lista. */
-export function patologiasDe(labels: Set<string>): string[] {
-  const out = OBJETIVOS.filter((o) => labels.has(o.label)).map((o) => o.patologia);
-  return Array.from(new Set(out));
-}
+export type Objetivo = (typeof OBJETIVOS)[number];
 
 export const LINKS = {
   instagram: "https://www.instagram.com/clickcannabis/",
@@ -33,7 +27,7 @@ export const LINKS = {
 /** Evento que abre o popup de agendamento de qualquer ponto da página. */
 export const OPEN_EVENT = "lp13:agendar";
 
-export type OpenDetail = { objetivo?: string; origem: string };
+export type OpenDetail = { objetivo?: Objetivo["label"]; origem: string };
 
 export function openSchedule(detail: OpenDetail) {
   window.dispatchEvent(new CustomEvent<OpenDetail>(OPEN_EVENT, { detail }));

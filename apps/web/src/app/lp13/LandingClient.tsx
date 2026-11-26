@@ -17,7 +17,7 @@ const STATS = [
 const ETAPAS = ["Consulta", "Receita", "ANVISA", "Entrega", "Retorno"];
 
 // Atalhos da primeira dobra, em 2 colunas na ordem pedida; "Outros" fica sozinho
-// na última linha. O popup mostra a lista completa de OBJETIVOS.
+// na última linha. O formulário recebe o objetivo do atalho escolhido.
 const ATALHOS: (typeof OBJETIVOS)[number]["label"][] = [
   "Dormir melhor",
   "Reduzir o estresse",
