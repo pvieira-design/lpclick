@@ -1,7 +1,7 @@
 // Captação de lead da /lp13 — mesmo contrato usado nas demais LPs.
 "use client";
 
-import { PHONE } from "./config";
+import { PHONE, type Objetivo } from "./config";
 
 const LEADS_API_ENDPOINT = "/api/leads";
 
@@ -94,20 +94,12 @@ export function sendLeadToApi(payload: LeadPayload): void {
   }).catch(() => {});
 }
 
-export function buildWhatsAppUrl(name: string, patologias: string[], outroTexto = ""): string {
-  // ATENÇÃO: este texto é o gatilho que registra o contato no CRM. Precisa bater
-  // EXATAMENTE com o padrão das demais LPs — não adicionar linhas (ex.: "Quero
-  // agendar minha consulta"), senão o CRM não reconhece e o lead não é atribuído.
-  const list = patologias.map((p, i) => `${i + 1}. ${p}`).join("\n");
-  // Texto livre de "Outros" (opcional) vai depois da lista, que fica intacta.
-  // Validado com o Guira em 26/10/2026: o CRM continua atribuindo o lead.
-  const extra = outroTexto ? `\n\nO que busco: ${outroTexto}` : "";
-  const text = `Olá, me chamo ${name}.\n\nPatologias selecionadas:\n${list}${extra}`;
-  return `https://api.whatsapp.com/send/?phone=${PHONE}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
-}
-
-export function buildPatientUrl(): string {
-  const text = "Olá! Já sou paciente da Click Cannabis e quero agendar uma consulta.";
+export function buildWhatsAppUrl(name: string, objetivo?: Objetivo): string {
+  const greeting = `Olá, me chamo ${name}.`;
+  // Na entrada por objetivo, preserve o bloco que o CRM usa para identificar a origem.
+  const text = objetivo
+    ? `${greeting}\n\nPatologias selecionadas:\n1. ${objetivo.patologia}\n\nO que busco: ${objetivo.label}`
+    : `${greeting} Quero agendar minha consulta.`;
   return `https://api.whatsapp.com/send/?phone=${PHONE}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
 }
 
