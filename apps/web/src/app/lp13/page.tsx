@@ -14,21 +14,26 @@ const display = Bricolage_Grotesque({
   display: "swap",
 });
 
+const title = "Agendar consulta · Click Cannabis";
+const canonicalUrl = "https://clickatendimento.com/agendar-consulta";
+
 export const metadata: Metadata = {
-  title: "Click Cannabis · Agende sua consulta de cannabis medicinal",
+  title,
   description:
     "Consulta online com médico especialista por R$50. Receita e autorização ANVISA sem burocracia. Agende em menos de 1 minuto.",
+  alternates: { canonical: canonicalUrl },
   openGraph: {
-    title: "Médicos Prescritores de Cannabis Medicinal · Click Cannabis",
+    title,
     description:
       "Consulta online com médico especialista por R$50. Agende em menos de 1 minuto, 100% online.",
+    url: canonicalUrl,
     siteName: "Click Cannabis",
     locale: "pt_BR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Médicos Prescritores de Cannabis Medicinal · Click Cannabis",
+    title,
     description:
       "Consulta online com médico especialista por R$50. Agende em menos de 1 minuto, 100% online.",
   },

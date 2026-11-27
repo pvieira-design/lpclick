@@ -29,7 +29,9 @@ const nextConfig: NextConfig = {
         destination: "https://click-app-pos.runveloz.com/api/wallet/:kind/:ticket",
       },
     ],
-    afterFiles: [],
+    afterFiles: [
+      { source: "/agendar-consulta", destination: "/lp13" },
+    ],
     fallback: [],
   }),
   headers: async () => [
